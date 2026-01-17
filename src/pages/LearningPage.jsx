@@ -9,63 +9,58 @@ const LearningPage = () => {
 
     const [allContent, setAllContent] = useState([]);
     const [savedItems, setSavedItems] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState('Tümü');
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         setLoading(true);
         try {
-            // 1. İçerikleri Oku
+            // 1. İçerikleri Oku (DEMO VERİ KALDIRILDI)
             const rawContent = localStorage.getItem('lecturerContents');
-            let parsedContent = JSON.parse(rawContent || '[]');
+            const parsedContent = JSON.parse(rawContent || '[]');
 
-            // Veri yoksa demo veri ekle
-            if (parsedContent.length === 0) {
-                const demoData = [
-                    { id: 101, title: "Denizcilikte Acil Durumlar", type: "Ders Notu", content: "...", date: "17.01.2026", targetAudience: "Tüm" },
-                    { id: 102, title: "2026 Yaz Stajı", type: "Duyuru", content: "...", date: "16.01.2026", targetAudience: "Tüm" }
-                ];
-                parsedContent = demoData;
-                localStorage.setItem('lecturerContents', JSON.stringify(demoData));
+            let contentData = [];
+            if (Array.isArray(parsedContent)) {
+                contentData = parsedContent.map(item => ({
+                    id: item.id || item._id,
+                    title: item.title || 'Başlık Yok',
+                    type: item.type || 'Bilinmiyor',
+                    content: item.content || '',
+                    date: item.date || '',
+                    authorName: item.authorName || 'Akademisyen',
+                    targetAudience: item.targetAudience || ''
+                }));
             }
+            setAllContent(contentData);
 
-            setAllContent(parsedContent);
-
-            // 2. KAYDEDİLENLERİ ÇEK VE EŞLEŞTİR (DÜZELTİLEN KISIM)
+            // 2. Kişiye Özel Kayıtları Oku
             if (userInfo && userInfo._id) {
                 const userKey = `savedLearningItems_${userInfo._id}`;
-                const savedIdsRaw = JSON.parse(localStorage.getItem(userKey) || '[]');
+                const savedIds = JSON.parse(localStorage.getItem(userKey) || '[]');
 
-                // Hepsini sayıya çevir
-                const savedIds = savedIdsRaw.map(id => parseInt(id));
-
-                // Eşleşenleri bul (ID'leri sayıya çevirerek kıyasla)
-                const userSavedItems = parsedContent.filter(item => {
-                    const itemId = parseInt(item.id || item._id);
-                    return savedIds.includes(itemId);
-                });
-
-                setSavedItems(userSavedItems);
+                if (Array.isArray(savedIds)) {
+                    const userSavedItems = contentData.filter(item => savedIds.includes(item.id));
+                    setSavedItems(userSavedItems);
+                }
             } else {
                 setSavedItems([]);
             }
-
         } catch (e) {
-            console.error("Hata:", e);
+            console.error("LocalStorage okunurken bir hata oluştu!", e);
         } finally {
             setLoading(false);
         }
     }, [userInfo]);
 
-    // Filtreleme
     const filteredContent = useMemo(() => {
+        if (!allContent) return [];
         return allContent.filter(item => {
             const categoryMatch = activeCategory === 'Tümü' ||
                 (activeCategory === 'PDF' && (item.type === 'Belge' || item.type === 'Ders Notu')) ||
                 (activeCategory === 'Duyuru' && item.type === 'Duyuru');
-            const searchMatch = item.title && item.title.toLowerCase().includes(searchTerm.toLowerCase());
+            const searchMatch = (item.title || '').toLowerCase().includes(searchTerm.toLowerCase());
             return categoryMatch && searchMatch;
         });
     }, [searchTerm, activeCategory, allContent]);
@@ -76,7 +71,7 @@ const LearningPage = () => {
         return <div className="content-icon video"><FaVideo /></div>;
     };
 
-    if (loading) return <div style={{ padding: 40, textAlign: 'center' }}>Yükleniyor...</div>;
+    if (loading) return <div style={{ padding: 40, textAlign: 'center', color: '#666' }}>Yükleniyor...</div>;
 
     return (
         <div className="learning-page-container">
@@ -99,13 +94,19 @@ const LearningPage = () => {
                                 {getContentIcon(item.type)}
                                 <div className="content-details">
                                     <h4>{item.title}</h4>
-                                    <p>{item.content ? `${item.content.substring(0, 100)}...` : ''}</p>
-                                    <div className="author">Yükleyen: Akademisyen</div>
+                                    <p>{`${(item.content || '').substring(0, 100)}...`}</p>
+                                    <div className="author">Yükleyen: {item.authorName}</div>
                                 </div>
-                                <Link to={`/learning/${item.id}`} className="view-button">Görüntüle</Link>
+                                <Link to={`/learning/${item.id}`} className="view-button">
+                                    Görüntüle
+                                </Link>
                             </div>
                         ))
-                    ) : <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>İçerik bulunamadı.</div>}
+                    ) : (
+                        <div style={{ textAlign: 'center', color: '#999', padding: '40px', background: 'white', borderRadius: '12px' }}>
+                            Bu kriterlere uygun içerik bulunamadı.
+                        </div>
+                    )}
                 </div>
             </main>
 
