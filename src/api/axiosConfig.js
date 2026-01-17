@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Temel API adresini burada tanımla
 const API = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: 'https://cadet-api.onrender.com/api',
 });
 
 // Request Interceptor: Her istek gönderilmeden önce çalışacak fonksiyon
