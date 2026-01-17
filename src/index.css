@@ -1,0 +1,23 @@
+/* Google Fonts Importu */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap');
+
+/* Global Reset ve Temel Ayarlar */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f6f8fa;
+  overflow-x: hidden;
+  /* Yatay taşmayı engelle */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Sayfa içeriğinin Navbar tarafından ezilmesini önleyen genel kural */
+.content-pusher {
+  padding-top: 80px;
+  /* Navbar'ın yaklaşık yüksekliği */
+}

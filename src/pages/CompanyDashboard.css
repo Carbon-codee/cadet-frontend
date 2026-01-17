@@ -1,0 +1,466 @@
+/* --- PREMIUM COMPANY DASHBOARD --- */
+.company-dashboard-premium {
+    padding: 30px;
+    background-color: #f4f7fa;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* HERO HEADER */
+.premium-header {
+    background: linear-gradient(120deg, #003366 0%, #005A9C 100%);
+    border-radius: 20px;
+    padding: 40px;
+    color: white;
+    margin-bottom: 35px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 43, 91, 0.25);
+}
+
+.header-content {
+    position: relative;
+    z-index: 2;
+}
+
+.header-content h1 {
+    margin: 0 0 10px 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-content p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 1.1rem;
+    max-width: 700px;
+}
+
+/* Dekoratif Arkaplan */
+.header-decoration {
+    position: absolute;
+    top: -50%;
+    right: -5%;
+    width: 400px;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+/* --- İSTATİSTİK GRID YAPISI --- */
+.premium-stats-grid {
+    display: grid;
+    /* Kartların genişliğine göre otomatik sığdır, en az 230px olsun */
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+    align-items: stretch;
+    /* Kartların boyunu eşitle */
+}
+
+/* GENEL KART STİLİ */
+.premium-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    /* Grid hücresini doldur */
+    min-height: 160px;
+    /* Minimum yükseklik */
+}
+
+.premium-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* 1. ve 2. TİP KARTLAR (Lineer Barlı) */
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.card-top h3 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.trend {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    background: #e0f2f1;
+    color: #009688;
+    font-weight: 700;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+.icon-box.blue {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.icon-box.green {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.big-number {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.progress-mini {
+    width: 100%;
+    height: 6px;
+    background: #f1f2f6;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: auto;
+    /* En alta it */
+}
+
+.progress-mini .bar {
+    height: 100%;
+    border-radius: 3px;
+}
+
+
+/* 3., 4. ve 5. TİP KARTLAR (Yuvarlak Grafikli - Flex Center) */
+.flex-center {
+    flex-direction: row;
+    /* Yan yana diz */
+    align-items: center;
+    gap: 15px;
+}
+
+.circular-info {
+    flex: 1;
+    /* Yazı alanı genişlesin */
+}
+
+.circular-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+    /* Başlık boyutu */
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.circular-info p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #95a5a6;
+    line-height: 1.4;
+}
+
+/* YUVARLAK GRAFİK KAPLAYICISI */
+.circular-chart-wrapper {
+    position: relative;
+    width: 90px;
+    /* Sabit genişlik */
+    height: 90px;
+    /* Sabit yükseklik */
+    flex-shrink: 0;
+    /* Küçülmesini engelle */
+}
+
+.circular-chart {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+    /* Başlangıç noktası tepe olsun */
+}
+
+.circular-bg {
+    fill: none;
+    stroke: #f0f0f0;
+    stroke-width: 7;
+}
+
+.circular-stroke {
+    fill: none;
+    stroke-width: 7;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1.5s ease-in-out;
+}
+
+/* İKONU ORTALAMA */
+.chart-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.6rem;
+    opacity: 0.2;
+    /* Arkada hafif ikon */
+    z-index: 1;
+}
+
+/* DEĞERİ ORTALAMA (EN ÖNEMLİ DÜZELTME) */
+.chart-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    line-height: 1;
+}
+
+.chart-value .big-num {
+    font-size: 1.4rem;
+    /* Grafik içindeki sayı boyutu */
+    font-weight: 800;
+    color: #2c3e50;
+}
+
+.chart-value .small-label {
+    font-size: 0.7rem;
+    color: #95a5a6;
+    margin-top: 2px;
+}
+
+/* --- ALT İÇERİK IZGARASI --- */
+.premium-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* İki sütun */
+    gap: 25px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #2c3e50;
+}
+
+.view-all {
+    font-size: 0.85rem;
+    color: #3498db;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* SINIF DAĞILIMI */
+.dist-row {
+    margin-bottom: 15px;
+}
+
+.dist-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.dist-track {
+    width: 100%;
+    height: 8px;
+    background: #f1f2f6;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.dist-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+}
+
+/* SON ADAYLAR */
+.applicant-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.applicant-row:last-child {
+    border-bottom: none;
+}
+
+.avatar-gradient {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.app-info h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #2c3e50;
+}
+
+.app-info span {
+    font-size: 0.8rem;
+    color: #95a5a6;
+}
+
+.btn-mini-profile {
+    margin-left: auto;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    color: #3498db;
+    border: 1px solid #e1e8ed;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.btn-mini-profile:hover {
+    background: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+/* SİZİ HEDEFLEYENLER (Full Width) */
+.full-width-section {
+    grid-column: 1 / -1;
+}
+
+/* Tüm genişliği kapla */
+
+.stars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.star-card {
+    background: #fffbf0;
+    /* Hafif sarımsı arka plan */
+    border: 1px solid #ffe0b2;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.star-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(255, 160, 0, 0.15);
+}
+
+.star-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #fff;
+    color: #e67e22;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-weight: 800;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.star-avatar {
+    width: 65px;
+    height: 65px;
+    background: #e67e22;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 15px auto;
+    border: 4px solid white;
+    box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3);
+}
+
+.star-card h4 {
+    margin: 10px 0 5px 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.star-card p {
+    margin: 0;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.star-btn {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    margin-top: 15px;
+    background: white;
+    border: 1px solid #e67e22;
+    border-radius: 8px;
+    color: #e67e22;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.star-btn:hover {
+    background: #e67e22;
+    color: white;
+}
+
+/* MOBİL İÇİN */
+@media (max-width: 992px) {
+    .premium-content-grid {
+        grid-template-columns: 1fr;
+    }
+}

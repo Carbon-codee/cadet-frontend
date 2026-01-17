@@ -1,0 +1,140 @@
+.detail-page-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.status-message {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 4rem;
+    color: #555;
+}
+
+.status-message.error {
+    color: #ef4444;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: #555;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.back-link:hover {
+    color: #005A9C;
+}
+
+.internship-detail-card {
+    background-color: #fff;
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.detail-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1.5rem;
+}
+
+.detail-header h1 {
+    font-size: 2.5rem;
+    color: #002B5B;
+    margin: 0 0 0.5rem 0;
+}
+
+.company-name {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 0;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: #f6f8fa;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.detail-item svg {
+    color: #005A9C;
+}
+
+.detail-description {
+    margin-top: 2rem;
+}
+
+.detail-description h3 {
+    color: #002B5B;
+    margin-bottom: 1rem;
+}
+
+.detail-description p {
+    line-height: 1.8;
+    color: #444;
+}
+
+.detail-actions {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.apply-button {
+    background-color: #16a34a;
+    color: white;
+    border: none;
+    padding: 1rem 3rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.apply-button:hover {
+    background-color: #15803d;
+}
+
+@media (max-width: 768px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-header h1 {
+        font-size: 2rem;
+    }
+}
+
+.company-link {
+    text-decoration: none;
+    /* Linkin alt çizgisini kaldırır */
+    transition: opacity 0.2s ease;
+}
+
+.company-link:hover {
+    opacity: 0.8;
+    /* Üzerine gelince hafifçe soluklaşır */
+}
+
+.company-name {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 0;
+}

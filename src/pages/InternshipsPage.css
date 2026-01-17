@@ -1,0 +1,158 @@
+.internships-page {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.page-title-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-title-section h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+}
+
+.page-title-section p {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+}
+
+/* ARAMA VE FİLTRELEME BARI */
+.search-filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
+}
+
+.search-input-group {
+    flex-grow: 1;
+    /* Arama çubuğu en çok yeri kapsasın */
+    position: relative;
+    min-width: 300px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #95a5a6;
+}
+
+.search-input-group input {
+    width: 100%;
+    padding: 12px 12px 12px 45px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.filter-group select {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    background-color: #fcfcfc;
+    min-width: 180px;
+}
+
+/* İLAN KARTLARI IZGARASI */
+.internships-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+/* İLAN KARTI TASARIMI */
+.internship-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.internship-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(52, 152, 219, 0.15);
+}
+
+.card-header {
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.card-header h3 {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+    font-size: 1.25rem;
+}
+
+.card-header .company-name {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.card-body {
+    padding: 20px;
+    flex-grow: 1;
+    /* İçeriği aşağı itsin */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.info-item .icon {
+    color: #3498db;
+}
+
+.card-footer {
+    padding: 15px 20px;
+    background-color: #f8fafc;
+    border-top: 1px solid #f0f0f0;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.salary-info {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #27ae60;
+}
+
+.details-btn {
+    background: #3498db;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.details-btn:hover {
+    background: #2980b9;
+}

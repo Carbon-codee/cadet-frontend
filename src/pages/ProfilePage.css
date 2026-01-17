@@ -1,0 +1,236 @@
+.profile-page {
+    background-color: #f6f8fa;
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- Genel Kart Stili --- */
+.profile-card {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    height: 100%;
+    /* Kartların boyunu eşitlemek için */
+}
+
+/* --- Header Kartı (En Üstteki Büyük Kart) --- */
+.profile-header-card {
+    grid-column: 1 / -1;
+    /* İki sütunu da kapla */
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Arka plan süslemesi (Opsiyonel) */
+.profile-header-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 150px;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, #f0f4f8);
+    transform: skewX(-20deg);
+    z-index: 0;
+}
+
+.avatar-container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Avatar yerine Harf Kutusu */
+.avatar-box {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #002B5B;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+    border: 5px solid #e3f2fd;
+}
+
+.header-info {
+    flex-grow: 1;
+    z-index: 1;
+}
+
+.header-info h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    color: #002B5B;
+}
+
+.header-info .role-badge {
+    display: inline-block;
+    background: #e3f2fd;
+    color: #005A9C;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.header-info p {
+    margin: 0.5rem 0 1rem 0;
+    font-size: 1.1rem;
+    color: #555;
+    max-width: 600px;
+}
+
+/* SKOR BARI (Sadece Öğrenciler İçin) */
+.score-section {
+    margin-top: 15px;
+    max-width: 500px;
+}
+
+.score-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.score-bar-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    height: 20px;
+    overflow: hidden;
+}
+
+.score-bar {
+    background: linear-gradient(90deg, #3b82f6, #005A9C);
+    height: 100%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: width 1s ease-out;
+}
+
+/* --- Bilgi Kartları --- */
+.profile-card h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #002B5B;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row span:first-child {
+    font-weight: 600;
+    color: #444;
+}
+
+.info-row span:last-child {
+    color: #666;
+}
+
+/* --- Liste Grubu (Sertifikalar vs.) --- */
+.list-group {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    transition: transform 0.2s;
+}
+
+.list-item:hover {
+    transform: translateX(5px);
+}
+
+.list-item:last-child {
+    border-bottom: none;
+}
+
+.list-item-icon {
+    width: 35px;
+    height: 35px;
+    background: #f0f8ff;
+    color: #005A9C;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list-text strong {
+    display: block;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.list-text small {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+/* --- Mobil Uyum --- */
+@media (max-width: 992px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-header-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .header-info {
+        width: 100%;
+    }
+
+    .score-section {
+        margin: 15px auto;
+    }
+}

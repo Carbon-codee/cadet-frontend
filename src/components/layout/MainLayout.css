@@ -1,0 +1,5 @@
+.content-pusher {
+    /* Navbar'ın yüksekliği kadar üstten boşluk bırakarak içeriğin Navbar'ın altına kaymasını engeller */
+    padding-top: 80px;
+    /* Navbar'ın yaklaşık yüksekliği, gerekirse ayarlayabilirsiniz */
+}

@@ -1,0 +1,261 @@
+/* --- SAYFA GENEL YAPISI --- */
+.learning-page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    display: grid;
+    grid-template-columns: 280px 1fr 300px;
+    /* Sol - Orta - Sağ */
+    gap: 40px;
+    align-items: start;
+    /* Sütunların yukarı hizalanması için */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    /* Hafif gri arka plan */
+    min-height: 90vh;
+}
+
+/* --- ORTAK KENAR ÇUBUĞU STİLLERİ (SOL VE SAĞ) --- */
+.left-sidebar,
+.right-sidebar {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    /* Menülerin kaydırırken sabit kalması için */
+    position: sticky;
+    top: 100px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* Başlıklar */
+.left-sidebar h3,
+.right-sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #002B5B;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- SOL SÜTUN (ARAMA & KATEGORİ) --- */
+.search-box input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e1e4e8;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+    background-color: #fcfcfc;
+    transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #3498db;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.category-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.category-item {
+    padding: 12px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.category-item:hover {
+    background-color: #f1f5f9;
+    color: #333;
+    transform: translateX(5px);
+}
+
+.category-item.active {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+/* --- ORTA SÜTUN (İÇERİK KARTLARI) --- */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.content-card {
+    background: white;
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid #005A9C;
+}
+
+/* İkon Kutusu */
+.content-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.content-icon.pdf {
+    background: linear-gradient(135deg, #ff6b6b, #ee5253);
+}
+
+.content-icon.video {
+    background: linear-gradient(135deg, #48dbfb, #2980b9);
+}
+
+.content-icon.note {
+    background: linear-gradient(135deg, #feca57, #ff9f43);
+}
+
+/* İçerik Detayları */
+.content-details {
+    flex-grow: 1;
+}
+
+.content-details h4 {
+    margin: 0 0 8px 0;
+    color: #2c3e50;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.content-details p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #7f8c8d;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* 2 satırdan fazlasını kes */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.content-details .author {
+    font-size: 0.8rem;
+    color: #a4b0be;
+    margin-top: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Buton */
+.view-button {
+    padding: 10px 25px;
+    background-color: #f0f4f8;
+    color: #002B5B;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.view-button:hover {
+    background-color: #002B5B;
+    color: white;
+    box-shadow: 0 5px 15px rgba(0, 43, 91, 0.2);
+}
+
+/* --- SAĞ SÜTUN (KAYDEDİLENLER) --- */
+.right-sidebar .category-list {
+    gap: 10px;
+}
+
+.right-sidebar .category-item {
+    background-color: #fff;
+    border: 1px solid #f1f2f6;
+    padding: 15px;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    border-left: 3px solid transparent;
+}
+
+.right-sidebar .category-item:hover {
+    background-color: #fafbfc;
+    border-left-color: #3498db;
+    transform: translateX(0);
+    /* Sağa kaymasın */
+}
+
+/* SCROLLBAR GÜZELLEŞTİRME (Webkit) */
+.left-sidebar::-webkit-scrollbar,
+.right-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.left-sidebar::-webkit-scrollbar-thumb,
+.right-sidebar::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 3px;
+}
+
+/* --- MOBİL UYUM (RESPONSIVE) --- */
+@media (max-width: 1024px) {
+    .learning-page-container {
+        grid-template-columns: 1fr;
+        /* Tek sütun */
+        gap: 20px;
+    }
+
+    .left-sidebar,
+    .right-sidebar {
+        position: static;
+        /* Mobilde yapışkan olmasın */
+        max-height: none;
+    }
+
+    .content-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .view-button {
+        width: 100%;
+        text-align: center;
+    }
+}

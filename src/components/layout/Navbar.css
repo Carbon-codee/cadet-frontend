@@ -1,0 +1,99 @@
+/* Navbar ana kapsayıcısı */
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 3rem;
+    background-color: rgba(10, 25, 47, 0.85);
+    /* Hafif transparan koyu mavi */
+    backdrop-filter: blur(10px);
+    /* Arka planı blurlama efekti */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Logo Stili */
+.navbar-logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Ortadaki navigasyon linkleri */
+.nav-links-pill {
+    display: flex;
+    align-items: center;
+    background-color: rgba(43, 60, 85, 0.7);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    /* Hap şekli için */
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: #ccd6f6;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #fff;
+    background-color: rgba(76, 107, 152, 0.5);
+}
+
+/* Sağ taraftaki arama ve profil bölümü */
+.nav-right-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.search-icon,
+.profile-icon {
+    color: #ccd6f6;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.search-icon:hover,
+.profile-icon:hover {
+    color: #fff;
+}
+
+.login-button {
+    background-color: #ef4444;
+    /* Resimdeki kırmızımsı renk */
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #f87171;
+}
+
+/* Mobil uyumluluk için Navbar */
+@media (max-width: 768px) {
+    .nav-links-pill {
+        display: none;
+    }
+
+    .navbar-container {
+        padding: 1rem 1.5rem;
+    }
+}

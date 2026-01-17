@@ -1,0 +1,160 @@
+.saved-page-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    color: #2c3e50;
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.page-header p {
+    color: #7f8c8d;
+}
+
+/* KART IZGARASI (GRID) */
+.saved-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* KART TASARIMI */
+.saved-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #f0f0f0;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.saved-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border-color: #3498db;
+}
+
+.card-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* İkonlar (LearningPage ile uyumlu) */
+.content-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.content-icon.pdf {
+    background-color: #e74c3c;
+}
+
+.content-icon.video {
+    background-color: #3498db;
+}
+
+.content-icon.note {
+    background-color: #f1c40f;
+}
+
+.card-info h3 {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.card-meta {
+    font-size: 0.85rem;
+    color: #95a5a6;
+    display: flex;
+    gap: 15px;
+}
+
+/* BUTONLAR */
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-view {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+}
+
+.btn-view:hover {
+    background-color: #bbdefb;
+}
+
+.btn-remove {
+    background-color: #ffebee;
+    color: #c62828;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+.btn-remove:hover {
+    background-color: #ef9a9a;
+    color: white;
+}
+
+/* BOŞ DURUM */
+.empty-state {
+    text-align: center;
+    padding: 60px;
+    background: white;
+    border-radius: 12px;
+}
+
+.go-learning-btn {
+    display: inline-block;
+    margin-top: 20px;
+    background: #3498db;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.go-learning-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}

@@ -1,0 +1,149 @@
+/* --- SAYFA GENEL --- */
+.learning-detail-page {
+    background-color: #F0F4F8;
+    min-height: 90vh;
+    padding: 40px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --- GERİ DÖN BUTONU --- */
+.page-back-link {
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 20px;
+    display: inline-flex;
+    text-decoration: none;
+}
+
+.page-back-link span {
+    background-color: white;
+    color: #5b6b7c;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    border: 1px solid #e1e4e8;
+}
+
+.page-back-link:hover span {
+    color: #002B5B;
+    transform: translateX(-5px);
+    border-color: #002B5B;
+}
+
+/* --- KART --- */
+.detail-container {
+    background: white;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 43, 91, 0.1);
+    overflow: hidden;
+}
+
+/* --- BAŞLIK ALANI (RENK DÜZELTME BURADA) --- */
+.detail-header {
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    padding: 60px 40px;
+    text-align: center;
+    position: relative;
+}
+
+.detail-header h1 {
+    font-size: 2.5rem;
+    margin: 0 0 20px 0;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #ffffff !important;
+    /* KESİN BEYAZ */
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.meta-info {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+    /* Hafif transparan beyaz */
+    background: rgba(255, 255, 255, 0.15);
+    padding: 10px 25px;
+    border-radius: 50px;
+    display: inline-flex;
+    backdrop-filter: blur(5px);
+    align-items: center;
+}
+
+/* HOCA LİNKİ */
+.author-link {
+    color: #FFD700;
+    /* Altın Sarısı */
+    text-decoration: none;
+    font-weight: 700;
+    border-bottom: 1px dotted #FFD700;
+    margin-left: 5px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.author-link:hover {
+    color: #fff;
+    border-bottom: 1px solid #fff;
+}
+
+/* --- İÇERİK --- */
+.detail-content {
+    padding: 50px;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: #2c3e50;
+    white-space: pre-wrap;
+}
+
+/* --- FOOTER --- */
+.detail-footer {
+    padding: 25px 50px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.save-button {
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+    border: none;
+}
+
+.save-button:not(.saved) {
+    background-color: white;
+    color: #555;
+    border: 1px solid #ddd;
+}
+
+.save-button:not(.saved):hover {
+    background-color: #f1f2f6;
+    color: #333;
+}
+
+.save-button.saved {
+    background-color: #27ae60;
+    color: white;
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
