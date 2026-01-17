@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import API from '../api/axiosConfig';
 import { useNavigate, useLocation } from 'react-router-dom'; // Yönlendirme ve konum için hook'lar
 import { useAuth } from '../context/AuthContext'; // Global state hook'u
 import './AuthPage.css';
@@ -54,7 +54,7 @@ const AuthPage = () => {
         }
         const { name, email, password, department, classYear } = signUpData;
         try {
-            await axios.post('http://localhost:5000/api/auth/register', {
+            await API.post('/auth/register', {
                 name, email, password, role: selectedRole, department, classYear,
             });
             alert('Kayıt başarılı! Lütfen giriş yapın.');
@@ -68,7 +68,8 @@ const AuthPage = () => {
     const handleSignInSubmit = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/login', signInData);
+            // Sadece /auth/login yazıyoruz, çünkü baseURL otomatik eklenecek
+            const { data } = await API.post('/auth/login', signInData);
 
             // Context API üzerinden global state'i ve localStorage'ı güncelle
             login(data);
