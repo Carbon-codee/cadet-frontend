@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import './HomePage.css';
-const heroVideo = '/hero-video.mov';
+const heroVideo = '/hero-video.mp4';
 import {
     FaUserGraduate, FaShip, FaHandshake, FaChartLine,
     FaPhone, FaEnvelope, FaMapMarkerAlt, FaInstagram, FaLinkedin, FaTwitter, FaBuilding,
