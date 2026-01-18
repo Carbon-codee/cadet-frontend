@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import API from '../axiosConfig';
+import API from '../api/axiosConfig';
 import './ApplicantsPage.css';
 
 const ApplicantsPage = () => {
