@@ -1,13 +1,12 @@
-/* --- GENEL --- */
-.landing-page {
+/* --- GENEL KAPLAYICI --- */
+.homepage-container {
     width: 100%;
     min-height: 100vh;
-    color: white;
-    overflow-x: hidden;
     position: relative;
+    overflow-x: hidden;
 }
 
-/* --- VİDEO ARKAPLAN --- */
+/* --- SABİT VİDEO ARKAPLAN (EN ARKADA) --- */
 .video-wrapper {
     position: fixed;
     top: 0;
@@ -15,6 +14,7 @@
     width: 100%;
     height: 100%;
     z-index: -1;
+    /* Her şeyin arkasında */
 }
 
 .hero-video {
@@ -23,61 +23,171 @@
     object-fit: cover;
 }
 
+/* Videonun üzerine koyu filtre (Yazıların okunması için) */
 .video-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(10, 25, 47, 0.85);
-    /* Biraz daha koyulaştırdık ki beyaz yazılar okunsun */
+    background: rgba(10, 25, 47, 0.8);
+    /* %80 koyuluk */
     z-index: 0;
 }
 
-/* --- ORTA BÖLÜM (HERO) --- */
-.hero-content-section {
-    min-height: 100vh;
-    /* Tam ekran */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 120px 20px 60px 20px;
-    /* Navbar payı */
+/* --- DASHBOARD (GİRİŞ YAPILMIŞ) --- */
+.dashboard-wrapper {
     position: relative;
     z-index: 1;
-}
-
-.hero-text-box {
-    max-width: 1200px;
+    /* Videonun üstünde */
+    padding-top: 120px;
+    /* Navbar için boşluk */
+    padding-bottom: 60px;
+    min-height: 80vh;
     width: 100%;
-    animation: fadeInUp 1s ease-out;
 }
 
-.hero-title {
-    font-size: 3.5rem;
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Karşılama Yazısı */
+.welcome-banner {
+    text-align: center;
+    margin-bottom: 50px;
+    color: white;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.welcome-banner h1 {
+    font-size: 3rem;
     font-weight: 800;
-    margin-bottom: 20px;
-    line-height: 1.2;
+    margin-bottom: 10px;
     text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .highlight {
     color: #4cc9f0;
-    text-shadow: 0 0 20px rgba(76, 201, 240, 0.6);
+    /* Parlak Mavi */
+}
+
+.welcome-banner p {
+    font-size: 1.2rem;
+    color: #ccd6f6;
+    font-weight: 300;
+}
+
+/* Grid Yapısı */
+.home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+/* --- CAM EFEKTLİ KARTLAR (GLASS CARDS) --- */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    /* Çok şeffaf beyaz */
+    backdrop-filter: blur(12px);
+    /* Buzlu cam efekti */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* İnce beyaz çerçeve */
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #4cc9f0;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.glass-card h3 {
+    font-size: 1.5rem;
+    margin: 20px 0 10px 0;
+    font-weight: 700;
+}
+
+.glass-card p {
+    color: #8892b0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* İkon Kutuları */
+.icon-box {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: #4cc9f0;
+    margin-bottom: 10px;
+}
+
+.icon-box.blue {
+    color: #4cc9f0;
+}
+
+.icon-box.green {
+    color: #64ffda;
+}
+
+.icon-box.purple {
+    color: #bd93f9;
+}
+
+.icon-box.orange {
+    color: #ffb86c;
+}
+
+/* --- PUBLIC LANDING PAGE (Giriş Yapılmamış) --- */
+.hero-content-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-text-box {
+    max-width: 900px;
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    color: white;
 }
 
 .hero-subtitle {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     color: #ccd6f6;
     margin-bottom: 40px;
-    font-weight: 300;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
-/* Butonlar (Public) */
+/* Butonlar */
 .hero-buttons {
     display: flex;
     gap: 20px;
@@ -93,7 +203,7 @@
     border-radius: 50px;
     text-decoration: none;
     box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
-    transition: all 0.3s;
+    transition: 0.3s;
 }
 
 .btn-primary-glow:hover {
@@ -111,7 +221,7 @@
     font-weight: bold;
     border-radius: 50px;
     text-decoration: none;
-    transition: all 0.3s;
+    transition: 0.3s;
 }
 
 .btn-secondary-glass:hover {
@@ -119,86 +229,19 @@
     transform: translateY(-3px);
 }
 
-/* --- GİRİŞ YAPMIŞ KULLANICI KARTLARI (GLASS CARD) --- */
-.home-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
-}
-
-.glass-card {
-    background: rgba(255, 255, 255, 0.05);
-    /* Şeffaf */
-    backdrop-filter: blur(12px);
-    /* Buzlu cam */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    /* İnce kenarlık */
-    padding: 30px 20px;
-    border-radius: 20px;
-    text-align: center;
-    text-decoration: none;
-    color: white;
-    transition: all 0.3s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.glass-card:hover {
-    transform: translateY(-10px);
-    background: rgba(255, 255, 255, 0.15);
-    border-color: #4cc9f0;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.glass-card h3 {
-    font-size: 1.2rem;
-    margin: 15px 0 5px 0;
-    color: #fff;
-}
-
-.glass-card p {
-    font-size: 0.9rem;
-    color: #a8b2d1;
-    line-height: 1.4;
-    margin: 0;
-}
-
-/* İkonlar */
-.icon-box {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    margin-bottom: 5px;
-    background: rgba(255, 255, 255, 0.1);
-    /* İkon arkası da transparan */
-    color: #4cc9f0;
-}
-
-.icon-box.red {
-    color: #ef4444;
-}
-
-/* Profil ikonu için özel */
-
-/* --- İSTATİSTİKLER (Public) --- */
+/* İstatistikler */
 .stats-section {
-    padding: 80px 20px;
+    padding: 60px 20px;
     position: relative;
     z-index: 1;
 }
 
 .stats-grid {
-    max-width: 1200px;
-    margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .stat-card {
@@ -208,12 +251,7 @@
     padding: 40px 20px;
     border-radius: 20px;
     text-align: center;
-    transition: transform 0.3s;
-}
-
-.stat-card:hover {
-    transform: translateY(-10px);
-    background: rgba(255, 255, 255, 0.1);
+    color: white;
 }
 
 .stat-icon {
@@ -224,22 +262,14 @@
 
 .stat-card h3 {
     font-size: 2.5rem;
-    font-weight: 800;
     margin: 0;
-    color: white;
-}
-
-.stat-card p {
-    color: #8892b0;
-    font-size: 1.1rem;
-    margin-top: 5px;
 }
 
 /* --- FOOTER --- */
 .main-footer {
     background-color: #020c1b;
     color: #8892b0;
-    padding: 60px 20px 20px 20px;
+    padding: 60px 20px 20px;
     position: relative;
     z-index: 1;
 }
@@ -255,13 +285,11 @@
 
 .footer-col h2 {
     color: white;
-    font-size: 2rem;
     margin-bottom: 20px;
 }
 
 .footer-col h3 {
     color: #ccd6f6;
-    font-size: 1.2rem;
     margin-bottom: 20px;
 }
 
@@ -269,17 +297,17 @@
     list-style: none;
 }
 
-.footer-col ul li {
+.footer-col li {
     margin-bottom: 10px;
 }
 
-.footer-col ul li a {
+.footer-col a {
     color: #8892b0;
     text-decoration: none;
     transition: 0.2s;
 }
 
-.footer-col ul li a:hover {
+.footer-col a:hover {
     color: #4cc9f0;
 }
 
@@ -289,24 +317,30 @@
 }
 
 .social-icons a {
-    color: white;
     font-size: 1.5rem;
-    transition: 0.3s;
-}
-
-.social-icons a:hover {
-    color: #4cc9f0;
-    transform: scale(1.2);
+    color: white;
 }
 
 .footer-bottom {
     text-align: center;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 20px;
-    font-size: 0.9rem;
 }
 
-/* MOBİL */
+/* Animasyon */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobil */
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2.5rem;
@@ -323,11 +357,5 @@
 
     .social-icons {
         justify-content: center;
-    }
-
-    .hero-content-section {
-        padding-top: 100px;
-        height: auto;
-        padding-bottom: 50px;
     }
 }
