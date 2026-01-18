@@ -79,12 +79,31 @@
     font-weight: 300;
 }
 
-/* Grid Yapısı */
 .home-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
+    /* ESKİSİ: grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); */
+
+    /* YENİSİ: Ekran genişse mutlaka 4 sütun yap */
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 20px;
+    /* Boşluğu biraz azalttık ki sığsınlar */
     margin-bottom: 50px;
+    width: 100%;
+}
+
+/* Tablet ve Küçük Laptoplar için (ekran daralırsa 2'şerli olsun) */
+@media (max-width: 1024px) {
+    .home-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Telefonlar için (Tek sütun) */
+@media (max-width: 768px) {
+    .home-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* --- CAM EFEKTLİ KARTLAR (GLASS CARDS) --- */
