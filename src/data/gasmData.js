@@ -1,4 +1,4 @@
-// src/data/gasmData.js
+
 
 export const lectureData = {
     "Deniz Hukuku": `
@@ -47,9 +47,3 @@ export const generateDummyQuestions = (ders, adet) => {
     return arr;
 };
 
-// Boş olanları doldur
-Object.keys(soruHavuzu).forEach(key => {
-    if (soruHavuzu[key].length === 0) {
-        soruHavuzu[key] = generateDummyQuestions(key, 20);
-    }
-});
