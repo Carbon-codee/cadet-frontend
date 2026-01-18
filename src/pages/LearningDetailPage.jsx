@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FaBookmark, FaRegBookmark, FaArrowLeft, FaDownload, FaFileAlt } from 'react-icons/fa';
-import API from '../api/axiosConfig'; // API
+import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import './LearningDetailPage.css';
 
 const LearningDetailPage = () => {
-    const { id } = useParams(); // URL'deki ID (MongoDB ID'si)
+    const { id } = useParams(); // MongoDB ID'si (String)
     const { userInfo } = useAuth();
 
     const [content, setContent] = useState(null);
@@ -16,16 +16,16 @@ const LearningDetailPage = () => {
     useEffect(() => {
         const fetchContent = async () => {
             try {
-                // 1. İçeriği API'den çek (Artık localStorage yok)
+                // 1. İçeriği API'den çek
                 const { data } = await API.get(`/content/${id}`);
                 setContent(data);
 
-                // 2. Kaydedilme durumunu kontrol et (LocalStorage'da ID listesi olarak tutuyoruz)
+                // 2. Kaydedilme durumunu kontrol et
                 if (userInfo && userInfo._id) {
                     const userKey = `savedLearningItems_${userInfo._id}`;
                     const savedIds = JSON.parse(localStorage.getItem(userKey) || '[]');
 
-                    // MongoDB ID'leri string olduğu için direkt includes çalışır
+                    // ID String olduğu için direkt includes çalışır
                     if (savedIds.includes(id)) {
                         setIsSaved(true);
                     }
@@ -48,11 +48,12 @@ const LearningDetailPage = () => {
 
         let newSavedIds;
         if (isSaved) {
+            // Listeden çıkar
             newSavedIds = savedIds.filter(savedId => savedId !== id);
             setIsSaved(false);
         } else {
-            savedIds.push(id);
-            newSavedIds = savedIds;
+            // Listeye ekle
+            newSavedIds = [...savedIds, id];
             setIsSaved(true);
         }
         localStorage.setItem(userKey, JSON.stringify(newSavedIds));
@@ -61,9 +62,7 @@ const LearningDetailPage = () => {
     if (loading) return <div style={{ padding: 50, textAlign: 'center' }}>Yükleniyor...</div>;
     if (!content) return <div style={{ padding: 50, textAlign: 'center' }}>İçerik bulunamadı.</div>;
 
-    // Yazar adı (Populate edilmişse 'author.name', yoksa 'Akademisyen')
-    const authorName = content.author?.name ?
-        `${content.author.title || ''} ${content.author.name}` : 'Akademisyen';
+    const authorName = content.author?.name ? `${content.author.title || ''} ${content.author.name}` : 'Akademisyen';
     const authorLink = content.author?._id ? `/profile/${content.author._id}` : '#';
 
     return (
@@ -81,16 +80,14 @@ const LearningDetailPage = () => {
                         <span>{content.type}</span>
                         <span>•</span>
                         <span>
-                            Yayınlayan:
-                            <Link to={authorLink} className="author-link">{authorName}</Link>
+                            Yayınlayan: <Link to={authorLink} className="author-link">{authorName}</Link>
                         </span>
                     </div>
                 </div>
 
                 <div className="detail-content">
-                    <p>{content.content}</p>
+                    <p style={{ whiteSpace: 'pre-wrap' }}>{content.content}</p>
 
-                    {/* DOSYA İNDİRME */}
                     {content.fileData && content.fileName && (
                         <div className="file-download-section">
                             <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>

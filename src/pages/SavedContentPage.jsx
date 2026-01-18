@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaFilePdf, FaVideo, FaBookOpen, FaTrash, FaEye, FaArrowRight } from 'react-icons/fa';
+import API from '../api/axiosConfig'; // API kullanacağız
 import { useAuth } from '../context/AuthContext';
 import './SavedContentPage.css';
 
@@ -10,49 +11,46 @@ const SavedContentPage = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (userInfo && userInfo._id) {
-            try {
-                // 1. Tüm içerikleri çek (Bunlar ortak)
-                const allContent = JSON.parse(localStorage.getItem('lecturerContents') || '[]');
+        const fetchSavedContent = async () => {
+            if (userInfo && userInfo._id) {
+                try {
+                    // 1. Veritabanındaki TÜM içerikleri çek
+                    const { data } = await API.get('/content');
 
-                // 2. KULLANICIYA ÖZEL kayıtlı ID'leri çek
-                // ÖNEMLİ: Anahtar ismi 'savedLearningItems_' + userID formatında
-                const userKey = `savedLearningItems_${userInfo._id}`;
-                const savedIds = JSON.parse(localStorage.getItem(userKey) || '[]');
+                    // 2. Kullanıcının kaydettiği ID'leri LocalStorage'dan al
+                    const userKey = `savedLearningItems_${userInfo._id}`;
+                    const savedIds = JSON.parse(localStorage.getItem(userKey) || '[]');
 
-                // 3. ID'leri eşleşen içerikleri filtrele
-                // (Güvenlik: item ve item.id kontrolü yapıyoruz)
-                // savedIds içindeki ID'ler sayı olduğu için parseInt ile garantiye alıyoruz
-                const filtered = allContent.filter(item =>
-                    item && item.id && savedIds.includes(parseInt(item.id))
-                );
+                    // 3. Eşleşenleri Filtrele (ID'leri String olarak karşılaştır)
+                    // MongoDB ID'si '_id' olarak gelir.
+                    const filtered = data.filter(item => savedIds.includes(item._id));
 
-                setSavedList(filtered);
-            } catch (error) {
-                console.error("Kaydedilenler yüklenirken hata:", error);
-            } finally {
+                    setSavedList(filtered);
+                } catch (error) {
+                    console.error("Kaydedilenler yüklenirken hata:", error);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
                 setLoading(false);
             }
-        } else {
-            setLoading(false);
-        }
+        };
+
+        fetchSavedContent();
     }, [userInfo]);
 
-    // Listeden Kaldırma Fonksiyonu
+    // Listeden Kaldırma
     const handleRemove = (id) => {
         if (!userInfo) return;
 
         const userKey = `savedLearningItems_${userInfo._id}`;
         const savedIds = JSON.parse(localStorage.getItem(userKey) || '[]');
 
-        // ID'yi listeden çıkar
+        // ID'yi çıkar (String karşılaştırması)
         const newIds = savedIds.filter(savedId => savedId !== id);
 
-        // LocalStorage'ı güncelle
         localStorage.setItem(userKey, JSON.stringify(newIds));
-
-        // Ekrandaki listeyi anında güncelle
-        setSavedList(prev => prev.filter(item => item.id !== id));
+        setSavedList(prev => prev.filter(item => item._id !== id));
     };
 
     const getContentIcon = (type) => {
@@ -73,23 +71,23 @@ const SavedContentPage = () => {
             {savedList.length > 0 ? (
                 <div className="saved-grid">
                     {savedList.map(item => (
-                        <div key={item.id} className="saved-card">
+                        <div key={item._id} className="saved-card">
                             <div className="card-left">
                                 {getContentIcon(item.type)}
                                 <div className="card-info">
                                     <h3>{item.title}</h3>
                                     <div className="card-meta">
-                                        <span>📅 {item.date}</span>
+                                        <span>📅 {new Date(item.createdAt).toLocaleDateString('tr-TR')}</span>
                                         <span className="badge-category">{item.type}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="card-actions">
-                                <Link to={`/learning/${item.id}`} className="btn-view">
+                                <Link to={`/learning/${item._id}`} className="btn-view">
                                     <FaEye /> İncele
                                 </Link>
-                                <button onClick={() => handleRemove(item.id)} className="btn-remove" title="Listeden Kaldır">
+                                <button onClick={() => handleRemove(item._id)} className="btn-remove" title="Listeden Kaldır">
                                     <FaTrash />
                                 </button>
                             </div>
@@ -98,7 +96,7 @@ const SavedContentPage = () => {
                 </div>
             ) : (
                 <div className="empty-state">
-                    <div className="empty-icon">📂</div>
+                    <div style={{ fontSize: '3rem', marginBottom: '15px' }}>📂</div>
                     <h3>Listeniz Boş</h3>
                     <p>Henüz hiçbir materyali kaydetmediniz.</p>
                     <Link to="/learning" className="go-learning-btn">
