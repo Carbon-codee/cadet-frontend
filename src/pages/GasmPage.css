@@ -1,0 +1,227 @@
+/* --- GASM SINAV MODÜLÜ STİLLERİ --- */
+.gasm-wrapper {
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    color: #2d3436;
+    background: linear-gradient(135deg, #e0f7fa 0%, #4dd0e1 100%);
+    padding-bottom: 50px;
+    position: relative;
+    overflow: hidden;
+}
+
+.gasm-container {
+    width: 90%;
+    max-width: 950px;
+    margin: 40px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 30px;
+    box-shadow: 0 10px 30px 0 rgba(31, 38, 135, 0.15);
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navigasyon Butonları */
+.subject-menu {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 15px;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.5);
+    margin-bottom: 20px;
+    border-radius: 15px;
+}
+
+.subject-btn {
+    background: transparent;
+    border: 1px solid #008080;
+    color: #008080;
+    padding: 8px 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.subject-btn:hover,
+.subject-btn.active {
+    background: #008080;
+    color: #fff;
+}
+
+/* Hero Alanı */
+.hero-section {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeIn 0.8s ease;
+}
+
+.hero-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    color: #008080;
+    margin-bottom: 10px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.feature-card {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Butonlar */
+.mode-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.big-btn {
+    background: #008080;
+    color: #fff;
+    border: none;
+    padding: 18px;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.2s;
+}
+
+.big-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 128, 128, 0.3);
+}
+
+.study-btn {
+    background: white;
+    color: #008080;
+    border: 2px solid #008080;
+}
+
+.lecture-btn {
+    background: #e67e22;
+}
+
+.finish-btn {
+    background: #e74c3c;
+}
+
+/* Soru Kartları */
+.question-text {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+
+.options-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.option-btn {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.option-btn:hover {
+    border-color: #008080;
+}
+
+.option-btn.selected {
+    background: #008080;
+    color: white;
+}
+
+.option-btn.study-correct {
+    background: #27ae60 !important;
+    color: white;
+}
+
+.option-btn.study-wrong {
+    background: #e74c3c !important;
+    color: white;
+}
+
+.opt-char {
+    font-weight: bold;
+    margin-right: 15px;
+    width: 30px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Timer */
+.timer-container {
+    background: white;
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #008080;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+#timer-text {
+    font-size: 2rem;
+    font-weight: 800;
+    display: block;
+}
+
+/* Scrollable Content */
+.scrollable-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 15px;
+    margin-bottom: 20px;
+    max-height: 500px;
+}
+
+/* Animasyon */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -26,7 +26,7 @@ import LearningPage from './pages/LearningPage';
 import LearningDetailPage from './pages/LearningDetailPage'; // BU IMPORT'U EKLE
 import TestPage from './pages/TestPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
-
+import GasmPage from './pages/GasmPage';
 
 function App() {
   return (
@@ -72,6 +72,7 @@ function App() {
           <Route path="/lecturer/my-content" element={<ProtectedRoute><MainLayout><LecturerContentPage /></MainLayout></ProtectedRoute>} />
           <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
           {/* Rotaların herhangi bir yerine ekle */}
+          <Route path="/gasm" element={<ProtectedRoute><MainLayout><GasmPage /></MainLayout></ProtectedRoute>} />
           <Route path="/test" element={<TestPage />} />
         </Routes>
       </main>
