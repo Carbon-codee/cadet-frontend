@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import './AuthPage.css';
@@ -118,6 +118,8 @@ const AuthPage = () => {
                     <div className="toggle-text">
                         {isLogin ? "Hesabın yok mu?" : "Zaten hesabın var mı?"}
                         <span onClick={() => setIsLogin(!isLogin)}>{isLogin ? "Hemen Kayıt Ol" : "Giriş Yap"}</span>
+                        <Link to="/forgot-password" className="forgot-pass">Şifreni mi unuttun?</Link>
+
                     </div>
                 </div>
             </div>

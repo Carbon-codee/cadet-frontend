@@ -27,7 +27,8 @@ import LearningDetailPage from './pages/LearningDetailPage'; // BU IMPORT'U EKLE
 import TestPage from './pages/TestPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import GasmPage from './pages/GasmPage';
-
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 function App() {
   return (
     <Router>
@@ -63,7 +64,8 @@ function App() {
           <Route path="/company/my-internships" element={<ProtectedRoute><MainLayout><MyInternshipsPage /></MainLayout></ProtectedRoute>} />
           <Route path="/company/applicants/:id" element={<ProtectedRoute><MainLayout><ApplicantsPage /></MainLayout></ProtectedRoute>} />
           <Route path="/learning/:id" element={<ProtectedRoute><MainLayout><LearningDetailPage /></MainLayout></ProtectedRoute>} />
-
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           {/* YENİ DASHBOARD ROTASI */}
           <Route path="/company/dashboard" element={<ProtectedRoute><MainLayout><CompanyDashboard /></MainLayout></ProtectedRoute>} />
           <Route path="/lecturer/upload" element={<ProtectedRoute><MainLayout><LecturerUploadPage /></MainLayout></ProtectedRoute>} />
