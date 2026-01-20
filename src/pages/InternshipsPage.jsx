@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
+import { useAuth } from '../context/AuthContext'; // <-- EKLENDİ
 import { FaSearch, FaMapMarkerAlt, FaShip, FaMoneyBillWave, FaCalendarAlt, FaBuilding, FaFilter } from 'react-icons/fa';
-import { SHIP_TYPES } from '../constants'; // Sabitleri buradan çekiyoruz (Dosya varsa)
-// Eğer constants.js yoksa aşağıdaki realisticShipTypes dizisini kullanır.
+import { SHIP_TYPES } from '../constants';
 import './InternshipsPage.css';
 
 const InternshipsPage = () => {
+    const { userInfo } = useAuth(); // <-- KULLANICI BİLGİSİNİ ALDIK
     const [internships, setInternships] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -16,7 +17,7 @@ const InternshipsPage = () => {
     const [companyFilter, setCompanyFilter] = useState('');
 
     // Yedek Gemi Tipleri (constants.js yoksa diye)
-    const shipTypesList = [
+    const shipTypesList = SHIP_TYPES || [
         'Konteyner', 'Kimyasal Tanker', 'Petrol Tankeri', 'LPG/LNG Tankeri',
         'Dökme Yük', 'Genel Kargo', 'Ro-Ro', 'Yolcu Gemisi', 'Offshore'
     ];
@@ -41,13 +42,28 @@ const InternshipsPage = () => {
         // Güvenlik kontrolleri
         if (!internship || !internship.title) return false;
 
+        // 1. Standart Filtreler
         const titleMatch = internship.title.toLowerCase().includes(searchTerm.toLowerCase());
         const companyMatch = internship.company?.name?.toLowerCase().includes(searchTerm.toLowerCase());
-
         const typeMatch = shipTypeFilter === '' || internship.shipType === shipTypeFilter;
         const companyFilterMatch = companyFilter === '' || internship.company?._id === companyFilter;
 
-        return (titleMatch || companyMatch) && typeMatch && companyFilterMatch;
+        // 2. BÖLÜM FİLTRESİ (SADECE ÖĞRENCİLER İÇİN)
+        let deptMatch = true;
+        if (userInfo && userInfo.role === 'student') {
+            const userDept = userInfo.department || "";
+
+            // Eğer öğrenci 'Güverte' veya 'Deniz Ulaştırma' bölümündeyse -> Sadece Güverte ilanları
+            if (userDept.includes('Güverte') || userDept.includes('Deniz Ulaştırma')) {
+                deptMatch = internship.department === 'Güverte';
+            }
+            // Eğer öğrenci 'Makine' veya 'Gemi Makineleri' bölümündeyse -> Sadece Makine ilanları
+            else if (userDept.includes('Makine') || userDept.includes('Gemi Makineleri')) {
+                deptMatch = internship.department === 'Makine';
+            }
+        }
+
+        return (titleMatch || companyMatch) && typeMatch && companyFilterMatch && deptMatch;
     });
 
     // Benzersiz Şirketleri Al (Dropdown için)
@@ -65,6 +81,12 @@ const InternshipsPage = () => {
             <div className="page-title-section">
                 <h1>Staj Fırsatları</h1>
                 <p>Kariyer rotanı belirleyecek en güncel ve aktif ilanları keşfet.</p>
+                {/* Öğrenciye özel bilgilendirme mesajı */}
+                {userInfo?.role === 'student' && (
+                    <span style={{ fontSize: '0.85rem', color: '#3498db', marginTop: '5px', display: 'block' }}>
+                        * Bölümünüze ({userInfo.department}) uygun ilanlar listelenmektedir.
+                    </span>
+                )}
             </div>
 
             {/* ARAMA VE FİLTRE BÖLÜMÜ */}
@@ -98,7 +120,7 @@ const InternshipsPage = () => {
 
             {/* İLAN SAYISI */}
             <div style={{ marginBottom: '20px', color: '#666', fontSize: '0.9rem' }}>
-                Toplam <strong>{filteredInternships.length}</strong> aktif ilan bulundu.
+                Toplam <strong>{filteredInternships.length}</strong> ilan bulundu.
             </div>
 
             {/* İLAN LİSTESİ */}
@@ -112,7 +134,8 @@ const InternshipsPage = () => {
                             </div>
                             <div className="card-body">
                                 <div className="info-item"><FaShip className="icon" /> <strong>Tip:</strong> {internship.shipType}</div>
-                                <div className="info-item"><FaMapMarkerAlt className="icon" /> <strong>Pozisyon:</strong> {internship.location}</div>
+                                {/* Lokasyon yerine Pozisyon/Lokasyon verisi */}
+                                <div className="info-item"><FaMapMarkerAlt className="icon" /> <strong>Konum:</strong> {internship.location}</div>
                                 <div className="info-item"><FaCalendarAlt className="icon" /> <strong>Süre:</strong> {internship.duration}</div>
                             </div>
                             <div className="card-footer">
@@ -126,7 +149,11 @@ const InternshipsPage = () => {
                 <div style={{ textAlign: 'center', padding: '50px', background: 'white', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
                     <FaFilter style={{ fontSize: '3rem', color: '#ddd', marginBottom: '15px' }} />
                     <h3>İlan Bulunamadı</h3>
-                    <p style={{ color: '#7f8c8d' }}>Aradığınız kriterlere uygun aktif bir staj ilanı şu an mevcut değil.</p>
+                    <p style={{ color: '#7f8c8d' }}>
+                        {userInfo?.role === 'student'
+                            ? "Bölümünüze ve kriterlerinize uygun aktif bir ilan bulunamadı."
+                            : "Aradığınız kriterlere uygun aktif bir staj ilanı şu an mevcut değil."}
+                    </p>
                     <button onClick={() => { setSearchTerm(''); setShipTypeFilter(''); setCompanyFilter(''); }} style={{ marginTop: '15px', padding: '10px 20px', background: '#3498db', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>Filtreleri Temizle</button>
                 </div>
             )}

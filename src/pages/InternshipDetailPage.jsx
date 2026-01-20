@@ -168,15 +168,49 @@ const InternshipDetailPage = () => {
                 </div>
 
                 {/* ADAY HAVUZU (Sadece Şirket Görür) */}
+                {/* --- POTANSİYEL ADAY HAVUZU (SADECE ŞİRKET SAHİBİ GÖRÜR) --- */}
                 {scoutData && (
-                    <div className="scout-section">
-                        <h2 className="scout-title"><FaUserGraduate /> Potansiyel Aday Havuzu</h2>
-                        <p className="scout-subtitle">Liste otomatik derlenmiştir.</p>
-                        {scoutData.favorited.length > 0 && <div style={{ marginBottom: '40px' }}><div className="group-header group-fav">🌟 Hedefleyenler</div>{scoutData.favorited.map(stu => <ScoutCard key={stu._id} student={stu} isFav={true} />)}</div>}
-                        {scoutData.others.length > 0 && <div><div className="group-header group-other">📋 Diğer Adaylar</div>{scoutData.others.map(stu => <ScoutCard key={stu._id} student={stu} isFav={false} />)}</div>}
+                    <div style={{ padding: '40px', background: '#fafbfc', borderTop: '1px solid #eee' }}>
+                        <h2 style={{ color: '#002B5B', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <FaUserGraduate /> Potansiyel Aday Havuzu
+                        </h2>
+                        <p style={{ color: '#666', marginBottom: '30px', fontSize: '0.95rem' }}>
+                            Bu liste, <strong>"{internship.shipType}"</strong> gemi tipinde staj arayan öğrencilerden otomatik oluşturulmuştur.
+                        </p>
+
+                        {/* GRID YAPISI: Yan Yana Durması İçin */}
+                        <div className="scout-grid-layout">
+
+                            {/* SOL SÜTUN: FAVORİLEYENLER */}
+                            <div className="scout-column">
+                                <h4 style={{ color: '#27ae60', marginBottom: '15px', borderBottom: '2px solid #27ae60', display: 'inline-block', paddingBottom: '5px' }}>
+                                    🌟 Hedefleyenler ({scoutData.favorited.length})
+                                </h4>
+                                {scoutData.favorited.length > 0 ? (
+                                    scoutData.favorited.map(stu => <ScoutCard key={stu._id} student={stu} isFav={true} />)
+                                ) : (
+                                    <p style={{ color: '#999', fontSize: '0.9rem', fontStyle: 'italic' }}>Bu kategoride yok.</p>
+                                )}
+                            </div>
+
+                            {/* SAĞ SÜTUN: DİĞERLERİ */}
+                            <div className="scout-column">
+                                <h4 style={{ color: '#3498db', marginBottom: '15px', borderBottom: '2px solid #3498db', display: 'inline-block', paddingBottom: '5px' }}>
+                                    📋 Diğer Adaylar ({scoutData.others.length})
+                                </h4>
+                                {scoutData.others.length > 0 ? (
+                                    scoutData.others.map(stu => <ScoutCard key={stu._id} student={stu} isFav={false} />)
+                                ) : (
+                                    <p style={{ color: '#999', fontSize: '0.9rem', fontStyle: 'italic' }}>Bu kategoride yok.</p>
+                                )}
+                            </div>
+                        </div>
 
                         {scoutData.favorited.length === 0 && scoutData.others.length === 0 && (
-                            <p style={{ color: '#999', fontStyle: 'italic' }}>Şu an uygun kriterde staj arayan aday bulunamadı.</p>
+                            <div style={{ textAlign: 'center', padding: '30px', border: '2px dashed #ddd', borderRadius: '10px', color: '#999', marginTop: '20px' }}>
+                                <FaBriefcase style={{ fontSize: '2rem', marginBottom: '10px', opacity: 0.5 }} />
+                                <p>Şu an "{internship.shipType}" için <strong>Staj Arıyor</strong> modunda olan uygun bir öğrenci bulunamadı.</p>
+                            </div>
                         )}
                     </div>
                 )}
