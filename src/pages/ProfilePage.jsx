@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // Bu satırı tamamen silip tekrar yaz.
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
@@ -9,7 +9,7 @@ import {
     FaMapMarkerAlt, FaBuilding, FaGlobe, FaUniversity, FaDoorOpen
 } from 'react-icons/fa';
 
-// --- ŞİRKET PROFİL GÖRÜNÜMÜ ---
+// --- ŞİRKET PROFİL GÖRÜNÜMÜ (AYNI) ---
 const CompanyProfile = ({ profile }) => (
     <div className="profile-grid">
         <div className="profile-card profile-header-card">
@@ -47,7 +47,7 @@ const CompanyProfile = ({ profile }) => (
     </div>
 );
 
-// --- AKADEMİSYEN PROFİL GÖRÜNÜMÜ ---
+// --- AKADEMİSYEN PROFİL GÖRÜNÜMÜ (AYNI) ---
 const LecturerProfile = ({ profile }) => (
     <div className="profile-grid">
         <div className="profile-card profile-header-card">
@@ -90,23 +90,19 @@ const LecturerProfile = ({ profile }) => (
     </div>
 );
 
-// --- ÖĞRENCİ PROFİL GÖRÜNÜMÜ (GÜNCELLENDİ) ---
-// --- ÖĞRENCİ PROFİL GÖRÜNÜMÜ ---
+// --- ÖĞRENCİ PROFİL GÖRÜNÜMÜ (AYNI - Mantık Korundu) ---
 const StudentProfile = ({ profile }) => {
     const { userInfo } = useAuth();
 
-    // Başlangıç değeri olarak profile.currentStatus kullanıyoruz, yoksa varsayılan
+    // Başlangıç değeri veritabanından gelen
     const [status, setStatus] = useState(profile?.currentStatus || 'Okulda/Tatilde');
 
-    // --- KRİTİK DÜZELTME: VERİ GELDİĞİNDE STATE'İ GÜNCELLE ---
-    // Sayfa ilk açıldığında profile verisi gecikmeli gelebilir. 
-    // Geldiği an bu kod çalışır ve butonu veritabanındaki duruma eşitler.
+    // Veri her güncellendiğinde (useEffect ile çekildiğinde) butonu da güncelle
     useEffect(() => {
         if (profile?.currentStatus) {
             setStatus(profile.currentStatus);
         }
     }, [profile]);
-    // ---------------------------------------------------------
 
     const handleStatusChange = async (e) => {
         const newStatus = e.target.value;
@@ -116,13 +112,11 @@ const StudentProfile = ({ profile }) => {
             // Backend'e kaydet
             await API.put('/users/status', { status: newStatus });
 
-            // Eğer kendi profilimizse LocalStorage'ı da güncelle (Sayfa yenilenirse gitmesin diye)
+            // Kendi profilimizse LocalStorage'ı da güncelle ki sayfa yenilenince eski haline dönmesin
             if (userInfo && userInfo._id === profile._id) {
-                const currentUser = JSON.parse(localStorage.getItem('userInfo'));
-                if (currentUser) {
-                    currentUser.currentStatus = newStatus;
-                    localStorage.setItem('userInfo', JSON.stringify(currentUser));
-                }
+                const currentUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
+                currentUser.currentStatus = newStatus;
+                localStorage.setItem('userInfo', JSON.stringify(currentUser));
             }
         } catch (err) {
             console.error(err);
@@ -175,7 +169,7 @@ const StudentProfile = ({ profile }) => {
                                         cursor: 'pointer',
                                         outline: 'none',
                                         fontSize: '0.95rem',
-                                        appearance: 'none', /* Ok işaretini gizle (tarayıcı varsayılanı) */
+                                        appearance: 'none',
                                         WebkitAppearance: 'none'
                                     }}
                                 >
@@ -183,7 +177,6 @@ const StudentProfile = ({ profile }) => {
                                     <option value="Staj Yapıyor">🟠 Staj Yapıyor</option>
                                     <option value="Okulda/Tatilde">⚪ Okulda/Tatilde</option>
                                 </select>
-                                {/* Özel ok işareti */}
                                 <span style={{ position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', color: getStatusColor(status), pointerEvents: 'none' }}>▼</span>
                             </div>
                         ) : (
@@ -197,7 +190,6 @@ const StudentProfile = ({ profile }) => {
                         )}
                     </div>
 
-                    {/* SKOR BARI */}
                     <label style={{ display: 'block', marginTop: '15px', color: '#555', fontSize: '0.9rem' }}>Cadet Başarı Skoru: <strong>{profile?.successScore || 0} / 100</strong></label>
                     <div className="score-bar-container">
                         <div
@@ -210,7 +202,6 @@ const StudentProfile = ({ profile }) => {
                 </div>
             </div>
 
-            {/* ... Diğer Kartlar (Hakkımda, Akademik vs. AYNI KALSIN) ... */}
             <div className="profile-card">
                 <h3>Hakkımda</h3>
                 <p style={{ lineHeight: 1.6, color: '#444' }}>{profile?.bio || "Kullanıcı bir biyografi eklememiş."}</p>
@@ -226,13 +217,16 @@ const StudentProfile = ({ profile }) => {
             </div>
 
             <div className="profile-card">
-                <h3>Sertifikalar ve Belgeler</h3>
+                <h3>Dokümanlar ve Sertifikalar</h3>
                 <ul className="list-group">
                     {(profile?.documents && profile.documents.length > 0) ? (
                         profile.documents.map((doc, i) => (
-                            <li key={i} className="list-item"><FaCertificate className="list-item-icon" /><span>{doc.name}</span></li>
+                            <li key={i} className="list-item">
+                                <FaCertificate className="list-item-icon" />
+                                <span>{doc.name}</span>
+                            </li>
                         ))
-                    ) : <p style={{ color: '#999' }}>Yüklenmiş sertifika veya belge bulunmuyor.</p>}
+                    ) : <p style={{ color: '#999' }}>Yüklenmiş doküman bulunmuyor.</p>}
                 </ul>
             </div>
 
@@ -249,7 +243,8 @@ const StudentProfile = ({ profile }) => {
         </div>
     );
 };
-// --- ANA BİLEŞEN ---
+
+// --- ANA BİLEŞEN (DÜZELTİLEN KISIM BURASI) ---
 const ProfilePage = () => {
     const { id } = useParams();
     const { userInfo } = useAuth();
@@ -260,30 +255,29 @@ const ProfilePage = () => {
         const fetchProfile = async () => {
             setLoading(true);
             try {
-                let data = null;
-                // Eğer URL'de bir ID varsa, o kullanıcının profilini çek.
-                if (id) {
-                    try {
-                        const res = await API.get(`/users/${id}`);
-                        data = res.data;
-                    } catch (e) {
-                        console.warn("API'den kullanıcı çekilemedi, hata:", e);
-                    }
+                // HEDEF KULLANICI KİM? (URL'de ID varsa o, yoksa giriş yapan kişi)
+                const targetId = id || userInfo?._id;
+
+                if (!targetId) {
+                    setLoading(false);
+                    return;
                 }
-                // Eğer URL'de ID yoksa, giriş yapan kullanıcının kendi profilini göster.
-                else {
-                    data = userInfo;
-                }
+
+                // --- DÜZELTME: HER ZAMAN API'DEN TAZE VERİ ÇEK ---
+                // Eskiden 'else { data = userInfo }' diyorduk, bu yüzden eski veriyi görüyordun.
+                // Şimdi her durumda veritabanına soruyoruz.
+                const { data } = await API.get(`/users/${targetId}`);
                 setProfileData(data);
+
             } catch (err) {
                 console.error("Profil yüklenemedi:", err);
+                // Eğer API hatası olursa ve kendi profilimizse mecburen eldeki veriyi kullan
+                if (!id && userInfo) setProfileData(userInfo);
             } finally {
                 setLoading(false);
             }
         };
 
-        // Eğer userInfo henüz gelmediyse beklemeye gerek yok, ID varsa çekebiliriz.
-        // Ama en sağlıklısı userInfo'nun varlığını kontrol etmek.
         if (userInfo || id) fetchProfile();
 
     }, [id, userInfo]);
