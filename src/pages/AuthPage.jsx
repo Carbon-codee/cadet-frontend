@@ -14,9 +14,14 @@ const AuthPage = () => {
     // Giriş Formu Verileri
     const [loginData, setLoginData] = useState({ email: '', password: '' });
 
-    // Kayıt Formu Verileri
+    // Kayıt Formu Verileri (confirmPassword eklendi, diğerleri varsayılan kaldı)
     const [registerData, setRegisterData] = useState({
-        name: '', email: '', password: '', department: 'Güverte', classYear: '1. Sınıf'
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '', // Yeni alan
+        department: 'Güverte', // Varsayılan gönderiyoruz (Backend hata vermesin diye)
+        classYear: '1. Sınıf'  // Varsayılan gönderiyoruz
     });
 
     const handleLoginSubmit = async (e) => {
@@ -27,8 +32,7 @@ const AuthPage = () => {
             // 1. Kullanıcıyı sisteme tanıt
             login(data);
 
-            // 2. KESİN ÇÖZÜM: Her zaman Ana Sayfaya ('/') git.
-            // { replace: true } geçmişi temizler, geri tuşuna basınca tekrar login'e dönmez.
+            // 2. KESİN YÖNLENDİRME: Her zaman Ana Sayfaya ('/') git.
             navigate('/', { replace: true });
 
         } catch (error) {
@@ -38,8 +42,18 @@ const AuthPage = () => {
 
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
+
+        // ŞİFRE KONTROLÜ
+        if (registerData.password !== registerData.confirmPassword) {
+            alert("Şifreler uyuşmuyor!");
+            return;
+        }
+
         try {
-            const payload = { ...registerData, role };
+            // confirmPassword'ü backend'e göndermeye gerek yok, o yüzden ayırıyoruz
+            const { confirmPassword, ...dataToSend } = registerData;
+
+            const payload = { ...dataToSend, role };
             await API.post('/auth/register', payload);
             alert("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
             setIsLogin(true); // Giriş ekranına döndür
@@ -103,22 +117,19 @@ const AuthPage = () => {
                                 value={registerData.password} onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })} />
                         </div>
 
-                        {/* Öğrenciye Özel Alanlar */}
-                        {role === 'student' && (
-                            <>
-                                <div className="input-group">
-                                    <select value={registerData.department} onChange={(e) => setRegisterData({ ...registerData, department: e.target.value })}>
-                                        <option value="Deniz Ulaştırma İşletme Mühendisliği">Deniz Ulaştırma (Güverte)</option>
-                                        <option value="Gemi Makineleri İşletme Mühendisliği">Gemi Makineleri (Makine)</option>
-                                    </select>
-                                </div>
-                                <div className="input-group">
-                                    <select value={registerData.classYear} onChange={(e) => setRegisterData({ ...registerData, classYear: e.target.value })}>
-                                        <option>1. Sınıf</option><option>2. Sınıf</option><option>3. Sınıf</option><option>4. Sınıf</option>
-                                    </select>
-                                </div>
-                            </>
-                        )}
+                        {/* YENİ EKLENEN ŞİFRE TEKRAR ALANI */}
+                        <div className="input-group">
+                            <FaLock className="input-icon" />
+                            <input
+                                type="password"
+                                placeholder="Şifre Tekrar"
+                                required
+                                value={registerData.confirmPassword}
+                                onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
+                            />
+                        </div>
+
+                        {/* BÖLÜM VE SINIF SEÇİMLERİ KALDIRILDI */}
 
                         <button type="submit" className="auth-btn">KAYIT OL</button>
                     </form>
