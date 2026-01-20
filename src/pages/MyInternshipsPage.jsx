@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
+import { FaEye, FaPlus } from 'react-icons/fa';
 import './MyInternshipsPage.css';
 
 const MyInternshipsPage = () => {
@@ -39,12 +40,13 @@ const MyInternshipsPage = () => {
                 </Link>
             </div>
 
-            {/* DEĞİŞİKLİK BURADA: scroll-container yerine direkt grid yapısı */}
-            {myInternships.length > 0 ? (
-                <div className="internships-grid">
-                    {myInternships.map(internship => (
+            <div className="internships-grid">
+                {myInternships.length > 0 ? (
+                    myInternships.map(internship => (
+                        // --- DEĞİŞİKLİK BURADA ---
+                        // Linki '/internships/ID' yaptık (Detay sayfası)
                         <Link
-                            to={`/company/edit-internship/${internship._id}`}
+                            to={`/internships/${internship._id}`}
                             key={internship._id}
                             className="internship-card"
                         >
@@ -68,10 +70,6 @@ const MyInternshipsPage = () => {
                                         <span className="icon">💵</span>
                                         <span>{internship.salary} $</span>
                                     </div>
-                                    <div className="detail-item">
-                                        <span className="icon">📅</span>
-                                        <span>{internship.duration}</span>
-                                    </div>
                                 </div>
                             </div>
 
@@ -79,23 +77,27 @@ const MyInternshipsPage = () => {
                                 <div className="applicant-count">
                                     👥 <strong>{internship.applicants.length}</strong> Başvuru
                                 </div>
-                                <span className="edit-link">Düzenle →</span>
+                                {/* Yazıyı "Detaylar" olarak değiştirdik */}
+                                <span className="edit-link" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                    <FaEye /> Detaylar
+                                </span>
                             </div>
                         </Link>
-                    ))}
+                        // ------------------------
+                    ))
+                ) : (
+                    <div className="empty-state">
+                        <p>Henüz hiç ilan yayınlamadınız.</p>
+                        <Link to="/company/create-internship" className="create-btn">İlk İlanını Oluştur</Link>
+                    </div>
+                )}
 
-                    {/* Listenin sonuna "Yeni Ekle" kartı */}
-                    <Link to="/company/create-internship" className="internship-card add-new-card">
-                        <div className="add-icon">+</div>
-                        <span>Yeni İlan</span>
-                    </Link>
-                </div>
-            ) : (
-                <div className="empty-state">
-                    <p>Henüz hiç ilan yayınlamadınız.</p>
-                    <Link to="/company/create-internship" className="create-btn">İlk İlanını Oluştur</Link>
-                </div>
-            )}
+                {/* Yeni Ekle Kartı */}
+                <Link to="/company/create-internship" className="internship-card add-new-card">
+                    <div className="add-icon"><FaPlus /></div>
+                    <span>Yeni İlan</span>
+                </Link>
+            </div>
         </div>
     );
 };

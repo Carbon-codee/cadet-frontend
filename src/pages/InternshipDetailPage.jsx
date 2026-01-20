@@ -126,7 +126,12 @@ const InternshipDetailPage = () => {
                 {userInfo?.role === 'company' && String(internship.company._id || internship.company) === String(userInfo._id) && (
                     <div style={{ padding: '30px', borderTop: '1px solid #eee' }}>
                         <h2 style={{ color: '#002B5B', marginBottom: '20px' }}><FaUserGraduate /> Potansiyel Aday Havuzu</h2>
-
+                        {/* ŞİRKET İSE: DÜZENLE BUTONU */}
+                        {userInfo?.role === 'company' && internship.company._id === userInfo._id && (
+                            <Link to={`/company/edit-internship/${internship._id}`} style={{ background: '#f39c12', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                                <FaEdit /> İlanı Düzenle
+                            </Link>
+                        )}
                         {/* Veri Var mı Kontrolü */}
                         {scoutData ? (
                             <>
