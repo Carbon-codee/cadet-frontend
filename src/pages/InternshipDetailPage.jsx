@@ -11,11 +11,7 @@ const InternshipDetailPage = () => {
 
     const [internship, setInternship] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    // Öğrenci için State
     const [hasApplied, setHasApplied] = useState(false);
-
-    // Şirket için State
     const [scoutData, setScoutData] = useState(null);
 
     useEffect(() => {
@@ -25,9 +21,10 @@ const InternshipDetailPage = () => {
                 const { data } = await API.get(`/internships/${id}`);
                 setInternship(data);
 
+                console.log("İlan Detayı:", data); // KONSOL KONTROLÜ
+
                 // --- SENARYO A: ÖĞRENCİ İSE ---
-                if (userInfo && userInfo.role === 'student') {
-                    // Başvuru kontrolü
+                if (userInfo?.role === 'student') {
                     const isApplied = data.applicants.some(app =>
                         (app.user === userInfo._id) || (app.user._id === userInfo._id)
                     );
@@ -35,18 +32,26 @@ const InternshipDetailPage = () => {
                 }
 
                 // --- SENARYO B: ŞİRKET VE İLAN SAHİBİ İSE ---
-                if (userInfo && userInfo.role === 'company') {
+                if (userInfo?.role === 'company') {
                     const companyId = data.company._id || data.company;
+
+                    // ID'leri string'e çevirip karşılaştır (Daha güvenli)
                     if (companyId.toString() === userInfo._id.toString()) {
+                        console.log("Şirket sahibi doğrulandı. Adaylar getiriliyor...");
                         try {
                             const scoutRes = await API.get(`/users/scout/${id}`);
+                            console.log("Bulunan Adaylar:", scoutRes.data); // KONSOL KONTROLÜ
                             setScoutData(scoutRes.data);
-                        } catch (err) { console.error("Scout error", err); }
+                        } catch (err) {
+                            console.error("Scout API Hatası:", err);
+                        }
+                    } else {
+                        console.log("Bu ilan sizin değil. ID'ler uyuşmadı:", companyId, userInfo._id);
                     }
                 }
 
             } catch (error) {
-                console.error("Hata", error);
+                console.error("Sayfa Yükleme Hatası:", error);
             } finally {
                 setLoading(false);
             }
@@ -54,21 +59,20 @@ const InternshipDetailPage = () => {
         fetchDetails();
     }, [id, userInfo]);
 
-    // Başvuru Fonksiyonu
     const handleApply = async () => {
         try {
             await API.post(`/internships/${id}/apply`);
             setHasApplied(true);
             alert("Başvurunuz başarıyla gönderildi!");
         } catch (error) {
-            alert(error.response?.data?.message || "Başvuru sırasında hata oluştu.");
+            alert("Başvuru sırasında hata oluştu.");
         }
     };
 
     if (loading) return <div style={{ padding: 50, textAlign: 'center' }}>Yükleniyor...</div>;
     if (!internship) return <div style={{ padding: 50, textAlign: 'center' }}>İlan bulunamadı.</div>;
 
-    // --- ADAY KARTI BİLEŞENİ ---
+    // --- ADAY KARTI ---
     const ScoutCard = ({ student, isFav }) => (
         <div style={{
             background: 'white', padding: '15px', borderRadius: '12px', border: '1px solid #eee',
@@ -95,7 +99,6 @@ const InternshipDetailPage = () => {
                     </div>
                 </div>
             </div>
-
             <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '0.7rem', color: '#999' }}>Skor</div>
                 <div style={{ fontWeight: 'bold', fontSize: '0.9rem', color: isFav ? '#27ae60' : '#3498db' }}>
@@ -110,7 +113,6 @@ const InternshipDetailPage = () => {
 
     return (
         <div className="internship-detail-page">
-            {/* Geri Dön Linki */}
             <Link to={userInfo?.role === 'company' ? "/company/my-internships" : "/internships"}
                 style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', textDecoration: 'none', color: '#555', marginBottom: '20px', fontWeight: '600' }}>
                 <FaArrowLeft /> {userInfo?.role === 'company' ? "İlanlarıma Dön" : "İlanlara Dön"}
@@ -134,10 +136,7 @@ const InternshipDetailPage = () => {
                     <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{internship.description}</p>
                 </div>
 
-                {/* --- AKSİYON ALANI (Rol Bazlı) --- */}
                 <div className="detail-footer" style={{ padding: '20px 40px', background: '#f8f9fa', borderTop: '1px solid #eee', textAlign: 'right' }}>
-
-                    {/* ÖĞRENCİ İSE: BAŞVUR BUTONU */}
                     {userInfo?.role === 'student' && (
                         hasApplied ? (
                             <button disabled style={{ background: '#27ae60', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold', cursor: 'default', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
@@ -150,7 +149,6 @@ const InternshipDetailPage = () => {
                         )
                     )}
 
-                    {/* ŞİRKET İSE: DÜZENLE BUTONU */}
                     {userInfo?.role === 'company' && internship.company._id === userInfo._id && (
                         <Link to={`/company/edit-internship/${internship._id}`} style={{ background: '#f39c12', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                             <FaEdit /> İlanı Düzenle
@@ -158,17 +156,16 @@ const InternshipDetailPage = () => {
                     )}
                 </div>
 
-                {/* --- POTANSİYEL ADAY HAVUZU (SADECE ŞİRKET SAHİBİ GÖRÜR) --- */}
+                {/* --- POTANSİYEL ADAY HAVUZU --- */}
                 {scoutData && (
                     <div style={{ padding: '40px', background: '#fafbfc', borderTop: '1px solid #eee' }}>
                         <h2 style={{ color: '#002B5B', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <FaUserGraduate /> Potansiyel Aday Havuzu
                         </h2>
                         <p style={{ color: '#666', marginBottom: '30px', fontSize: '0.95rem' }}>
-                            Bu liste, <strong>"{internship.shipType}"</strong> gemi tipinde staj arayan ve sistemimizdeki kriterlere uyan öğrencilerden otomatik oluşturulmuştur.
+                            Bu liste, <strong>"{internship.shipType}"</strong> gemi tipinde staj arayan öğrencilerden oluşturulmuştur.
                         </p>
 
-                        {/* 1. SİZİ FAVORİLEYENLER */}
                         {scoutData.favorited.length > 0 && (
                             <div style={{ marginBottom: '40px' }}>
                                 <h4 style={{ color: '#27ae60', marginBottom: '15px', borderBottom: '2px solid #27ae60', display: 'inline-block', paddingBottom: '5px' }}>
@@ -178,7 +175,6 @@ const InternshipDetailPage = () => {
                             </div>
                         )}
 
-                        {/* 2. DİĞER UYGUN ADAYLAR */}
                         {scoutData.others.length > 0 && (
                             <div>
                                 <h4 style={{ color: '#3498db', marginBottom: '15px', borderBottom: '2px solid #3498db', display: 'inline-block', paddingBottom: '5px' }}>
@@ -188,7 +184,6 @@ const InternshipDetailPage = () => {
                             </div>
                         )}
 
-                        {/* BOŞSA */}
                         {scoutData.favorited.length === 0 && scoutData.others.length === 0 && (
                             <div style={{ textAlign: 'center', padding: '30px', border: '2px dashed #ddd', borderRadius: '10px', color: '#999' }}>
                                 <FaBriefcase style={{ fontSize: '2rem', marginBottom: '10px', opacity: 0.5 }} />
