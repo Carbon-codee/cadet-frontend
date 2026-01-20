@@ -108,7 +108,21 @@ const CreateInternshipPage = () => {
                         </div>
                         {/* --- DEĞİŞİKLİK BİTTİ --- */}
 
-                        <div className="form-group"><label htmlFor="location">Lokasyon</label><input type="text" id="location" name="location" placeholder='Uzak Yol, Akdeniz, vb.' value={formData.location} onChange={handleChange} required /></div>
+                        {/* LOKASYON YERİNE POZİSYON (GÜNCELLENDİ) */}
+                        <div className="form-group">
+                            <label htmlFor="location">Pozisyon</label>
+                            <select
+                                id="location"
+                                name="location" // Backend'de 'location' olarak kayıtlı kalsın, veri kaybı olmasın
+                                value={formData.location}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Seçiniz</option>
+                                <option value="Güverte Stajyeri">Güverte Stajyeri</option>
+                                <option value="Makine Stajyeri">Makine Stajyeri</option>
+                            </select>
+                        </div>
                         <div className="form-group"><label htmlFor="startDate">Başlangıç Tarihi</label><input type="date" id="startDate" name="startDate" value={formData.startDate} onChange={handleChange} required /></div>
                         <div className="form-group"><label htmlFor="duration">Staj Süresi</label><input type="text" id="duration" name="duration" placeholder='Örn: 6 Ay' value={formData.duration} onChange={handleChange} required /></div>
                         <div className="form-group"><label htmlFor="salary">Maaş (USD)</label><input type="number" id="salary" name="salary" placeholder='Örn: 800' value={formData.salary} onChange={handleChange} required /></div>

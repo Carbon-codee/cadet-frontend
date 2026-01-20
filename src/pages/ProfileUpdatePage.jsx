@@ -52,8 +52,20 @@ const StudentUpdateForm = ({ formData, onFormChange, availableCompanies }) => {
                     <div className="form-group"><label>Soyad</label><input type="text" name="surname" value={formData.surname || ''} onChange={onFormChange} /></div>
                     <div className="form-group"><label>Sınıf</label><select name="classYear" value={formData.classYear || ''} onChange={onFormChange}><option value="">Seçiniz</option><option>1. Sınıf</option><option>2. Sınıf</option><option>3. Sınıf</option><option>4. Sınıf</option></select></div>
                     <div className="form-group"><label>GPA</label><input type="number" step="0.01" max="4" name="gpa" value={formData.gpa || ''} onChange={onFormChange} /></div>
-                    <div className="form-group"><label>Bölüm</label><input type="text" name="department" value={formData.department || ''} onChange={onFormChange} /></div>
+                    {/* BÖLÜM SEÇİMİ (GÜNCELLENDİ) */}
                     <div className="form-group">
+                        <label>Bölüm</label>
+                        <select
+                            name="department"
+                            value={formData.department || ''}
+                            onChange={onFormChange}
+                            style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '8px', background: '#fcfcfc' }}
+                        >
+                            <option value="">Seçiniz</option>
+                            <option value="Deniz Ulaştırma İşletme Mühendisliği">Deniz Ulaştırma İşletme Mühendisliği (Güverte)</option>
+                            <option value="Gemi Makineleri İşletme Mühendisliği">Gemi Makineleri İşletme Mühendisliği (Makine)</option>
+                        </select>
+                    </div><div className="form-group">
                         <label>İngilizce Seviyesi</label>
                         <select name="englishLevel" value={formData.englishLevel || 'A1'} onChange={onFormChange}>
                             <option value="A1">A1</option><option value="A2">A2</option><option value="B1">B1</option><option value="B2">B2</option><option value="C1">C1</option><option value="C2">C2</option>

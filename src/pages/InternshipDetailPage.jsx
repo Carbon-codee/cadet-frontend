@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
-import {
-    FaCheckCircle, FaUserGraduate, FaHeart, FaArrowLeft, FaBriefcase, FaEdit,
-    FaPaperPlane, FaStar, FaLanguage
-} from 'react-icons/fa';
+import { FaCheckCircle, FaUserGraduate, FaHeart, FaArrowLeft, FaBriefcase, FaEdit, FaPaperPlane } from 'react-icons/fa';
 import './InternshipDetailPage.css';
 
 const InternshipDetailPage = () => {
@@ -23,7 +20,6 @@ const InternshipDetailPage = () => {
                 const { data } = await API.get(`/internships/${id}`);
                 setInternship(data);
 
-                // --- ÖĞRENCİ İSE ---
                 if (userInfo?.role === 'student') {
                     const isApplied = data.applicants.some(app =>
                         (app.user === userInfo._id) || (app.user._id === userInfo._id)
@@ -31,22 +27,17 @@ const InternshipDetailPage = () => {
                     setHasApplied(isApplied);
                 }
 
-                // --- ŞİRKET İSE ---
                 if (userInfo?.role === 'company') {
                     const companyId = data.company._id || data.company;
                     if (companyId.toString() === userInfo._id.toString()) {
                         try {
                             const scoutRes = await API.get(`/users/scout/${id}`);
                             setScoutData(scoutRes.data);
-                        } catch (err) { console.error("Scout error", err); }
+                        } catch (err) { console.error(err); }
                     }
                 }
-
-            } catch (error) {
-                console.error("Hata", error);
-            } finally {
-                setLoading(false);
-            }
+            } catch (error) { console.error(error); }
+            finally { setLoading(false); }
         };
         fetchDetails();
     }, [id, userInfo]);
@@ -55,63 +46,46 @@ const InternshipDetailPage = () => {
         try {
             await API.post(`/internships/${id}/apply`);
             setHasApplied(true);
-            alert("Başvurunuz başarıyla gönderildi!");
-        } catch (error) {
-            alert("Başvuru hatası.");
-        }
+            alert("Başvuru gönderildi!");
+        } catch (error) { alert("Hata oluştu."); }
     };
 
     if (loading) return <div style={{ padding: 50, textAlign: 'center' }}>Yükleniyor...</div>;
     if (!internship) return <div style={{ padding: 50, textAlign: 'center' }}>İlan bulunamadı.</div>;
 
-    // --- YENİLENMİŞ ADAY KARTI ---
     const ScoutCard = ({ student, isFav }) => (
-        <div className={`scout-card ${isFav ? 'fav' : 'other'}`}>
-            <div className="scout-left">
-                {/* Avatar */}
-                <div className={`scout-avatar ${isFav ? 'fav' : 'other'}`}>
+        <div style={{
+            background: 'white', padding: '20px', borderRadius: '12px', border: '1px solid #eee',
+            marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)', borderLeft: isFav ? '5px solid #27ae60' : '5px solid #3498db'
+        }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <div style={{
+                    width: '45px', height: '45px', borderRadius: '50%',
+                    background: isFav ? '#27ae60' : '#002B5B', color: 'white',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.1rem'
+                }}>
                     {student.name.charAt(0)}
                 </div>
-
-                <div className="scout-info">
-                    <h4>
+                <div>
+                    <h4 style={{ margin: 0, color: '#2c3e50', fontSize: '1rem' }}>
                         {student.name} {student.surname}
-                        {isFav && <FaHeart style={{ color: '#e74c3c', fontSize: '1rem' }} title="Sizi Favorilemiş" />}
+                        {isFav && <FaHeart style={{ color: '#e74c3c', marginLeft: '5px' }} title="Sizi Favorilemiş" />}
                     </h4>
-                    <p className="dept-info">{student.department} - {student.classYear}</p>
-
-                    {/* Rozetler */}
-                    <div className="badges-row">
-                        <span className="info-badge badge-gpa">
-                            <FaStar /> GPA: {student.gpa}
-                        </span>
-                        <span className="info-badge badge-eng">
-                            <FaLanguage /> Dil: {student.englishLevel}
-                        </span>
+                    <div style={{ fontSize: '0.8rem', color: '#666', marginTop: '4px' }}>
+                        <span style={{ marginRight: '10px' }}>⭐ GPA: <strong>{student.gpa}</strong></span>
+                        <span>🗣️ Dil: <strong>{student.englishLevel}</strong></span>
                     </div>
                 </div>
             </div>
 
-            <div className="scout-right">
-                <span className="score-label">Cadet Skoru</span>
-
-                {/* Skor Barı */}
-                <div className="score-track">
-                    <div
-                        className="score-fill"
-                        style={{
-                            width: `${student.successScore || 0}%`,
-                            background: isFav ? '#27ae60' : '#3498db'
-                        }}
-                    ></div>
+            <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '0.7rem', color: '#999' }}>Skor</div>
+                <div style={{ fontWeight: 'bold', fontSize: '1rem', color: isFav ? '#27ae60' : '#3498db' }}>
+                    {student.successScore}
                 </div>
-
-                <div className="score-text" style={{ color: isFav ? '#27ae60' : '#3498db' }}>
-                    {student.successScore} / 100
-                </div>
-
-                <Link to={`/profile/${student._id}`} className={`btn-inspect ${isFav ? 'fav' : 'other'}`}>
-                    Profili İncele →
+                <Link to={`/profile/${student._id}`} style={{ fontSize: '0.8rem', textDecoration: 'none', color: '#555', fontWeight: '600' }}>
+                    İncele
                 </Link>
             </div>
         </div>
@@ -121,80 +95,70 @@ const InternshipDetailPage = () => {
         <div className="internship-detail-page">
             <Link to={userInfo?.role === 'company' ? "/company/my-internships" : "/internships"}
                 style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', textDecoration: 'none', color: '#555', marginBottom: '20px', fontWeight: '600' }}>
-                <FaArrowLeft /> {userInfo?.role === 'company' ? "İlanlarıma Dön" : "İlanlara Dön"}
+                <FaArrowLeft /> Listeye Dön
             </Link>
 
             <div className="detail-container">
-                {/* HEADER */}
                 <div className="detail-header">
                     <h1>{internship.title}</h1>
-                    <p>{internship.company?.name}</p>
+                    <p style={{ color: 'rgba(255,255,255,0.8)' }}>{internship.company?.name}</p>
                 </div>
 
-                {/* İLAN DETAYLARI */}
                 <div className="detail-content">
                     <div className="info-grid">
                         <div className="info-box"><span className="info-label">Gemi Tipi</span><span className="info-value">{internship.shipType}</span></div>
-                        <div className="info-box"><span className="info-label">Lokasyon</span><span className="info-value">{internship.location}</span></div>
+                        <div className="info-box"><span className="info-label">Pozisyon</span><span className="info-value">{internship.location}</span></div>
                         <div className="info-box"><span className="info-label">Maaş</span><span className="info-value">{internship.salary} USD</span></div>
                         <div className="info-box"><span className="info-label">Süre</span><span className="info-value">{internship.duration}</span></div>
                     </div>
 
-                    <h3>İlan Açıklaması</h3>
+                    <hr style={{ border: '0', borderTop: '1px solid #eee', margin: '30px 0' }} />
+                    <h3>İlan Detayları</h3>
                     <p className="description-text">{internship.description}</p>
                 </div>
 
-                {/* BUTONLAR */}
                 <div className="detail-footer" style={{ padding: '20px 40px', background: '#f8f9fa', borderTop: '1px solid #eee', textAlign: 'right' }}>
                     {userInfo?.role === 'student' && (
                         hasApplied ? (
-                            <button disabled style={{ background: '#27ae60', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold', cursor: 'default', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                                <FaCheckCircle /> Başvuruldu
-                            </button>
+                            <button disabled style={{ background: '#27ae60', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold' }}>Başvuruldu</button>
                         ) : (
-                            <button onClick={handleApply} style={{ background: '#3498db', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                                <FaPaperPlane /> Hemen Başvur
-                            </button>
+                            <button onClick={handleApply} style={{ background: '#3498db', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold', cursor: 'pointer' }}>Hemen Başvur</button>
                         )
                     )}
                     {userInfo?.role === 'company' && internship.company._id === userInfo._id && (
-                        <Link to={`/company/edit-internship/${internship._id}`} style={{ background: '#f39c12', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                            <FaEdit /> İlanı Düzenle
-                        </Link>
+                        <Link to={`/company/edit-internship/${internship._id}`} style={{ background: '#f39c12', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold', textDecoration: 'none' }}>Düzenle</Link>
                     )}
                 </div>
 
-                {/* --- ADAY HAVUZU (SADECE ŞİRKET) --- */}
+                {/* --- YENİ ADAY HAVUZU (IZGARA GÖRÜNÜMÜ) --- */}
                 {scoutData && (
                     <div className="scout-section">
                         <h2 className="scout-title"><FaUserGraduate /> Akıllı Aday Eşleştirme</h2>
                         <p className="scout-subtitle">
-                            Bu liste, <strong>"{internship.shipType}"</strong> gemi tipinde staj arayan öğrencilerden otomatik olarak derlenmiştir.
+                            Bu liste, <strong>"{internship.shipType}"</strong> gemi tipinde ve <strong>"{internship.department}"</strong> bölümünde okuyan, staj arayan öğrencilerden derlenmiştir.
                         </p>
 
-                        {/* 1. SİZİ FAVORİLEYENLER */}
-                        {scoutData.favorited.length > 0 && (
-                            <div style={{ marginBottom: '40px' }}>
-                                <div className="group-header group-fav">🌟 Şirketinizi Hedefleyen Yıldız Adaylar</div>
-                                {scoutData.favorited.map(stu => <ScoutCard key={stu._id} student={stu} isFav={true} />)}
+                        <div className="scout-grid-layout">
+                            {/* SOL SÜTUN: FAVORİLEYENLER */}
+                            <div className="scout-column">
+                                <h4 style={{ color: '#27ae60', borderColor: '#27ae60' }}>🌟 Şirketinizi Hedefleyenler</h4>
+                                {scoutData.favorited.length > 0 ? (
+                                    scoutData.favorited.map(stu => <ScoutCard key={stu._id} student={stu} isFav={true} />)
+                                ) : (
+                                    <p style={{ color: '#999', fontSize: '0.9rem' }}>Bu kategoride sizi favorileyen öğrenci yok.</p>
+                                )}
                             </div>
-                        )}
 
-                        {/* 2. DİĞERLERİ */}
-                        {scoutData.others.length > 0 && (
-                            <div>
-                                <div className="group-header group-other">📋 Diğer Uygun Adaylar</div>
-                                {scoutData.others.map(stu => <ScoutCard key={stu._id} student={stu} isFav={false} />)}
+                            {/* SAĞ SÜTUN: DİĞERLERİ */}
+                            <div className="scout-column">
+                                <h4 style={{ color: '#3498db', borderColor: '#3498db' }}>📋 Diğer Uygun Adaylar</h4>
+                                {scoutData.others.length > 0 ? (
+                                    scoutData.others.map(stu => <ScoutCard key={stu._id} student={stu} isFav={false} />)
+                                ) : (
+                                    <p style={{ color: '#999', fontSize: '0.9rem' }}>Başka uygun aday bulunamadı.</p>
+                                )}
                             </div>
-                        )}
-
-                        {/* BOŞSA */}
-                        {scoutData.favorited.length === 0 && scoutData.others.length === 0 && (
-                            <div style={{ textAlign: 'center', padding: '30px', border: '2px dashed #ddd', borderRadius: '10px', color: '#999' }}>
-                                <FaBriefcase style={{ fontSize: '2rem', marginBottom: '10px', opacity: 0.5 }} />
-                                <p>Şu an "{internship.shipType}" için <strong>Staj Arıyor</strong> modunda olan uygun bir öğrenci bulunamadı.</p>
-                            </div>
-                        )}
+                        </div>
                     </div>
                 )}
             </div>
