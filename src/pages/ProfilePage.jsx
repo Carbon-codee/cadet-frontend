@@ -90,70 +90,126 @@ const LecturerProfile = ({ profile }) => (
     </div>
 );
 
-// --- ÖĞRENCİ PROFİL GÖRÜNÜMÜ ---
-const StudentProfile = ({ profile }) => (
-    <div className="profile-grid">
-        <div className="profile-card profile-header-card">
-            <div className="avatar-container">
-                <div
-                    className="avatar-box"
-                    style={{
-                        background: '#fff', color: '#005A9C', border: '5px solid #005A9C',
-                        fontSize: '4rem', width: '150px', height: '150px',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        borderRadius: '50%'
-                    }}
-                >
-                    {profile?.name ? profile.name.split(' ').map(n => n[0]).join('') : 'ST'}
-                </div>
-            </div>
-            <div className="header-info">
-                <h1>{profile?.name || ''} {profile?.surname || ''}</h1>
-                <p>{profile?.department || ''} {profile?.classYear ? ` - ${profile.classYear}` : ''}</p>
+// --- ÖĞRENCİ PROFİL GÖRÜNÜMÜ (GÜNCELLENDİ) ---
+const StudentProfile = ({ profile }) => {
+    const { userInfo } = useAuth(); // Giriş yapan kullanıcıyı al
+    const [status, setStatus] = useState(profile.currentStatus || 'Okulda/Tatilde');
 
-                <label>Cadet Başarı Skoru: <strong>{profile?.successScore || 0} / 100</strong></label>
-                <div className="score-bar-container">
-                    <div className="score-bar" style={{ width: `${profile?.successScore || 0}%` }}>{profile?.successScore || 0}</div>
+    // Durum Değiştirme Fonksiyonu
+    const handleStatusChange = async (e) => {
+        const newStatus = e.target.value;
+        setStatus(newStatus);
+        try {
+            await API.put('/users/status', { status: newStatus });
+            // LocalStorage güncellemeye gerek yok, sayfa yenilenince gelir ama
+            // kullanıcı deneyimi için anlık state değişti.
+        } catch (err) {
+            alert("Durum güncellenemedi.");
+        }
+    };
+
+    // Renk Ayarı
+    const getStatusColor = (s) => {
+        if (s === 'Staj Arıyor') return '#27ae60'; // Yeşil
+        if (s === 'Staj Yapıyor') return '#e67e22'; // Turuncu
+        return '#95a5a6'; // Gri
+    };
+
+    const isOwnProfile = userInfo?._id === profile._id;
+
+    return (
+        <div className="profile-grid">
+            <div className="profile-card profile-header-card">
+                <div className="avatar-container">
+                    <div
+                        className="avatar-box"
+                        style={{
+                            background: '#fff', color: '#005A9C', border: '5px solid #005A9C',
+                            fontSize: '4rem', width: '150px', height: '150px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            borderRadius: '50%'
+                        }}
+                    >
+                        {profile?.name ? profile.name.substring(0, 2).toUpperCase() : 'ST'}
+                    </div>
+                </div>
+                <div className="header-info">
+                    <h1>{profile?.name} {profile?.surname}</h1>
+                    <p>{profile?.department || ''} {profile?.classYear ? ` - ${profile.classYear}` : ''}</p>
+
+                    {/* --- YENİ: DURUM SEÇİCİ --- */}
+                    <div style={{ margin: '10px 0' }}>
+                        {isOwnProfile ? (
+                            <select
+                                value={status}
+                                onChange={handleStatusChange}
+                                style={{
+                                    padding: '8px 12px', borderRadius: '20px', border: `2px solid ${getStatusColor(status)}`,
+                                    color: getStatusColor(status), fontWeight: 'bold', background: 'white', cursor: 'pointer',
+                                    outline: 'none'
+                                }}
+                            >
+                                <option value="Staj Arıyor">🟢 Staj Arıyor</option>
+                                <option value="Staj Yapıyor">🟠 Staj Yapıyor</option>
+                                <option value="Okulda/Tatilde">⚪ Okulda/Tatilde</option>
+                            </select>
+                        ) : (
+                            <span style={{
+                                padding: '6px 15px', borderRadius: '20px',
+                                background: getStatusColor(status), color: 'white', fontWeight: 'bold', fontSize: '0.9rem'
+                            }}>
+                                {status === 'Staj Arıyor' ? '🟢 Staj Arıyor' : status === 'Staj Yapıyor' ? '🟠 Staj Yapıyor' : '⚪ Okulda/Tatilde'}
+                            </span>
+                        )}
+                    </div>
+                    {/* ------------------------- */}
+
+                    <label>Cadet Başarı Skoru: <strong>{profile?.successScore || 0} / 100</strong></label>
+                    <div className="score-bar-container">
+                        <div className="score-bar" style={{ width: `${profile?.successScore || 0}%` }}>{profile?.successScore || 0}</div>
+                    </div>
                 </div>
             </div>
+
+            {/* ... (Geri kalan kartlar aynı kalacak: Hakkımda, Akademik, Sertifikalar vs.) ... */}
+            <div className="profile-card">
+                <h3>Hakkımda</h3>
+                <p style={{ lineHeight: 1.6, color: '#444' }}>{profile?.bio || "Kullanıcı bir biyografi eklememiş."}</p>
+            </div>
+
+            <div className="profile-card">
+                <h3>Akademik Bilgiler</h3>
+                <div className="info-row"><span><FaEnvelope /> E-posta</span><span>{profile?.email}</span></div>
+                <div className="info-row"><span><FaGraduationCap /> Bölüm</span><span>{profile?.department || 'Belirtilmemiş'}</span></div>
+                <div className="info-row"><span><FaChalkboardTeacher /> Sınıf</span><span>{profile?.classYear || 'Belirtilmemiş'}</span></div>
+                <div className="info-row"><span><FaStar /> Not Ortalaması (GPA)</span><span>{profile?.gpa ? `${profile.gpa} / 4.00` : 'Belirtilmemiş'}</span></div>
+                <div className="info-row"><span><FaLanguage /> İngilizce Seviyesi</span><span>{profile?.englishLevel || 'Belirtilmemiş'}</span></div>
+            </div>
+
+            <div className="profile-card">
+                <h3>Sertifikalar ve Belgeler</h3>
+                <ul className="list-group">
+                    {(profile?.documents && profile.documents.length > 0) ? (
+                        profile.documents.map((doc, i) => (
+                            <li key={i} className="list-item"><FaCertificate className="list-item-icon" /><span>{doc.name}</span></li>
+                        ))
+                    ) : <p style={{ color: '#999' }}>Yüklenmiş sertifika veya belge bulunmuyor.</p>}
+                </ul>
+            </div>
+
+            <div className="profile-card">
+                <h3>Sosyal Aktiviteler & Projeler</h3>
+                <ul className="list-group">
+                    {(profile?.socialActivities && profile.socialActivities.length > 0) ? (
+                        profile.socialActivities.map((activity, index) => (
+                            <li key={index} className="list-item"><FaUsers className="list-item-icon" /><span>{activity}</span></li>
+                        ))
+                    ) : <p style={{ color: '#999' }}>Eklenmiş aktivite bulunmuyor.</p>}
+                </ul>
+            </div>
         </div>
-        <div className="profile-card">
-            <h3>Hakkımda</h3>
-            <p style={{ lineHeight: 1.6, color: '#444' }}>{profile?.bio || "Kullanıcı bir biyografi eklememiş."}</p>
-        </div>
-        <div className="profile-card">
-            <h3>Akademik Bilgiler</h3>
-            <div className="info-row"><span><FaEnvelope /> E-posta</span><span>{profile?.email || '-'}</span></div>
-            <div className="info-row"><span><FaGraduationCap /> Bölüm</span><span>{profile?.department || 'Belirtilmemiş'}</span></div>
-            <div className="info-row"><span><FaChalkboardTeacher /> Sınıf</span><span>{profile?.classYear || 'Belirtilmemiş'}</span></div>
-            <div className="info-row"><span><FaStar /> Not Ortalaması (GPA)</span><span>{profile?.gpa ? `${profile.gpa} / 4.00` : 'Belirtilmemiş'}</span></div>
-            <div className="info-row"><span><FaLanguage /> İngilizce Seviyesi</span><span>{profile?.englishLevel || 'Belirtilmemiş'}</span></div>
-        </div>
-        <div className="profile-card">
-            <h3>Dokümanlar ve Sertifikalar</h3>
-            <ul className="list-group">
-                {(Array.isArray(profile?.documents) && profile.documents.length > 0) ? (
-                    profile.documents.map((doc, i) => (
-                        <li key={i} className="list-item">
-                            {doc.type === 'CV' ? <FaFilePdf className="list-item-icon" /> : <FaCertificate className="list-item-icon" />}
-                            <span>{doc.name}</span>
-                        </li>
-                    ))
-                ) : <p style={{ color: '#999' }}>Yüklenmiş doküman bulunmuyor.</p>}
-            </ul>
-        </div>
-        <div className="profile-card">
-            <h3>Sosyal Aktiviteler & Projeler</h3>
-            <ul className="list-group">
-                {(Array.isArray(profile?.socialActivities) && profile.socialActivities.length > 0) ? (
-                    profile.socialActivities.map((activity, index) => (
-                        <li key={index} className="list-item"><FaUsers className="list-item-icon" /><span>{activity}</span></li>
-                    ))
-                ) : <p style={{ color: '#999' }}>Eklenmiş aktivite bulunmuyor.</p>}
-            </ul>
-        </div>
-    </div>
-);
+    );
+};
 
 // --- ANA BİLEŞEN ---
 const ProfilePage = () => {
