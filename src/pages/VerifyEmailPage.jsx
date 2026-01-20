@@ -1,26 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import API from '../api/axiosConfig'; // API importu
+import API from '../api/axiosConfig';
 import { FaCheckCircle, FaTimesCircle, FaSpinner } from 'react-icons/fa';
+import './AuthPage.css';
+import heroVideo from '../assets/hero-video.mp4';
 
 const VerifyEmailPage = () => {
     const { token } = useParams();
-    const [status, setStatus] = useState('loading'); // loading, success, error
+    const [status, setStatus] = useState('loading');
 
     useEffect(() => {
         const verifyAccount = async () => {
-            if (!token) {
-                setStatus('error');
-                return;
-            }
+            if (!token) { setStatus('error'); return; }
             try {
-                // Backend'e token'ı gönder
                 await API.post('/auth/verify-email', { token });
                 setStatus('success');
-            } catch (error) {
-                console.error("Doğrulama hatası:", error);
-                setStatus('error');
-            }
+            } catch (error) { setStatus('error'); }
         };
         verifyAccount();
     }, [token]);
@@ -30,52 +25,36 @@ const VerifyEmailPage = () => {
             case 'success':
                 return (
                     <>
-                        <FaCheckCircle style={{ fontSize: '4rem', color: '#27ae60', marginBottom: '20px' }} />
-                        <h2 style={{ color: '#2c3e50', fontSize: '1.8rem' }}>Tebrikler!</h2>
-                        <p style={{ color: '#555', fontSize: '1.1rem', margin: '10px 0 20px 0' }}>Hesabınız başarıyla doğrulandı.</p>
-                        <Link to="/auth" style={{ padding: '12px 30px', background: '#3498db', color: 'white', textDecoration: 'none', borderRadius: '8px', fontWeight: 'bold' }}>
-                            Giriş Sayfasına Git
-                        </Link>
+                        <FaCheckCircle style={{ fontSize: '4rem', color: '#4cc9f0', marginBottom: '20px' }} />
+                        <h2 className="form-title" style={{ marginBottom: '10px' }}>Tebrikler!</h2>
+                        <p style={{ color: '#a8b2d1' }}>Hesabınız başarıyla doğrulandı.</p>
+                        <Link to="/auth" className="neon-btn" style={{ textDecoration: 'none', marginTop: '20px', display: 'inline-block', textAlign: 'center' }}>Giriş Yap</Link>
                     </>
                 );
             case 'error':
                 return (
                     <>
                         <FaTimesCircle style={{ fontSize: '4rem', color: '#e74c3c', marginBottom: '20px' }} />
-                        <h2 style={{ color: '#2c3e50', fontSize: '1.8rem' }}>Hata Oluştu</h2>
-                        <p style={{ color: '#555', fontSize: '1.1rem', margin: '10px 0 20px 0' }}>Doğrulama linki geçersiz veya süresi dolmuş.</p>
-                        <Link to="/auth" style={{ color: '#3498db', fontWeight: 'bold' }}>Tekrar Dene</Link>
+                        <h2 className="form-title" style={{ marginBottom: '10px' }}>Hata</h2>
+                        <p style={{ color: '#a8b2d1' }}>Bağlantı geçersiz veya süresi dolmuş.</p>
+                        <Link to="/auth" style={{ color: '#4cc9f0', marginTop: '20px', display: 'block' }}>Giriş Sayfasına Dön</Link>
                     </>
                 );
-            default: // 'loading' durumu
+            default:
                 return (
                     <>
-                        <FaSpinner className="fa-spin" style={{ fontSize: '3rem', color: '#3498db', marginBottom: '20px' }} />
-                        <h2 style={{ color: '#2c3e50', fontSize: '1.8rem' }}>Doğrulanıyor...</h2>
-                        <p style={{ color: '#555', fontSize: '1.1rem' }}>Lütfen bekleyin...</p>
+                        <FaSpinner className="fa-spin" style={{ fontSize: '3rem', color: '#4cc9f0', marginBottom: '20px' }} />
+                        <h2 className="form-title">Doğrulanıyor...</h2>
                     </>
                 );
         }
     };
 
     return (
-        <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100vh',
-            background: '#f4f7fa',
-            padding: '20px'
-        }}>
-            <div style={{
-                background: 'white',
-                padding: '50px',
-                borderRadius: '16px',
-                boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-                textAlign: 'center',
-                maxWidth: '500px',
-                width: '100%'
-            }}>
+        <div className="auth-wrapper">
+            <video className="auth-video-bg" autoPlay loop muted playsInline><source src={heroVideo} type="video/mp4" /></video>
+            <div className="auth-overlay"></div>
+            <div className="glass-panel" style={{ height: 'auto', minHeight: '400px', maxWidth: '500px', flexDirection: 'column', padding: '40px', justifyContent: 'center', alignItems: 'center' }}>
                 {renderContent()}
             </div>
         </div>
