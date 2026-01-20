@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import './AuthPage.css';
-import heroVideo from '../assets/hero-video.mp4';
+// DÜZELTME: Import yerine direkt public yolunu kullanıyoruz
+const heroVideo = '/hero-video.mp4';
 import { FaLock } from 'react-icons/fa';
 
 const ResetPasswordPage = () => {

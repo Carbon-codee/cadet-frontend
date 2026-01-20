@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import API from '../api/axiosConfig';
 import { Link } from 'react-router-dom';
-import './AuthPage.css'; // Yeni tasarımı kullanıyoruz
-const heroVideo = '/hero-video.mov';
+import './AuthPage.css';
+// DÜZELTME: Import yerine direkt public yolunu kullanıyoruz
+const heroVideo = '/hero-video.mp4';
 import { FaEnvelope, FaArrowLeft } from 'react-icons/fa';
 
 const ForgotPasswordPage = () => {

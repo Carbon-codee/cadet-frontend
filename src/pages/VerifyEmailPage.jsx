@@ -3,7 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { FaCheckCircle, FaTimesCircle, FaSpinner } from 'react-icons/fa';
 import './AuthPage.css';
-import heroVideo from '../assets/hero-video.mp4';
+// DÜZELTME: Import yerine direkt public yolunu kullanıyoruz
+const heroVideo = '/hero-video.mp4';
 
 const VerifyEmailPage = () => {
     const { token } = useParams();
