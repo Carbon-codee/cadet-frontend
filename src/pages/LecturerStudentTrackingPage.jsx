@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
-import { FaUserGraduate, FaInfoCircle, FaCheckCircle, FaTimesCircle, FaClock, FaEye, FaTimes } from 'react-icons/fa';
+import { FaUserGraduate, FaCheckCircle, FaClock, FaEye, FaTimes } from 'react-icons/fa';
 import './LecturerPages.css';
 
 const LecturerStudentTrackingPage = () => {
@@ -34,109 +34,118 @@ const LecturerStudentTrackingPage = () => {
                                     date: app.createdAt
                                 });
                             });
-                        } catch (err) {
-                            console.warn("Veri çekme hatası:", err);
-                        }
+                        } catch (err) { console.warn("Veri çekme hatası:", err); }
                     }
                 }
-                setStudentsData(Object.values(studentMap));
-            } catch (error) {
-                console.error("Hata:", error);
-            } finally {
-                setLoading(false);
-            }
+
+                // Objeyi diziye çevir ve İSME GÖRE SIRALA (A-Z)
+                const sortedList = Object.values(studentMap).sort((a, b) =>
+                    a.info.name.localeCompare(b.info.name)
+                );
+
+                setStudentsData(sortedList);
+
+            } catch (error) { console.error("Hata:", error); }
+            finally { setLoading(false); }
         };
         fetchStudentData();
     }, []);
 
-    const getStatusBadge = (status) => {
-        switch (status) {
-            case 'Onaylandı': return <span className="badge success" style={{ background: '#d4edda', color: '#155724' }}>Onaylandı <FaCheckCircle /></span>;
-            case 'Reddedildi': return <span className="badge danger" style={{ background: '#f8d7da', color: '#721c24' }}>Reddedildi <FaTimesCircle /></span>;
-            default: return <span className="badge warning" style={{ background: '#fff3cd', color: '#856404' }}>Beklemede <FaClock /></span>;
-        }
-    };
-
-    if (loading) return <div style={{ padding: 40, textAlign: 'center' }}>Öğrenci verileri derleniyor...</div>;
+    if (loading) return <div style={{ padding: 50, textAlign: 'center' }}>Öğrenci verileri derleniyor...</div>;
 
     return (
         <div className="lecturer-page">
             <div className="page-header">
                 <div>
                     <h1>Öğrenci Staj Durumları</h1>
-                    <p>Öğrencilerin başvuru süreçlerini ve sonuçlarını buradan takip edebilirsiniz.</p>
+                    <p>Öğrencilerin başvuru süreçlerini buradan takip edebilirsiniz.</p>
                 </div>
             </div>
-            <div className="content-card">
+
+            <div className="tracking-table-wrapper">
                 {studentsData.length > 0 ? (
                     <table className="modern-table">
                         <thead>
-                            <tr><th>ÖĞRENCİ</th><th>BÖLÜM / SINIF</th><th>BAŞVURU SAYISI</th><th>GENEL DURUM</th><th>İŞLEMLER</th></tr>
+                            <tr><th>ÖĞRENCİ</th><th>BÖLÜM / SINIF</th><th>BAŞVURU</th><th>GENEL DURUM</th><th>İŞLEM</th></tr>
                         </thead>
                         <tbody>
                             {studentsData.map((data) => {
                                 const hasApproval = data.applications.some(app => app.status === 'Onaylandı');
                                 return (
-                                    <tr key={data.info._id} className="company-row">
+                                    <tr key={data.info._id}>
                                         <td>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                <div className="avatar-circle" style={{ width: 35, height: 35, fontSize: '0.9rem' }}>{data.info.name.charAt(0)}</div>
-                                                <div style={{ fontWeight: '600', color: '#2c3e50' }}>{data.info.name} {data.info.surname}</div>
+                                            <div className="student-cell">
+                                                <div className="student-avatar">{data.info.name.charAt(0)}</div>
+                                                <span className="student-name">{data.info.name} {data.info.surname}</span>
                                             </div>
                                         </td>
-                                        <td>{data.info.department} <span style={{ color: '#999', fontSize: '0.85rem' }}>({data.info.classYear})</span></td>
-                                        <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{data.applications.length}</td>
+                                        <td>
+                                            <div style={{ fontWeight: '500' }}>{data.info.department}</div>
+                                            <div style={{ fontSize: '0.85rem', color: '#868e96' }}>{data.info.classYear}</div>
+                                        </td>
+                                        <td style={{ textAlign: 'center', fontWeight: 'bold', color: '#495057' }}>
+                                            {data.applications.length}
+                                        </td>
                                         <td>
                                             {hasApproval ? (
-                                                <span style={{ color: '#27ae60', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}><FaCheckCircle /> Yerleşti</span>
+                                                <span className="status-tag success"><FaCheckCircle /> Yerleşti</span>
                                             ) : (
-                                                <span style={{ color: '#e67e22', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}><FaClock /> Süreçte</span>
+                                                <span className="status-tag warning"><FaClock /> Süreçte</span>
                                             )}
                                         </td>
-                                        <td><button className="action-card-btn" style={{ padding: '6px 12px', fontSize: '0.85rem', width: 'auto', display: 'inline-block' }} onClick={() => setSelectedStudent(data)}><FaEye /> İncele</button></td>
+                                        <td>
+                                            <button className="btn-inspect" onClick={() => setSelectedStudent(data)}>
+                                                <FaEye /> İncele
+                                            </button>
+                                        </td>
                                     </tr>
                                 );
                             })}
                         </tbody>
                     </table>
                 ) : (
-                    <p style={{ textAlign: 'center', padding: '30px', color: '#999' }}>Henüz başvuru yapmış öğrenci bulunmuyor.</p>
+                    <p style={{ textAlign: 'center', padding: '40px', color: '#999' }}>Henüz başvuru yapmış öğrenci bulunmuyor.</p>
                 )}
             </div>
 
-            {/* DETAY MODALI (POPUP) */}
+            {/* YENİLENMİŞ POPUP */}
             {selectedStudent && (
                 <div className="modal-overlay" onClick={() => setSelectedStudent(null)}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '700px' }}>
-                        <div className="modal-header">
+                    <div className="student-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header-st">
                             <h2>{selectedStudent.info.name} {selectedStudent.info.surname}</h2>
-                            <button className="close-modal-btn" onClick={() => setSelectedStudent(null)}><FaTimes /></button>
+                            <FaTimes className="close-icon-st" onClick={() => setSelectedStudent(null)} size={20} />
                         </div>
-                        <div className="modal-body">
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8f9fa', padding: '15px', borderRadius: '10px', marginBottom: '20px' }}>
-                                <div>
-                                    <p><strong>Bölüm:</strong> {selectedStudent.info.department}</p>
-                                    <p><strong>Sınıf:</strong> {selectedStudent.info.classYear}</p>
-                                    <p><strong>GPA:</strong> {selectedStudent.info.gpa}</p>
-                                    <p><strong>Email:</strong> {selectedStudent.info.email}</p>
-                                </div>
 
-                                {/* --- DEĞİŞTİRİLEN KISIM BURASI --- */}
-                                <Link to={`/profile/${selectedStudent.info._id}`} className="submit-button" style={{ width: 'auto', padding: '8px 16px', fontSize: '0.9rem', textDecoration: 'none' }}>
-                                    <FaUserGraduate /> Tam Profili Gör
-                                </Link>
-                                {/* --- DEĞİŞİKLİK BİTTİ --- */}
-
+                        <div className="modal-body-st">
+                            <div className="info-grid-st">
+                                <div className="info-item-st"><label>Bölüm</label><span>{selectedStudent.info.department}</span></div>
+                                <div className="info-item-st"><label>Sınıf</label><span>{selectedStudent.info.classYear}</span></div>
+                                <div className="info-item-st"><label>GPA</label><span>{selectedStudent.info.gpa}</span></div>
+                                <div className="info-item-st"><label>Email</label><span>{selectedStudent.info.email}</span></div>
                             </div>
-                            <h4>Başvuru Geçmişi</h4>
-                            <table className="modern-table" style={{ marginTop: '10px' }}>
+
+                            <Link to={`/profile/${selectedStudent.info._id}`} className="submit-button" style={{ width: '100%', justifyContent: 'center', marginBottom: '20px', textDecoration: 'none' }}>
+                                <FaUserGraduate /> Tam Profili Gör
+                            </Link>
+
+                            <h4 style={{ borderBottom: '1px solid #eee', paddingBottom: '10px', color: '#002B5B' }}>Başvuru Geçmişi</h4>
+                            <table className="history-table">
                                 <thead><tr><th>ŞİRKET</th><th>İLAN</th><th>DURUM</th></tr></thead>
                                 <tbody>
                                     {selectedStudent.applications.map((app, idx) => (
                                         <tr key={idx}>
                                             <td style={{ fontWeight: 'bold' }}>{app.companyName}</td>
                                             <td>{app.internshipTitle}</td>
-                                            <td>{getStatusBadge(app.status)}</td>
+                                            <td>
+                                                <span style={{
+                                                    color: app.status === 'Onaylandı' ? '#27ae60' :
+                                                        app.status === 'Reddedildi' ? '#c0392b' : '#f39c12',
+                                                    fontWeight: 'bold', fontSize: '0.85rem'
+                                                }}>
+                                                    {app.status}
+                                                </span>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
