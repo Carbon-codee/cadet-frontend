@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaFilePdf, FaVideo, FaBookOpen, FaTrash, FaEye, FaArrowRight } from 'react-icons/fa';
-import API from '../api/axiosConfig'; // API kullanacağız
+import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import './SavedContentPage.css';
 
@@ -17,17 +17,17 @@ const SavedContentPage = () => {
                     // 1. Veritabanındaki TÜM içerikleri çek
                     const { data } = await API.get('/content');
 
-                    // 2. Kullanıcının kaydettiği ID'leri LocalStorage'dan al
+                    // 2. LocalStorage'dan kullanıcının kaydettiği ID listesini al
                     const userKey = `savedLearningItems_${userInfo._id}`;
                     const savedIds = JSON.parse(localStorage.getItem(userKey) || '[]');
 
-                    // 3. Eşleşenleri Filtrele (ID'leri String olarak karşılaştır)
-                    // MongoDB ID'si '_id' olarak gelir.
+                    // 3. Eşleştirme (String ID karşılaştırması)
+                    // savedIds içinde '696...' gibi string ID'ler var.
                     const filtered = data.filter(item => savedIds.includes(item._id));
 
                     setSavedList(filtered);
                 } catch (error) {
-                    console.error("Kaydedilenler yüklenirken hata:", error);
+                    console.error("Hata:", error);
                 } finally {
                     setLoading(false);
                 }
@@ -39,17 +39,15 @@ const SavedContentPage = () => {
         fetchSavedContent();
     }, [userInfo]);
 
-    // Listeden Kaldırma
     const handleRemove = (id) => {
         if (!userInfo) return;
-
         const userKey = `savedLearningItems_${userInfo._id}`;
         const savedIds = JSON.parse(localStorage.getItem(userKey) || '[]');
 
-        // ID'yi çıkar (String karşılaştırması)
+        // Listeden çıkar
         const newIds = savedIds.filter(savedId => savedId !== id);
-
         localStorage.setItem(userKey, JSON.stringify(newIds));
+
         setSavedList(prev => prev.filter(item => item._id !== id));
     };
 
@@ -59,13 +57,13 @@ const SavedContentPage = () => {
         return <div className="content-icon video"><FaVideo /></div>;
     };
 
-    if (loading) return <div style={{ padding: 40, textAlign: 'center' }}>Yükleniyor...</div>;
+    if (loading) return <div style={{ padding: 50, textAlign: 'center' }}>Yükleniyor...</div>;
 
     return (
         <div className="saved-page-container">
             <div className="page-header">
                 <h1>Kaydedilen Materyaller</h1>
-                <p>Daha sonra okumak üzere işaretlediğiniz tüm içerikler.</p>
+                <p>Daha sonra okumak üzere işaretlediğiniz içerikler.</p>
             </div>
 
             {savedList.length > 0 ? (
@@ -87,7 +85,7 @@ const SavedContentPage = () => {
                                 <Link to={`/learning/${item._id}`} className="btn-view">
                                     <FaEye /> İncele
                                 </Link>
-                                <button onClick={() => handleRemove(item._id)} className="btn-remove" title="Listeden Kaldır">
+                                <button onClick={() => handleRemove(item._id)} className="btn-remove" title="Kaldır">
                                     <FaTrash />
                                 </button>
                             </div>
@@ -96,7 +94,6 @@ const SavedContentPage = () => {
                 </div>
             ) : (
                 <div className="empty-state">
-                    <div style={{ fontSize: '3rem', marginBottom: '15px' }}>📂</div>
                     <h3>Listeniz Boş</h3>
                     <p>Henüz hiçbir materyali kaydetmediniz.</p>
                     <Link to="/learning" className="go-learning-btn">
