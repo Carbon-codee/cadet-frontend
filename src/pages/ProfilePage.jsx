@@ -91,31 +91,52 @@ const LecturerProfile = ({ profile }) => (
 );
 
 // --- ÖĞRENCİ PROFİL GÖRÜNÜMÜ (GÜNCELLENDİ) ---
+// --- ÖĞRENCİ PROFİL GÖRÜNÜMÜ ---
 const StudentProfile = ({ profile }) => {
-    const { userInfo } = useAuth(); // Giriş yapan kullanıcıyı al
-    const [status, setStatus] = useState(profile.currentStatus || 'Okulda/Tatilde');
+    const { userInfo } = useAuth();
 
-    // Durum Değiştirme Fonksiyonu
+    // Başlangıç değeri olarak profile.currentStatus kullanıyoruz, yoksa varsayılan
+    const [status, setStatus] = useState(profile?.currentStatus || 'Okulda/Tatilde');
+
+    // --- KRİTİK DÜZELTME: VERİ GELDİĞİNDE STATE'İ GÜNCELLE ---
+    // Sayfa ilk açıldığında profile verisi gecikmeli gelebilir. 
+    // Geldiği an bu kod çalışır ve butonu veritabanındaki duruma eşitler.
+    useEffect(() => {
+        if (profile?.currentStatus) {
+            setStatus(profile.currentStatus);
+        }
+    }, [profile]);
+    // ---------------------------------------------------------
+
     const handleStatusChange = async (e) => {
         const newStatus = e.target.value;
-        setStatus(newStatus);
+        setStatus(newStatus); // Ekranda hemen değiştir
+
         try {
+            // Backend'e kaydet
             await API.put('/users/status', { status: newStatus });
-            // LocalStorage güncellemeye gerek yok, sayfa yenilenince gelir ama
-            // kullanıcı deneyimi için anlık state değişti.
+
+            // Eğer kendi profilimizse LocalStorage'ı da güncelle (Sayfa yenilenirse gitmesin diye)
+            if (userInfo && userInfo._id === profile._id) {
+                const currentUser = JSON.parse(localStorage.getItem('userInfo'));
+                if (currentUser) {
+                    currentUser.currentStatus = newStatus;
+                    localStorage.setItem('userInfo', JSON.stringify(currentUser));
+                }
+            }
         } catch (err) {
+            console.error(err);
             alert("Durum güncellenemedi.");
         }
     };
 
-    // Renk Ayarı
     const getStatusColor = (s) => {
         if (s === 'Staj Arıyor') return '#27ae60'; // Yeşil
         if (s === 'Staj Yapıyor') return '#e67e22'; // Turuncu
         return '#95a5a6'; // Gri
     };
 
-    const isOwnProfile = userInfo?._id === profile._id;
+    const isOwnProfile = userInfo?._id === profile?._id;
 
     return (
         <div className="profile-grid">
@@ -137,41 +158,59 @@ const StudentProfile = ({ profile }) => {
                     <h1>{profile?.name} {profile?.surname}</h1>
                     <p>{profile?.department || ''} {profile?.classYear ? ` - ${profile.classYear}` : ''}</p>
 
-                    {/* --- YENİ: DURUM SEÇİCİ --- */}
-                    <div style={{ margin: '10px 0' }}>
+                    {/* DURUM SEÇİCİ */}
+                    <div style={{ margin: '15px 0' }}>
                         {isOwnProfile ? (
-                            <select
-                                value={status}
-                                onChange={handleStatusChange}
-                                style={{
-                                    padding: '8px 12px', borderRadius: '20px', border: `2px solid ${getStatusColor(status)}`,
-                                    color: getStatusColor(status), fontWeight: 'bold', background: 'white', cursor: 'pointer',
-                                    outline: 'none'
-                                }}
-                            >
-                                <option value="Staj Arıyor">🟢 Staj Arıyor</option>
-                                <option value="Staj Yapıyor">🟠 Staj Yapıyor</option>
-                                <option value="Okulda/Tatilde">⚪ Okulda/Tatilde</option>
-                            </select>
+                            <div style={{ position: 'relative', display: 'inline-block' }}>
+                                <select
+                                    value={status}
+                                    onChange={handleStatusChange}
+                                    style={{
+                                        padding: '10px 35px 10px 15px',
+                                        borderRadius: '30px',
+                                        border: `2px solid ${getStatusColor(status)}`,
+                                        color: getStatusColor(status),
+                                        fontWeight: 'bold',
+                                        background: 'white',
+                                        cursor: 'pointer',
+                                        outline: 'none',
+                                        fontSize: '0.95rem',
+                                        appearance: 'none', /* Ok işaretini gizle (tarayıcı varsayılanı) */
+                                        WebkitAppearance: 'none'
+                                    }}
+                                >
+                                    <option value="Staj Arıyor">🟢 Staj Arıyor</option>
+                                    <option value="Staj Yapıyor">🟠 Staj Yapıyor</option>
+                                    <option value="Okulda/Tatilde">⚪ Okulda/Tatilde</option>
+                                </select>
+                                {/* Özel ok işareti */}
+                                <span style={{ position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', color: getStatusColor(status), pointerEvents: 'none' }}>▼</span>
+                            </div>
                         ) : (
                             <span style={{
-                                padding: '6px 15px', borderRadius: '20px',
-                                background: getStatusColor(status), color: 'white', fontWeight: 'bold', fontSize: '0.9rem'
+                                padding: '8px 20px', borderRadius: '30px',
+                                background: getStatusColor(status), color: 'white', fontWeight: 'bold', fontSize: '0.9rem',
+                                boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
                             }}>
                                 {status === 'Staj Arıyor' ? '🟢 Staj Arıyor' : status === 'Staj Yapıyor' ? '🟠 Staj Yapıyor' : '⚪ Okulda/Tatilde'}
                             </span>
                         )}
                     </div>
-                    {/* ------------------------- */}
 
-                    <label>Cadet Başarı Skoru: <strong>{profile?.successScore || 0} / 100</strong></label>
+                    {/* SKOR BARI */}
+                    <label style={{ display: 'block', marginTop: '15px', color: '#555', fontSize: '0.9rem' }}>Cadet Başarı Skoru: <strong>{profile?.successScore || 0} / 100</strong></label>
                     <div className="score-bar-container">
-                        <div className="score-bar" style={{ width: `${profile?.successScore || 0}%` }}>{profile?.successScore || 0}</div>
+                        <div
+                            className="score-bar"
+                            style={{ width: `${profile?.successScore || 0}%` }}
+                        >
+                            {profile?.successScore || 0}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* ... (Geri kalan kartlar aynı kalacak: Hakkımda, Akademik, Sertifikalar vs.) ... */}
+            {/* ... Diğer Kartlar (Hakkımda, Akademik vs. AYNI KALSIN) ... */}
             <div className="profile-card">
                 <h3>Hakkımda</h3>
                 <p style={{ lineHeight: 1.6, color: '#444' }}>{profile?.bio || "Kullanıcı bir biyografi eklememiş."}</p>
@@ -210,7 +249,6 @@ const StudentProfile = ({ profile }) => {
         </div>
     );
 };
-
 // --- ANA BİLEŞEN ---
 const ProfilePage = () => {
     const { id } = useParams();
