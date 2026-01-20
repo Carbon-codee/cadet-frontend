@@ -14,9 +14,9 @@ const MyInternshipsPage = () => {
         const fetchMyInternships = async () => {
             if (!userInfo) return;
             try {
-                const { data } = await API.get('/internships');
-                const filtered = data.filter(internship => internship.company?._id === userInfo._id);
-                setMyInternships(filtered);
+                // Şirketin KENDİ ilanlarını çeken özel rota
+                const { data } = await API.get('/internships/company/mine');
+                setMyInternships(data);
             } catch (err) {
                 console.error("İlanlar yüklenemedi", err);
             } finally {
@@ -43,15 +43,23 @@ const MyInternshipsPage = () => {
             <div className="internships-grid">
                 {myInternships.length > 0 ? (
                     myInternships.map(internship => (
-                        // --- DEĞİŞİKLİK BURADA ---
-                        // Linki '/internships/ID' yaptık (Detay sayfası)
                         <Link
                             to={`/internships/${internship._id}`}
                             key={internship._id}
                             className="internship-card"
+                            // Eğer pasifse biraz soluk göster ve kenarlığı değiştir
+                            style={{
+                                opacity: internship.isActive ? 1 : 0.6,
+                                border: internship.isActive ? '1px solid #f0f0f0' : '2px dashed #ccc',
+                                background: internship.isActive ? 'white' : '#f9f9f9'
+                            }}
                         >
-                            <div className="card-badge">
-                                {internship.department}
+                            <div className="card-badge"
+                                style={{
+                                    background: internship.isActive ? '#e3f2fd' : '#ffebee',
+                                    color: internship.isActive ? '#1976d2' : '#c62828'
+                                }}>
+                                {internship.isActive ? 'Yayında' : 'Yayından Kaldırıldı'}
                             </div>
 
                             <div className="card-body">
@@ -75,15 +83,13 @@ const MyInternshipsPage = () => {
 
                             <div className="card-footer">
                                 <div className="applicant-count">
-                                    👥 <strong>{internship.applicants.length}</strong> Başvuru
+                                    👥 <strong>{internship.applicants?.length || 0}</strong> Başvuru
                                 </div>
-                                {/* Yazıyı "Detaylar" olarak değiştirdik */}
                                 <span className="edit-link" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                                     <FaEye /> Detaylar
                                 </span>
                             </div>
                         </Link>
-                        // ------------------------
                     ))
                 ) : (
                     <div className="empty-state">
