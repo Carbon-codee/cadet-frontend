@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
 
-/* --- ANA KAPLAYICI (FULL EKRAN) --- */
+/* --- ANA KAPLAYICI --- */
 .auth-wrapper {
     width: 100%;
     height: 100vh;
@@ -9,7 +9,10 @@
     align-items: center;
     position: relative;
     overflow: hidden;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Outfit', sans-serif;
+    /* Daha modern bir font */
+    background-color: #020c1b;
+    /* Video yüklenmezse diye */
 }
 
 /* ARKAPLAN VİDEOSU */
@@ -21,47 +24,59 @@
     height: 100%;
     object-fit: cover;
     z-index: -2;
+    transform: scale(1.1);
+    /* Kenar boşluklarını garanti kapatmak için */
+    filter: blur(3px);
+    /* Videoyu hafif flu yapıp odağı forma çekiyoruz */
 }
 
-/* KOYU FİLTRE (Videonun üstüne) */
+/* KARANLIK FİLTRE (Dramatik Efekt) */
 .auth-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(2, 12, 27, 0.85) 0%, rgba(10, 25, 47, 0.9) 100%);
+    background: radial-gradient(circle at center, rgba(10, 25, 47, 0.6) 0%, rgba(2, 12, 27, 0.95) 100%);
     z-index: -1;
 }
 
-/* --- CAM PANEL (GLASS CARD) --- */
+/* --- ULTRA GLASS PANEL --- */
 .glass-panel {
     display: flex;
-    width: 900px;
-    max-width: 95%;
-    height: 600px;
-    background: rgba(255, 255, 255, 0.03);
-    /* Çok şeffaf */
-    backdrop-filter: blur(20px);
-    /* Buzlu cam efekti */
-    -webkit-backdrop-filter: blur(20px);
+    width: 1000px;
+    max-width: 90%;
+    min-height: 600px;
+    background: rgba(16, 33, 62, 0.4);
+    /* Yarı saydam lacivert */
+    backdrop-filter: blur(20px) saturate(180%);
+    /* Renkleri canlılaştıran buzlu cam */
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    /* Üst kenar parlaklığı */
+    border-radius: 30px;
+    box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.5),
+        /* Derin gölge */
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        /* İnce iç çerçeve */
+        inset 0 0 30px rgba(255, 255, 255, 0.05);
+    /* İç parlama */
     overflow: hidden;
     position: relative;
-    animation: floatUp 0.8s ease-out;
+    animation: floatIn 1s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* SOL TARAF (GÖRSEL / METİN) */
 .auth-visual-side {
     flex: 1;
-    background: linear-gradient(135deg, rgba(0, 210, 255, 0.1) 0%, rgba(58, 123, 213, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(76, 201, 240, 0.1) 0%, rgba(67, 97, 238, 0.1) 100%);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 40px;
+    padding: 60px;
     text-align: center;
     color: white;
     position: relative;
@@ -69,192 +84,261 @@
 }
 
 .visual-content h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 15px;
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.1;
     background: linear-gradient(to right, #fff, #4cc9f0);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    text-shadow: 0 10px 30px rgba(76, 201, 240, 0.3);
 }
 
 .visual-content p {
-    font-size: 1rem;
-    opacity: 0.8;
+    font-size: 1.1rem;
+    color: #a8b2d1;
     line-height: 1.6;
-    margin-bottom: 30px;
+}
+
+/* Dekoratif Daireler */
+.visual-circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    z-index: -1;
+    opacity: 0.6;
+}
+
+.vc-1 {
+    width: 300px;
+    height: 300px;
+    background: #4cc9f0;
+    top: -100px;
+    left: -100px;
+}
+
+.vc-2 {
+    width: 250px;
+    height: 250px;
+    background: #4361ee;
+    bottom: -50px;
+    right: -50px;
 }
 
 /* SAĞ TARAF (FORM) */
 .auth-form-side {
     flex: 1.2;
-    padding: 50px;
+    padding: 60px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    position: relative;
+    background: rgba(0, 0, 0, 0.2);
+    /* Form tarafı biraz daha koyu */
 }
 
 .form-title {
-    font-size: 2rem;
+    font-size: 2.2rem;
     color: white;
-    font-weight: 600;
-    margin-bottom: 30px;
+    font-weight: 700;
+    margin-bottom: 40px;
     text-align: center;
+    letter-spacing: 1px;
 }
 
-/* --- MODERN INPUT GRUPLARI --- */
+/* --- INPUT GRUPLARI (Fütüristik) --- */
 .modern-input-group {
     position: relative;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 .modern-input-group input {
     width: 100%;
-    padding: 15px 15px 15px 45px;
+    padding: 18px 20px 18px 55px;
     /* İkon boşluğu */
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
     color: white;
     font-size: 1rem;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     outline: none;
+    font-weight: 500;
 }
 
 .modern-input-group input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.3);
+    transition: 0.3s;
 }
 
 .modern-input-group input:focus {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.4);
     border-color: #4cc9f0;
-    box-shadow: 0 0 15px rgba(76, 201, 240, 0.2);
+    box-shadow: 0 0 20px rgba(76, 201, 240, 0.15);
+    transform: translateY(-2px);
+}
+
+.modern-input-group input:focus::placeholder {
+    opacity: 0;
 }
 
 .input-icon {
     position: absolute;
-    left: 15px;
+    left: 20px;
     top: 50%;
     transform: translateY(-50%);
-    color: #4cc9f0;
-    font-size: 1.1rem;
+    color: #64ffda;
+    /* Yeşilimsi neon */
+    font-size: 1.2rem;
     transition: 0.3s;
 }
 
 .modern-input-group input:focus+.input-icon {
-    color: white;
+    color: #4cc9f0;
+    filter: drop-shadow(0 0 8px rgba(76, 201, 240, 0.6));
     transform: translateY(-50%) scale(1.1);
 }
 
-/* --- ROL SEÇİCİ (Neon Efektli) --- */
+/* --- ROL SEÇİCİ (Hap Şeklinde) --- */
 .role-tabs {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 30px;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 5px;
-    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px;
+    border-radius: 20px;
+    margin-bottom: 35px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .role-tab {
     flex: 1;
     background: transparent;
     border: none;
-    color: #8892b0;
-    padding: 10px;
-    border-radius: 10px;
+    color: #a8b2d1;
+    padding: 12px;
+    border-radius: 15px;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .role-tab.active {
-    background: rgba(76, 201, 240, 0.15);
-    color: #4cc9f0;
-    box-shadow: 0 0 10px rgba(76, 201, 240, 0.1);
-}
-
-.role-tab:hover {
+    background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
     color: white;
+    box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    transform: scale(1.05);
 }
 
-/* --- BUTONLAR --- */
+.role-tab:hover:not(.active) {
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* --- BUTON (Neon Parlamalı) --- */
 .neon-btn {
     width: 100%;
-    padding: 15px;
-    background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
+    padding: 18px;
+    background: linear-gradient(90deg, #4cc9f0 0%, #4361ee 100%);
     border: none;
-    border-radius: 12px;
+    border-radius: 16px;
     color: white;
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 800;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 5px 15px rgba(0, 210, 255, 0.3);
+    letter-spacing: 1.5px;
+    box-shadow: 0 10px 30px rgba(67, 97, 238, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.neon-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: 0.5s;
 }
 
 .neon-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 210, 255, 0.5);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(76, 201, 240, 0.6);
 }
 
+.neon-btn:hover::before {
+    left: 100%;
+}
+
+/* ALT LİNK */
 .toggle-text {
-    margin-top: 20px;
+    margin-top: 25px;
     text-align: center;
     color: #8892b0;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
 .toggle-text span {
     color: #4cc9f0;
     cursor: pointer;
-    font-weight: bold;
-    margin-left: 5px;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    transition: 0.3s;
+    font-weight: 700;
+    margin-left: 8px;
+    position: relative;
 }
 
-.toggle-text span:hover {
-    text-decoration-color: #4cc9f0;
-    color: white;
+.toggle-text span::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #4cc9f0;
+    transition: width 0.3s;
 }
 
-/* MOBİL UYUM */
+.toggle-text span:hover::after {
+    width: 100%;
+}
+
+/* MOBİL */
 @media (max-width: 900px) {
     .glass-panel {
         flex-direction: column;
-        height: auto;
-        margin: 20px;
+        width: 90%;
+        min-height: auto;
     }
 
     .auth-visual-side {
-        padding: 30px;
-        display: none;
+        padding: 40px 20px;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Mobilde görseli gizle, forma odaklan */
+    .visual-content h2 {
+        font-size: 2rem;
+    }
+
     .auth-form-side {
-        padding: 30px;
+        padding: 30px 20px;
     }
 }
 
-@keyframes floatUp {
+@keyframes floatIn {
     from {
         opacity: 0;
-        transform: translateY(50px);
+        transform: translateY(30px) scale(0.95);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 }

@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import './AuthPage.css';
-const heroVideo = '/hero-video.mp4';
-import { FaUser, FaBuilding, FaChalkboardTeacher, FaEnvelope, FaLock, FaUserTag, FaAnchor } from 'react-icons/fa';
+import heroVideo from '../assets/hero-video.mp4';
+import { FaUser, FaBuilding, FaChalkboardTeacher, FaEnvelope, FaLock, FaUserTag, FaAnchor, FaShip } from 'react-icons/fa';
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -12,7 +12,6 @@ const AuthPage = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
 
-    // Form Verileri
     const [loginData, setLoginData] = useState({ email: '', password: '' });
     const [registerData, setRegisterData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
 
@@ -22,9 +21,7 @@ const AuthPage = () => {
             const { data } = await API.post('/auth/login', loginData);
             login(data);
             navigate('/', { replace: true });
-        } catch (error) {
-            alert(error.response?.data?.message || 'Giriş başarısız.');
-        }
+        } catch (error) { alert(error.response?.data?.message || 'Giriş başarısız.'); }
     };
 
     const handleRegisterSubmit = async (e) => {
@@ -33,42 +30,43 @@ const AuthPage = () => {
         try {
             const { confirmPassword, ...dataToSend } = registerData;
             await API.post('/auth/register', { ...dataToSend, role });
-            alert("Kayıt başarılı! Giriş yapabilirsiniz.");
+            alert("Kayıt başarılı! Giriş yapılıyor...");
             setIsLogin(true);
-        } catch (error) {
-            alert(error.response?.data?.message || 'Kayıt başarısız.');
-        }
+        } catch (error) { alert(error.response?.data?.message || 'Kayıt başarısız.'); }
     };
 
     return (
         <div className="auth-wrapper">
-            {/* Arkaplan Videosu */}
+            {/* ARKAPLAN VİDEO */}
             <video className="auth-video-bg" autoPlay loop muted playsInline>
                 <source src={heroVideo} type="video/mp4" />
             </video>
             <div className="auth-overlay"></div>
 
-            {/* CAM PANEL */}
+            {/* ANA PANEL */}
             <div className="glass-panel">
 
-                {/* SOL TARAF: GÖRSEL ALAN */}
+                {/* SOL TARAF (GÖRSEL) */}
                 <div className="auth-visual-side">
-                    <FaAnchor style={{ fontSize: '4rem', color: '#4cc9f0', marginBottom: '20px' }} />
+                    <div className="visual-circle vc-1"></div>
+                    <div className="visual-circle vc-2"></div>
+
+                    <FaAnchor style={{ fontSize: '4rem', color: '#64ffda', marginBottom: '20px', filter: 'drop-shadow(0 0 10px rgba(100,255,218,0.5))' }} />
+
                     <div className="visual-content">
-                        <h2>{isLogin ? 'Tekrar Hoş Geldin!' : 'Aramıza Katıl'}</h2>
+                        <h2>{isLogin ? 'Rotanı Çiz' : 'Mürettebata Katıl'}</h2>
                         <p>
                             {isLogin
-                                ? 'Denizcilik kariyerine kaldığın yerden devam et. Rota oluşturuldu, dümen sende.'
-                                : 'Geleceğin kaptanları ve mühendisleri burada buluşuyor. Kariyerine ilk adımı at.'}
+                                ? 'Denizcilik dünyasının en prestijli platformuna tekrar hoş geldin.'
+                                : 'Kariyerine yön vermek ve sektörün liderleriyle buluşmak için ilk adımı at.'}
                         </p>
                     </div>
                 </div>
 
-                {/* SAĞ TARAF: FORM ALANI */}
+                {/* SAĞ TARAF (FORM) */}
                 <div className="auth-form-side">
                     <h2 className="form-title">{isLogin ? 'Giriş Yap' : 'Hesap Oluştur'}</h2>
 
-                    {/* Rol Seçici (Sadece Kayıtta) */}
                     {!isLogin && (
                         <div className="role-tabs">
                             <button type="button" className={`role-tab ${role === 'student' ? 'active' : ''}`} onClick={() => setRole('student')}>
@@ -83,43 +81,35 @@ const AuthPage = () => {
                         </div>
                     )}
 
-                    {/* --- GİRİŞ FORMU --- */}
                     {isLogin ? (
                         <form onSubmit={handleLoginSubmit}>
                             <div className="modern-input-group">
+                                <input type="email" placeholder="E-posta Adresi" required value={loginData.email} onChange={(e) => setLoginData({ ...loginData, email: e.target.value })} />
                                 <FaEnvelope className="input-icon" />
-                                <input type="email" placeholder="E-posta Adresi" required
-                                    value={loginData.email} onChange={(e) => setLoginData({ ...loginData, email: e.target.value })} />
                             </div>
                             <div className="modern-input-group">
+                                <input type="password" placeholder="Şifre" required value={loginData.password} onChange={(e) => setLoginData({ ...loginData, password: e.target.value })} />
                                 <FaLock className="input-icon" />
-                                <input type="password" placeholder="Şifre" required
-                                    value={loginData.password} onChange={(e) => setLoginData({ ...loginData, password: e.target.value })} />
                             </div>
                             <button type="submit" className="neon-btn">GİRİŞ YAP</button>
                         </form>
                     ) : (
-                        /* --- KAYIT FORMU --- */
                         <form onSubmit={handleRegisterSubmit}>
                             <div className="modern-input-group">
+                                <input type="text" placeholder={role === 'company' ? 'Şirket Adı' : 'Ad Soyad'} required value={registerData.name} onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })} />
                                 <FaUserTag className="input-icon" />
-                                <input type="text" placeholder={role === 'company' ? 'Şirket Adı' : 'Ad Soyad'} required
-                                    value={registerData.name} onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })} />
                             </div>
                             <div className="modern-input-group">
+                                <input type="email" placeholder="E-posta Adresi" required value={registerData.email} onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })} />
                                 <FaEnvelope className="input-icon" />
-                                <input type="email" placeholder="E-posta Adresi" required
-                                    value={registerData.email} onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })} />
                             </div>
                             <div className="modern-input-group">
+                                <input type="password" placeholder="Şifre" required value={registerData.password} onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })} />
                                 <FaLock className="input-icon" />
-                                <input type="password" placeholder="Şifre" required
-                                    value={registerData.password} onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })} />
                             </div>
                             <div className="modern-input-group">
+                                <input type="password" placeholder="Şifre Tekrar" required value={registerData.confirmPassword} onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })} />
                                 <FaLock className="input-icon" />
-                                <input type="password" placeholder="Şifre Tekrar" required
-                                    value={registerData.confirmPassword} onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })} />
                             </div>
                             <button type="submit" className="neon-btn">KAYIT OL</button>
                         </form>
@@ -127,9 +117,7 @@ const AuthPage = () => {
 
                     <div className="toggle-text">
                         {isLogin ? "Hesabın yok mu?" : "Zaten hesabın var mı?"}
-                        <span onClick={() => setIsLogin(!isLogin)}>
-                            {isLogin ? "Hemen Kayıt Ol" : "Giriş Yap"}
-                        </span>
+                        <span onClick={() => setIsLogin(!isLogin)}>{isLogin ? "Hemen Kayıt Ol" : "Giriş Yap"}</span>
                     </div>
                 </div>
             </div>
