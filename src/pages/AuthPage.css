@@ -1,182 +1,260 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-/* Sadece Auth Sayfası Kapsayıcısı */
-.auth-container {
+/* --- ANA KAPLAYICI (FULL EKRAN) --- */
+.auth-wrapper {
+    width: 100%;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background: #f6f5f7;
-    font-family: 'Montserrat', sans-serif;
-    padding: 20px;
-}
-
-/* ANA KUTU */
-.auth-box {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
-        0 10px 10px rgba(0, 0, 0, 0.22);
     position: relative;
     overflow: hidden;
-    width: 800px;
-    max-width: 100%;
-    min-height: 600px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px;
+    font-family: 'Poppins', sans-serif;
 }
 
-/* HEADER */
-.auth-header {
-    text-align: center;
-    margin-bottom: 20px;
+/* ARKAPLAN VİDEOSU */
+.auth-video-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
 }
 
-.auth-header h2 {
-    font-weight: bold;
-    margin: 0;
-    color: #333;
-    font-size: 2rem;
-}
-
-.auth-header p {
-    font-size: 0.9rem;
-    font-weight: 300;
-    margin: 10px 0 20px;
-    color: #666;
-}
-
-/* ROL SEÇİCİ - Sadece Auth Box içindekiler */
-.auth-box .role-selector {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.auth-box .role-selector button {
-    background-color: white;
-    color: #333;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    padding: 8px 15px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.auth-box .role-selector button.active {
-    background-color: #002B5B;
-    color: white;
-    border-color: #002B5B;
-    transform: scale(1.05);
-}
-
-/* FORM - Sadece Auth Box içindeki form */
-.auth-box form {
-    background-color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 0 20px;
+/* KOYU FİLTRE (Videonun üstüne) */
+.auth-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(2, 12, 27, 0.85) 0%, rgba(10, 25, 47, 0.9) 100%);
+    z-index: -1;
 }
 
-.auth-box .input-group {
+/* --- CAM PANEL (GLASS CARD) --- */
+.glass-panel {
+    display: flex;
+    width: 900px;
+    max-width: 95%;
+    height: 600px;
+    background: rgba(255, 255, 255, 0.03);
+    /* Çok şeffaf */
+    backdrop-filter: blur(20px);
+    /* Buzlu cam efekti */
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
     position: relative;
-    width: 100%;
-    margin: 8px 0;
+    animation: floatUp 0.8s ease-out;
 }
 
-.auth-box .input-icon {
+/* SOL TARAF (GÖRSEL / METİN) */
+.auth-visual-side {
+    flex: 1;
+    background: linear-gradient(135deg, rgba(0, 210, 255, 0.1) 0%, rgba(58, 123, 213, 0.1) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    text-align: center;
+    color: white;
+    position: relative;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.visual-content h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    background: linear-gradient(to right, #fff, #4cc9f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.visual-content p {
+    font-size: 1rem;
+    opacity: 0.8;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+/* SAĞ TARAF (FORM) */
+.auth-form-side {
+    flex: 1.2;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.form-title {
+    font-size: 2rem;
+    color: white;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* --- MODERN INPUT GRUPLARI --- */
+.modern-input-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.modern-input-group input {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    /* İkon boşluğu */
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.modern-input-group input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.modern-input-group input:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #4cc9f0;
+    box-shadow: 0 0 15px rgba(76, 201, 240, 0.2);
+}
+
+.input-icon {
     position: absolute;
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #999;
-    z-index: 10;
+    color: #4cc9f0;
+    font-size: 1.1rem;
+    transition: 0.3s;
 }
 
-/* İŞTE DÜZELTME BURADA: Sadece auth-box içindeki inputlar */
-.auth-box input,
-.auth-box select {
-    background-color: #eee;
+.modern-input-group input:focus+.input-icon {
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* --- ROL SEÇİCİ (Neon Efektli) --- */
+.role-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    border-radius: 15px;
+}
+
+.role-tab {
+    flex: 1;
+    background: transparent;
     border: none;
-    padding: 12px 15px 12px 40px;
-    /* İkon boşluğu */
+    color: #8892b0;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.role-tab.active {
+    background: rgba(76, 201, 240, 0.15);
+    color: #4cc9f0;
+    box-shadow: 0 0 10px rgba(76, 201, 240, 0.1);
+}
+
+.role-tab:hover {
+    color: white;
+}
+
+/* --- BUTONLAR --- */
+.neon-btn {
     width: 100%;
-    border-radius: 5px;
-    outline: none;
-    font-size: 0.9rem;
-    margin: 0;
-    /* Dış boşlukları sıfırla */
-    box-sizing: border-box;
-    /* Taşmayı engelle */
-}
-
-.auth-box input:focus,
-.auth-box select:focus {
-    background-color: #e8f0fe;
-    box-shadow: 0 0 0 2px rgba(0, 43, 91, 0.1);
-}
-
-/* BUTONLAR - Sadece Auth Box içindeki */
-.auth-box .auth-btn {
-    border-radius: 25px;
-    border: 1px solid #005A9C;
-    background: linear-gradient(135deg, #002B5B 0%, #005A9C 100%);
-    color: #FFFFFF;
-    font-size: 0.9rem;
-    font-weight: bold;
-    padding: 12px 45px;
-    letter-spacing: 1px;
+    padding: 15px;
+    background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
     text-transform: uppercase;
-    transition: transform 80ms ease-in, box-shadow 0.3s;
-    cursor: pointer;
-    margin-top: 20px;
-    width: 100%;
+    letter-spacing: 1px;
+    box-shadow: 0 5px 15px rgba(0, 210, 255, 0.3);
 }
 
-.auth-box .auth-btn:hover {
-    box-shadow: 0 5px 15px rgba(0, 43, 91, 0.4);
+.neon-btn:hover {
     transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 210, 255, 0.5);
 }
 
-.auth-box .form-footer {
-    margin: 10px 0;
-    font-size: 0.8rem;
-}
-
-.auth-box .forgot-password {
-    color: #666;
-    text-decoration: none;
-}
-
-.auth-box .toggle-auth {
+.toggle-text {
     margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-    width: 100%;
     text-align: center;
+    color: #8892b0;
+    font-size: 0.9rem;
 }
 
-.auth-box .toggle-btn {
-    background: none;
-    border: none;
-    color: #005A9C;
-    font-weight: bold;
+.toggle-text span {
+    color: #4cc9f0;
     cursor: pointer;
-    text-decoration: underline;
-    font-size: 0.9rem;
+    font-weight: bold;
     margin-left: 5px;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: 0.3s;
+}
+
+.toggle-text span:hover {
+    text-decoration-color: #4cc9f0;
+    color: white;
+}
+
+/* MOBİL UYUM */
+@media (max-width: 900px) {
+    .glass-panel {
+        flex-direction: column;
+        height: auto;
+        margin: 20px;
+    }
+
+    .auth-visual-side {
+        padding: 30px;
+        display: none;
+    }
+
+    /* Mobilde görseli gizle, forma odaklan */
+    .auth-form-side {
+        padding: 30px;
+    }
+}
+
+@keyframes floatUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
