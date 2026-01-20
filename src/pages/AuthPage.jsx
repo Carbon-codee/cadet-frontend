@@ -116,10 +116,19 @@ const AuthPage = () => {
                     )}
 
                     <div className="toggle-text">
-                        {isLogin ? "Hesabın yok mu?" : "Zaten hesabın var mı?"}
-                        <span onClick={() => setIsLogin(!isLogin)}>{isLogin ? "Hemen Kayıt Ol" : "Giriş Yap"}</span>
-                        <Link to="/forgot-password" className="forgot-pass">Şifreni mi unuttun?</Link>
+                        <p>
+                            {isLogin ? "Hesabın yok mu?" : "Zaten hesabın var mı?"}
+                            <span onClick={() => setIsLogin(!isLogin)}>
+                                {isLogin ? " Hemen Kayıt Ol" : " Giriş Yap"}
+                            </span>
+                        </p>
 
+                        {/* Şifremi Unuttum Linki Alt Satıra, Daha Zarif */}
+                        {isLogin && (
+                            <Link to="/forgot-password" title="Şifre Sıfırlama" className="forgot-link-new">
+                                Şifremi unuttun mu?
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>
