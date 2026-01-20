@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
-import { FaSearch, FaMapMarkerAlt, FaShip, FaMoneyBillWave, FaCalendarAlt, FaBuilding } from 'react-icons/fa';
+import { FaSearch, FaMapMarkerAlt, FaShip, FaMoneyBillWave, FaCalendarAlt, FaBuilding, FaFilter } from 'react-icons/fa';
+import { SHIP_TYPES } from '../constants'; // Sabitleri buradan çekiyoruz (Dosya varsa)
+// Eğer constants.js yoksa aşağıdaki realisticShipTypes dizisini kullanır.
 import './InternshipsPage.css';
 
 const InternshipsPage = () => {
@@ -11,24 +13,18 @@ const InternshipsPage = () => {
     // Filtreleme state'leri
     const [searchTerm, setSearchTerm] = useState('');
     const [shipTypeFilter, setShipTypeFilter] = useState('');
-    const [companyFilter, setCompanyFilter] = useState(''); // Şirket filtresi
+    const [companyFilter, setCompanyFilter] = useState('');
 
-    // Gerçekçi gemi tipleri (Bu listeyi istediğin gibi genişletebilirsin)
-    const realisticShipTypes = [
-        'Konteyner',
-        'Kimyasal Tanker',
-        'Petrol Tankeri',
-        'LPG/LNG Tankeri',
-        'Dökme Yük',
-        'Genel Kargo',
-        'Ro-Ro',
-        'Yolcu Gemisi'
+    // Yedek Gemi Tipleri (constants.js yoksa diye)
+    const shipTypesList = [
+        'Konteyner', 'Kimyasal Tanker', 'Petrol Tankeri', 'LPG/LNG Tankeri',
+        'Dökme Yük', 'Genel Kargo', 'Ro-Ro', 'Yolcu Gemisi', 'Offshore'
     ];
 
     useEffect(() => {
         const fetchInternships = async () => {
             try {
-                // Backend'den populate edilmiş ilanları çek
+                // Sadece aktif ilanlar gelir (Backend filtresi)
                 const { data } = await API.get('/internships');
                 setInternships(data);
             } catch (error) {
@@ -42,93 +38,97 @@ const InternshipsPage = () => {
 
     // Filtrelenmiş ilanları hesapla
     const filteredInternships = internships.filter(internship => {
-        return (
-            // 1. Arama Çubuğu: İlan başlığı veya şirket adı içinde arama
-            (internship.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                internship.company?.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        // Güvenlik kontrolleri
+        if (!internship || !internship.title) return false;
 
-            // 2. Gemi Tipi Filtresi
-            (shipTypeFilter === '' || internship.shipType === shipTypeFilter) &&
+        const titleMatch = internship.title.toLowerCase().includes(searchTerm.toLowerCase());
+        const companyMatch = internship.company?.name?.toLowerCase().includes(searchTerm.toLowerCase());
 
-            // 3. Şirket Filtresi
-            (companyFilter === '' || internship.company?._id === companyFilter)
-        );
+        const typeMatch = shipTypeFilter === '' || internship.shipType === shipTypeFilter;
+        const companyFilterMatch = companyFilter === '' || internship.company?._id === companyFilter;
+
+        return (titleMatch || companyMatch) && typeMatch && companyFilterMatch;
     });
 
-    // Filtre için benzersiz şirketleri al (ID ve İsim olarak)
+    // Benzersiz Şirketleri Al (Dropdown için)
     const uniqueCompanies = internships.reduce((acc, current) => {
-        // Eğer bu şirket ID'si daha önce eklenmemişse ekle
         if (current.company?._id && !acc.find(item => item._id === current.company._id)) {
             acc.push({ _id: current.company._id, name: current.company.name });
         }
         return acc;
     }, []);
 
-    if (loading) return <div style={{ padding: 40, textAlign: 'center' }}>İlanlar Yükleniyor...</div>;
+    if (loading) return <div style={{ padding: 50, textAlign: 'center' }}>İlanlar Yükleniyor...</div>;
 
     return (
         <div className="internships-page">
             <div className="page-title-section">
                 <h1>Staj Fırsatları</h1>
-                <p>Kariyer rotanı belirleyecek en güncel ilanları keşfet.</p>
+                <p>Kariyer rotanı belirleyecek en güncel ve aktif ilanları keşfet.</p>
             </div>
 
-            {/* ARAMA VE FİLTRE BÖLÜMÜ (GÜNCELLENDİ) */}
+            {/* ARAMA VE FİLTRE BÖLÜMÜ */}
             <div className="search-filter-container">
                 <div className="search-input-group">
                     <FaSearch className="search-icon" />
                     <input
                         type="text"
-                        placeholder="İlan başlığı, şirket adı ara..."
+                        placeholder="İlan başlığı veya şirket adı ara..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
 
-                {/* Şirket Filtresi */}
                 <div className="filter-group">
-                    <FaBuilding style={{ color: '#95a5a6', marginRight: '-15px', marginLeft: '5px' }} />
-                    <select value={companyFilter} onChange={(e) => setCompanyFilter(e.target.value)}>
+                    <FaBuilding style={{ color: '#95a5a6', marginRight: '-25px', marginLeft: '10px', zIndex: 1 }} />
+                    <select value={companyFilter} onChange={(e) => setCompanyFilter(e.target.value)} style={{ paddingLeft: '35px' }}>
                         <option value="">Tüm Şirketler</option>
                         {uniqueCompanies.map(comp => <option key={comp._id} value={comp._id}>{comp.name}</option>)}
                     </select>
                 </div>
 
-                {/* Gemi Tipi Filtresi */}
                 <div className="filter-group">
-                    <FaShip style={{ color: '#95a5a6', marginRight: '-15px', marginLeft: '5px' }} />
-                    <select value={shipTypeFilter} onChange={(e) => setShipTypeFilter(e.target.value)}>
+                    <FaShip style={{ color: '#95a5a6', marginRight: '-25px', marginLeft: '10px', zIndex: 1 }} />
+                    <select value={shipTypeFilter} onChange={(e) => setShipTypeFilter(e.target.value)} style={{ paddingLeft: '35px' }}>
                         <option value="">Tüm Gemi Tipleri</option>
-                        {realisticShipTypes.map(type => <option key={type} value={type}>{type}</option>)}
+                        {shipTypesList.map(type => <option key={type} value={type}>{type}</option>)}
                     </select>
                 </div>
             </div>
 
-            {/* İLAN LİSTESİ (AYNI KALDI) */}
+            {/* İLAN SAYISI */}
+            <div style={{ marginBottom: '20px', color: '#666', fontSize: '0.9rem' }}>
+                Toplam <strong>{filteredInternships.length}</strong> aktif ilan bulundu.
+            </div>
+
+            {/* İLAN LİSTESİ */}
             {filteredInternships.length > 0 ? (
                 <div className="internships-grid">
                     {filteredInternships.map(internship => (
                         <div key={internship._id} className="internship-card">
                             <div className="card-header">
                                 <h3>{internship.title}</h3>
-                                <p className="company-name">{internship.company?.name || 'Bilinmeyen Şirket'}</p>
+                                <p className="company-name">{internship.company?.name || 'Gizli Şirket'}</p>
                             </div>
                             <div className="card-body">
-                                <div className="info-item"><FaShip className="icon" /> <strong>Gemi Tipi:</strong> {internship.shipType}</div>
-                                <div className="info-item"><FaMapMarkerAlt className="icon" /> <strong>Lokasyon:</strong> {internship.location}</div>
+                                <div className="info-item"><FaShip className="icon" /> <strong>Tip:</strong> {internship.shipType}</div>
+                                <div className="info-item"><FaMapMarkerAlt className="icon" /> <strong>Pozisyon:</strong> {internship.location}</div>
                                 <div className="info-item"><FaCalendarAlt className="icon" /> <strong>Süre:</strong> {internship.duration}</div>
                             </div>
                             <div className="card-footer">
-                                <div className="salary-info"><FaMoneyBillWave /> {internship.salary}$/ay</div>
-                                <Link to={`/internships/${internship._id}`} className="details-btn">Detayları Gör</Link>
+                                <div className="salary-info"><FaMoneyBillWave /> {internship.salary}$</div>
+                                <Link to={`/internships/${internship._id}`} className="details-btn">İncele</Link>
                             </div>
                         </div>
                     ))}
                 </div>
             ) : (
-                <p style={{ textAlign: 'center', color: '#999', padding: '30px' }}>
-                    Aradığınız kriterlere uygun ilan bulunamadı.
-                </p>
+                <div style={{ textAlign: 'center', padding: '50px', background: 'white', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
+                    <FaFilter style={{ fontSize: '3rem', color: '#ddd', marginBottom: '15px' }} />
+                    <h3>İlan Bulunamadı</h3>
+                    <p style={{ color: '#7f8c8d' }}>Aradığınız kriterlere uygun aktif bir staj ilanı şu an mevcut değil.</p>
+                    <button onClick={() => { setSearchTerm(''); setShipTypeFilter(''); setCompanyFilter(''); }} style={{ marginTop: '15px', padding: '10px 20px', background: '#3498db', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>Filtreleri Temizle</button>
+                </div>
             )}
         </div>
     );
