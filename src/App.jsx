@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Layout ve Korumalı Rota
+// Layout ve Koruma
 import MainLayout from './components/layout/MainLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -34,28 +34,30 @@ function App() {
       <main>
         <Routes>
           {/* =========================================
-             1. HERKESE AÇIK ROTALAR (Giriş Şart Değil)
+             1. HERKESE AÇIK (PUBLIC) ROTALAR
+             (Giriş yapmamış kişilerin eriştiği sayfalar)
              ========================================= */}
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/" element={<MainLayout><HomePage /></MainLayout>} />
 
-          {/* Şifre Sıfırlama ve Onay Sayfaları (KESİNLİKLE BURADA OLMALI) */}
+          {/* Şifre Sıfırlama ve Email Onay (BURASI ÇOK KRİTİK) */}
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
 
 
           {/* =========================================
-             2. KORUMALI ROTALAR (Giriş Yapmış Olmalı)
+             2. KORUMALI (PRIVATE) ROTALAR
+             (Sadece giriş yapmış kişilerin eriştiği sayfalar)
              ========================================= */}
 
-          {/* Ortak Rotalar */}
+          {/* Profil ve Hesap */}
           <Route path="/profile" element={<ProtectedRoute><MainLayout><ProfilePage /></MainLayout></ProtectedRoute>} />
           <Route path="/profile/:id" element={<ProtectedRoute><MainLayout><ProfilePage /></MainLayout></ProtectedRoute>} />
           <Route path="/profile/update" element={<ProtectedRoute><MainLayout><ProfileUpdatePage /></MainLayout></ProtectedRoute>} />
           <Route path="/user-info" element={<ProtectedRoute><MainLayout><UserInfoPage /></MainLayout></ProtectedRoute>} />
 
-          {/* Öğrenci Rotaları */}
+          {/* Öğrenci Bölümü */}
           <Route path="/internships" element={<ProtectedRoute><MainLayout><InternshipsPage /></MainLayout></ProtectedRoute>} />
           <Route path="/internships/:id" element={<ProtectedRoute><MainLayout><InternshipDetailPage /></MainLayout></ProtectedRoute>} />
           <Route path="/my-applications" element={<ProtectedRoute><MainLayout><MyApplicationsPage /></MainLayout></ProtectedRoute>} />
@@ -64,14 +66,14 @@ function App() {
           <Route path="/saved-content" element={<ProtectedRoute><MainLayout><SavedContentPage /></MainLayout></ProtectedRoute>} />
           <Route path="/gasm" element={<ProtectedRoute><MainLayout><GasmPage /></MainLayout></ProtectedRoute>} />
 
-          {/* Şirket Rotaları */}
+          {/* Şirket Bölümü */}
           <Route path="/company/dashboard" element={<ProtectedRoute><MainLayout><CompanyDashboard /></MainLayout></ProtectedRoute>} />
           <Route path="/company/my-internships" element={<ProtectedRoute><MainLayout><MyInternshipsPage /></MainLayout></ProtectedRoute>} />
           <Route path="/company/create-internship" element={<ProtectedRoute><MainLayout><CreateInternshipPage /></MainLayout></ProtectedRoute>} />
           <Route path="/company/edit-internship/:id" element={<ProtectedRoute><MainLayout><CreateInternshipPage /></MainLayout></ProtectedRoute>} />
           <Route path="/company/applicants/:id" element={<ProtectedRoute><MainLayout><ApplicantsPage /></MainLayout></ProtectedRoute>} />
 
-          {/* Akademisyen Rotaları */}
+          {/* Akademisyen Bölümü */}
           <Route path="/lecturer/dashboard" element={<ProtectedRoute><MainLayout><LecturerDashboard /></MainLayout></ProtectedRoute>} />
           <Route path="/lecturer/my-content" element={<ProtectedRoute><MainLayout><LecturerContentPage /></MainLayout></ProtectedRoute>} />
           <Route path="/lecturer/upload" element={<ProtectedRoute><MainLayout><LecturerUploadPage /></MainLayout></ProtectedRoute>} />
