@@ -19,6 +19,7 @@ import UserInfoPage from './pages/UserInfoPage';
 import MyInternshipsPage from './pages/MyInternshipsPage';
 import CreateInternshipPage from './pages/CreateInternshipPage';
 import ApplicantsPage from './pages/ApplicantsPage';
+import InternshipDetailPage from './pages/InternshipDetailPage'; // EKLENDİ
 import LecturerDashboard from './pages/LecturerDashboard';
 import LecturerContentPage from './pages/LecturerContentPage';
 import LecturerUploadPage from './pages/LecturerUploadPage';
@@ -27,6 +28,7 @@ import GasmPage from './pages/GasmPage';
 import SavedContentPage from './pages/SavedContentPage';
 import MyApplicationsPage from './pages/MyApplicationsPage';
 import InternshipsPage from './pages/InternshipsPage';
+import CompanyDashboard from './pages/CompanyDashboard'; // EKLENDİ
 
 function App() {
   return (
@@ -35,12 +37,10 @@ function App() {
         <Routes>
           {/* =========================================
              1. HERKESE AÇIK (PUBLIC) ROTALAR
-             (Giriş yapmamış kişilerin eriştiği sayfalar)
              ========================================= */}
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/" element={<MainLayout><HomePage /></MainLayout>} />
 
-          {/* Şifre Sıfırlama ve Email Onay (BURASI ÇOK KRİTİK) */}
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
@@ -48,7 +48,6 @@ function App() {
 
           {/* =========================================
              2. KORUMALI (PRIVATE) ROTALAR
-             (Sadece giriş yapmış kişilerin eriştiği sayfalar)
              ========================================= */}
 
           {/* Profil ve Hesap */}
