@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import './AuthPage.css';
-import heroVideo from '../assets/hero-video.mp4';
+const heroVideo = '/hero-video.mp4'; // Direkt public klasöründen al
 import { FaUser, FaBuilding, FaChalkboardTeacher, FaEnvelope, FaLock, FaUserTag, FaAnchor, FaShip } from 'react-icons/fa';
 
 const AuthPage = () => {
