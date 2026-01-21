@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaCloudUploadAlt, FaPaperPlane, FaHeading, FaSave, FaTrash } from 'react-icons/fa';
-import API from '../api/axiosConfig'; // API importu
+import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import './LecturerPages.css';
 
@@ -26,7 +26,7 @@ const LecturerUploadPage = () => {
         if (location.state && location.state.editMode && location.state.item) {
             setIsEditMode(true);
             const item = location.state.item;
-            setEditingId(item._id); // _id kullanıyoruz (MongoDB'den gelen)
+            setEditingId(item._id);
             setFormData({
                 title: item.title,
                 type: item.type,
@@ -67,24 +67,23 @@ const LecturerUploadPage = () => {
         setFormData(prev => ({ ...prev, fileName: '', fileData: '' }));
     };
 
-    // --- EN ÖNEMLİ DEĞİŞİKLİK BURADA ---
+    // --- DÜZELTİLEN KISIM BURASI ---
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
             if (isEditMode) {
-                // GÜNCELLEME İSTEĞİ (İleride eklenecek, şimdilik pass)
-                // await API.put(`/content/${editingId}`, formData);
-                alert("Güncelleme başarılı! (Simülasyon)");
+                // Simülasyonu kaldırdık, gerçek API isteği atıyoruz:
+                await API.put(`/content/${editingId}`, formData);
+                alert("İçerik başarıyla güncellendi!");
             } else {
-                // YENİ İÇERİK OLUŞTURMA İSTEĞİ
-                await API.post('/content', formData); // Artık /api yazmıyoruz
-                alert("İçerik başarıyla veritabanına kaydedildi!");
+                await API.post('/content', formData);
+                alert("İçerik başarıyla yayınlandı!");
             }
             navigate('/lecturer/my-content');
         } catch (error) {
             console.error("İçerik kaydetme hatası:", error);
-            alert("İçerik kaydedilirken bir hata oluştu.");
+            alert("Bir hata oluştu. Lütfen tekrar deneyin.");
         }
     };
 

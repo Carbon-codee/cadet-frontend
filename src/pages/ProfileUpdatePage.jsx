@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import './ProfileUpdatePage.css';
@@ -27,7 +26,7 @@ const calculateScore = (formData) => {
     return Math.min(Math.round(score), 100);
 };
 
-// --- FORMLAR (AYNI) ---
+// --- ÖĞRENCİ FORMU (AYNI) ---
 const StudentUpdateForm = ({ formData, onFormChange, availableCompanies }) => {
     const handleShipTypeToggle = (type) => {
         let currentTypes = formData.preferences?.shipTypes || [];
@@ -52,7 +51,6 @@ const StudentUpdateForm = ({ formData, onFormChange, availableCompanies }) => {
                     <div className="form-group"><label>Soyad</label><input type="text" name="surname" value={formData.surname || ''} onChange={onFormChange} /></div>
                     <div className="form-group"><label>Sınıf</label><select name="classYear" value={formData.classYear || ''} onChange={onFormChange}><option value="">Seçiniz</option><option>1. Sınıf</option><option>2. Sınıf</option><option>3. Sınıf</option><option>4. Sınıf</option></select></div>
                     <div className="form-group"><label>GPA</label><input type="number" step="0.01" max="4" name="gpa" value={formData.gpa || ''} onChange={onFormChange} /></div>
-                    {/* BÖLÜM SEÇİMİ (GÜNCELLENDİ) */}
                     <div className="form-group">
                         <label>Bölüm</label>
                         <select
@@ -65,7 +63,8 @@ const StudentUpdateForm = ({ formData, onFormChange, availableCompanies }) => {
                             <option value="Deniz Ulaştırma İşletme Mühendisliği">Deniz Ulaştırma İşletme Mühendisliği (Güverte)</option>
                             <option value="Gemi Makineleri İşletme Mühendisliği">Gemi Makineleri İşletme Mühendisliği (Makine)</option>
                         </select>
-                    </div><div className="form-group">
+                    </div>
+                    <div className="form-group">
                         <label>İngilizce Seviyesi</label>
                         <select name="englishLevel" value={formData.englishLevel || 'A1'} onChange={onFormChange}>
                             <option value="A1">A1</option><option value="A2">A2</option><option value="B1">B1</option><option value="B2">B2</option><option value="C1">C1</option><option value="C2">C2</option>
@@ -103,16 +102,25 @@ const StudentUpdateForm = ({ formData, onFormChange, availableCompanies }) => {
     );
 };
 
-const CompanyUpdateForm = ({ formData, onFormChange }) => (
-    <div className="form-card">
-        <h3>Şirket Bilgileri</h3>
-        <div className="form-group"><label>Şirket Adı</label><input type="text" name="name" value={formData.name || ''} onChange={onFormChange} /></div>
-        <div className="form-group"><label>Sektör</label><input type="text" name="sector" value={formData.companyInfo?.sector || ''} onChange={onFormChange} /></div>
-        <div className="form-group"><label>Web Sitesi</label><input type="text" name="website" value={formData.companyInfo?.website || ''} onChange={onFormChange} /></div>
-        <div className="form-group"><label>Adres</label><textarea name="address" value={formData.companyInfo?.address || ''} onChange={onFormChange}></textarea></div>
-        <div className="form-group"><label>Hakkında</label><textarea name="about" value={formData.companyInfo?.about || ''} onChange={onFormChange}></textarea></div>
-    </div>
-);
+// --- DÜZELTİLEN ŞİRKET FORMU ---
+const CompanyUpdateForm = ({ formData, onFormChange }) => {
+    // Güvenlik: companyInfo boş gelirse crash olmasın
+    const info = formData.companyInfo || {};
+
+    return (
+        <div className="form-card">
+            <h3>Şirket Bilgileri</h3>
+            <div className="form-group"><label>Şirket Adı</label><input type="text" name="name" value={formData.name || ''} onChange={onFormChange} /></div>
+
+            {/* Sektör için güvenli input */}
+            <div className="form-group"><label>Sektör</label><input type="text" name="sector" value={info.sector || ''} onChange={onFormChange} /></div>
+
+            <div className="form-group"><label>Web Sitesi</label><input type="text" name="website" value={info.website || ''} onChange={onFormChange} /></div>
+            <div className="form-group"><label>Adres</label><textarea name="address" value={info.address || ''} onChange={onFormChange}></textarea></div>
+            <div className="form-group"><label>Hakkında</label><textarea name="about" value={info.about || ''} onChange={onFormChange}></textarea></div>
+        </div>
+    );
+};
 
 const LecturerUpdateForm = ({ formData, onFormChange }) => (
     <div className="form-card">
@@ -125,6 +133,7 @@ const LecturerUpdateForm = ({ formData, onFormChange }) => (
     </div>
 );
 
+// --- ANA COMPONENT ---
 const ProfileUpdatePage = () => {
     const { userInfo } = useAuth();
     const [formData, setFormData] = useState(null);
@@ -134,20 +143,36 @@ const ProfileUpdatePage = () => {
     useEffect(() => {
         const loadData = async () => {
             if (userInfo) {
-                let data = JSON.parse(JSON.stringify(userInfo));
-                if (Array.isArray(data.socialActivities)) data.socialActivities = data.socialActivities.join('\n');
-                if (Array.isArray(data.documents)) data.documentsText = data.documents.map(d => d.name).join('\n');
-                if (!data.preferences) data.preferences = { shipTypes: [], targetCompanies: [] };
-                if (userInfo.role === 'company' && !data.companyInfo) data.companyInfo = {};
-                setFormData(data);
+                try {
+                    // API'den en güncel veriyi çek
+                    const response = await API.get(`/users/${userInfo._id}`);
+                    let data = response.data;
 
-                if (userInfo.role === 'student') {
-                    try {
+                    // Form manipülasyonları
+                    if (Array.isArray(data.socialActivities)) data.socialActivities = data.socialActivities.join('\n');
+                    if (Array.isArray(data.documents)) data.documentsText = data.documents.map(d => d.name).join('\n');
+                    if (!data.preferences) data.preferences = { shipTypes: [], targetCompanies: [] };
+
+                    // Şirket için companyInfo nesnesini garantiye al
+                    if (data.role === 'company') {
+                        if (!data.companyInfo) data.companyInfo = { sector: '', website: '', address: '', about: '' };
+                        // Eğer backend veriyi root'a (companyInfo dışına) kaydettiyse, onu içeri taşı
+                        if (!data.companyInfo.sector && data.sector) data.companyInfo.sector = data.sector;
+                    }
+
+                    setFormData(data);
+
+                    if (data.role === 'student') {
                         const res = await API.get('/users/list/companies');
                         setCompanies(res.data);
-                    } catch (e) { console.error(e); }
+                    }
+                } catch (e) {
+                    console.error("Veri yükleme hatası:", e);
+                    // Hata olursa mecburen userInfo kullan
+                    setFormData(JSON.parse(JSON.stringify(userInfo)));
+                } finally {
+                    setLoading(false);
                 }
-                setLoading(false);
             }
         };
         loadData();
@@ -155,11 +180,24 @@ const ProfileUpdatePage = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
         if (name === 'preferences') {
             setFormData(prev => ({ ...prev, preferences: value }));
-        } else if (['website', 'address', 'about', 'sector'].includes(name)) {
-            setFormData(prev => ({ ...prev, companyInfo: { ...prev.companyInfo, [name]: value } }));
-        } else {
+        }
+        // Şirket bilgileri güncellemesi
+        else if (['website', 'address', 'about', 'sector'].includes(name)) {
+            setFormData(prev => {
+                const currentInfo = prev.companyInfo || {};
+                return {
+                    ...prev,
+                    companyInfo: {
+                        ...currentInfo,
+                        [name]: value
+                    }
+                };
+            });
+        }
+        else {
             setFormData(prev => ({ ...prev, [name]: value }));
         }
     };
@@ -169,6 +207,7 @@ const ProfileUpdatePage = () => {
         let dataToSubmit = { ...formData };
 
         if (userInfo.role === 'student') {
+            // Öğrenci verilerini formatla
             if (typeof dataToSubmit.socialActivities === 'string') {
                 dataToSubmit.socialActivities = dataToSubmit.socialActivities.split('\n').filter(l => l.trim() !== '');
             }
@@ -179,20 +218,34 @@ const ProfileUpdatePage = () => {
             dataToSubmit.successScore = calculateScore(formData);
         }
 
+        // --- BACKEND UYUMSUZLUĞU İÇİN GÜVENLİK ---
+        // Eğer backend sector'ü companyInfo içinde kabul etmiyorsa diye
+        // veriyi hem root'a (eğer şema oradaysa) hem de companyInfo içine koyuyoruz.
+        if (userInfo.role === 'company' && dataToSubmit.companyInfo?.sector) {
+            dataToSubmit.sector = dataToSubmit.companyInfo.sector;
+        }
+
+        console.log("Gönderilen Veri:", dataToSubmit); // F12'den kontrol et
+
         try {
             const { data } = await API.put('/users/profile', dataToSubmit);
 
-            // --- KRİTİK DÜZELTME BURADA ---
-            // Backend'den gelen 'data'da token YOKTUR.
-            // Bu yüzden mevcut token'ı koruyarak birleştiriyoruz.
+            // LocalStorage güncelle
             const updatedUser = { ...userInfo, ...data };
+
+            // Eğer backend dönüşünde sector eksikse, gönderdiğimiz veriden tamamla (Frontend'de hemen görünsün diye)
+            if (userInfo.role === 'company' && dataToSubmit.companyInfo?.sector) {
+                if (!updatedUser.companyInfo) updatedUser.companyInfo = {};
+                updatedUser.companyInfo.sector = dataToSubmit.companyInfo.sector;
+            }
+
             localStorage.setItem('userInfo', JSON.stringify(updatedUser));
-            // ------------------------------
 
             alert('Profil başarıyla güncellendi!');
             window.location.href = '/profile';
         } catch (error) {
-            alert('Hata oluştu.');
+            console.error(error);
+            alert('Güncelleme sırasında hata oluştu.');
         }
     };
 

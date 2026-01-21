@@ -4,50 +4,59 @@ import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import './ProfilePage.css';
 import {
-    FaUser, FaEnvelope, FaGraduationCap, FaChalkboardTeacher,
-    FaStar, FaLanguage, FaFilePdf, FaCertificate, FaUsers,
+    FaEnvelope, FaGraduationCap, FaChalkboardTeacher,
+    FaStar, FaLanguage, FaCertificate, FaUsers,
     FaMapMarkerAlt, FaBuilding, FaGlobe, FaUniversity, FaDoorOpen
 } from 'react-icons/fa';
 
-// --- ŞİRKET PROFİL GÖRÜNÜMÜ (AYNI) ---
-const CompanyProfile = ({ profile }) => (
-    <div className="profile-grid">
-        <div className="profile-card profile-header-card">
-            <div className="avatar-container">
-                <div
-                    className="avatar-box"
-                    style={{
-                        background: '#fff', color: '#ef4444', border: '5px solid #ef4444',
-                        fontSize: '4rem', width: '150px', height: '150px',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        borderRadius: '50%'
-                    }}
-                >
-                    {profile?.name ? profile.name.charAt(0).toUpperCase() : 'C'}
+// --- ŞİRKET PROFİL GÖRÜNÜMÜ ---
+const CompanyProfile = ({ profile }) => {
+    // Sektör verisini güvenli çekme (Nested veya Root kontrolü)
+    const sector = profile?.companyInfo?.sector || profile?.sector || 'Belirtilmemiş';
+    const website = profile?.companyInfo?.website || profile?.website || 'Web sitesi belirtilmemiş';
+    const address = profile?.companyInfo?.address || profile?.address || 'Adres belirtilmemiş';
+    const about = profile?.companyInfo?.about || profile?.about || 'Şirket hakkında bilgi eklenmemiş.';
+
+    return (
+        <div className="profile-grid">
+            <div className="profile-card profile-header-card">
+                <div className="avatar-container">
+                    <div
+                        className="avatar-box"
+                        style={{
+                            background: '#fff', color: '#ef4444', border: '5px solid #ef4444',
+                            fontSize: '4rem', width: '150px', height: '150px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            borderRadius: '50%'
+                        }}
+                    >
+                        {profile?.name ? profile.name.charAt(0).toUpperCase() : 'C'}
+                    </div>
+                </div>
+                <div className="header-info">
+                    <h1>{profile?.name || 'Şirket Adı Yok'}</h1>
+                    <p className="role-badge">Şirket Hesabı 🏢</p>
+                    <p><FaGlobe /> <a href={website.startsWith('http') ? website : `https://${website}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>{website}</a></p>
                 </div>
             </div>
-            <div className="header-info">
-                <h1>{profile?.name || 'Şirket Adı Yok'}</h1>
-                <p className="role-badge">Şirket Hesabı 🏢</p>
-                <p><FaGlobe /> {profile?.companyInfo?.website || 'Web sitesi belirtilmemiş'}</p>
+            <div className="profile-card">
+                <h3>Şirket Hakkında</h3>
+                <p style={{ lineHeight: 1.6, color: '#444' }}>
+                    {about}
+                </p>
+            </div>
+            <div className="profile-card">
+                <h3>Kurumsal Bilgiler</h3>
+                <div className="info-row"><span><FaEnvelope /> E-posta</span><span>{profile?.email || '-'}</span></div>
+                {/* DÜZELTME: Sektör burada yukarıdaki değişkenden okunuyor */}
+                <div className="info-row"><span><FaBuilding /> Sektör</span><span>{sector}</span></div>
+                <div className="info-row"><span><FaMapMarkerAlt /> Merkez</span><span>{address}</span></div>
             </div>
         </div>
-        <div className="profile-card">
-            <h3>Şirket Hakkında</h3>
-            <p style={{ lineHeight: 1.6, color: '#444' }}>
-                {profile?.companyInfo?.about || 'Şirket hakkında bilgi eklenmemiş.'}
-            </p>
-        </div>
-        <div className="profile-card">
-            <h3>Kurumsal Bilgiler</h3>
-            <div className="info-row"><span><FaEnvelope /> E-posta</span><span>{profile?.email || '-'}</span></div>
-            <div className="info-row"><span><FaBuilding /> Sektör</span><span>{profile?.companyInfo?.sector || 'Belirtilmemiş'}</span></div>
-            <div className="info-row"><span><FaMapMarkerAlt /> Merkez</span><span>{profile?.companyInfo?.address || 'Adres belirtilmemiş'}</span></div>
-        </div>
-    </div>
-);
+    );
+};
 
-// --- AKADEMİSYEN PROFİL GÖRÜNÜMÜ (AYNI) ---
+// --- AKADEMİSYEN PROFİL GÖRÜNÜMÜ ---
 const LecturerProfile = ({ profile }) => (
     <div className="profile-grid">
         <div className="profile-card profile-header-card">
@@ -90,14 +99,11 @@ const LecturerProfile = ({ profile }) => (
     </div>
 );
 
-// --- ÖĞRENCİ PROFİL GÖRÜNÜMÜ (AYNI - Mantık Korundu) ---
+// --- ÖĞRENCİ PROFİL GÖRÜNÜMÜ ---
 const StudentProfile = ({ profile }) => {
     const { userInfo } = useAuth();
-
-    // Başlangıç değeri veritabanından gelen
     const [status, setStatus] = useState(profile?.currentStatus || 'Okulda/Tatilde');
 
-    // Veri her güncellendiğinde (useEffect ile çekildiğinde) butonu da güncelle
     useEffect(() => {
         if (profile?.currentStatus) {
             setStatus(profile.currentStatus);
@@ -106,13 +112,9 @@ const StudentProfile = ({ profile }) => {
 
     const handleStatusChange = async (e) => {
         const newStatus = e.target.value;
-        setStatus(newStatus); // Ekranda hemen değiştir
-
+        setStatus(newStatus);
         try {
-            // Backend'e kaydet
             await API.put('/users/status', { status: newStatus });
-
-            // Kendi profilimizse LocalStorage'ı da güncelle ki sayfa yenilenince eski haline dönmesin
             if (userInfo && userInfo._id === profile._id) {
                 const currentUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
                 currentUser.currentStatus = newStatus;
@@ -125,9 +127,9 @@ const StudentProfile = ({ profile }) => {
     };
 
     const getStatusColor = (s) => {
-        if (s === 'Staj Arıyor') return '#27ae60'; // Yeşil
-        if (s === 'Staj Yapıyor') return '#e67e22'; // Turuncu
-        return '#95a5a6'; // Gri
+        if (s === 'Staj Arıyor') return '#27ae60';
+        if (s === 'Staj Yapıyor') return '#e67e22';
+        return '#95a5a6';
     };
 
     const isOwnProfile = userInfo?._id === profile?._id;
@@ -152,7 +154,6 @@ const StudentProfile = ({ profile }) => {
                     <h1>{profile?.name} {profile?.surname}</h1>
                     <p>{profile?.department || ''} {profile?.classYear ? ` - ${profile.classYear}` : ''}</p>
 
-                    {/* DURUM SEÇİCİ */}
                     <div style={{ margin: '15px 0' }}>
                         {isOwnProfile ? (
                             <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -244,7 +245,7 @@ const StudentProfile = ({ profile }) => {
     );
 };
 
-// --- ANA BİLEŞEN (DÜZELTİLEN KISIM BURASI) ---
+// --- ANA BİLEŞEN ---
 const ProfilePage = () => {
     const { id } = useParams();
     const { userInfo } = useAuth();
@@ -255,23 +256,15 @@ const ProfilePage = () => {
         const fetchProfile = async () => {
             setLoading(true);
             try {
-                // HEDEF KULLANICI KİM? (URL'de ID varsa o, yoksa giriş yapan kişi)
                 const targetId = id || userInfo?._id;
-
                 if (!targetId) {
                     setLoading(false);
                     return;
                 }
-
-                // --- DÜZELTME: HER ZAMAN API'DEN TAZE VERİ ÇEK ---
-                // Eskiden 'else { data = userInfo }' diyorduk, bu yüzden eski veriyi görüyordun.
-                // Şimdi her durumda veritabanına soruyoruz.
                 const { data } = await API.get(`/users/${targetId}`);
                 setProfileData(data);
-
             } catch (err) {
                 console.error("Profil yüklenemedi:", err);
-                // Eğer API hatası olursa ve kendi profilimizse mecburen eldeki veriyi kullan
                 if (!id && userInfo) setProfileData(userInfo);
             } finally {
                 setLoading(false);
@@ -279,7 +272,6 @@ const ProfilePage = () => {
         };
 
         if (userInfo || id) fetchProfile();
-
     }, [id, userInfo]);
 
     if (loading) return <div style={{ padding: 40, textAlign: 'center' }}>Profil Yükleniyor...</div>;

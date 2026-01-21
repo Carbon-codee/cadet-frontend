@@ -20,7 +20,7 @@ const LearningDetailPage = () => {
                 const { data } = await API.get(`/content/${id}`);
                 setContent(data);
 
-                // 2. Kaydedilme durumunu kontrol et
+                // 2. Kaydedilme durumunu kontrol et (Sadece öğrenciler için anlamlı ama kod kalabilir)
                 if (userInfo && userInfo._id) {
                     const userKey = `savedLearningItems_${userInfo._id}`;
                     const savedIds = JSON.parse(localStorage.getItem(userKey) || '[]');
@@ -65,10 +65,17 @@ const LearningDetailPage = () => {
     const authorName = content.author?.name ? `${content.author.title || ''} ${content.author.name}` : 'Akademisyen';
     const authorLink = content.author?._id ? `/profile/${content.author._id}` : '#';
 
+    // --- DÜZELTME 1: Geri Dönüş Linki Mantığı ---
+    // Eğer Hoca ise -> 'İçeriklerim' sayfasına dönsün
+    // Eğer Öğrenciyse -> 'Learning' (Akademik Panel) sayfasına dönsün
+    const backLink = userInfo?.role === 'lecturer' ? '/lecturer/my-content' : '/learning';
+    const backText = userInfo?.role === 'lecturer' ? 'İçeriklerime Geri Dön' : 'Listeye Geri Dön';
+
     return (
         <div className="learning-detail-page">
-            <Link to="/learning" className="page-back-link">
-                <span><FaArrowLeft /> Listeye Geri Dön</span>
+            {/* Dinamik Geri Butonu */}
+            <Link to={backLink} className="page-back-link">
+                <span><FaArrowLeft /> {backText}</span>
             </Link>
 
             <div className="detail-container">
@@ -104,11 +111,14 @@ const LearningDetailPage = () => {
                     )}
                 </div>
 
-                <div className="detail-footer">
-                    <button onClick={handleSaveToggle} className={`save-button ${isSaved ? 'saved' : ''}`}>
-                        {isSaved ? <><FaBookmark /> Kaydedildi</> : <><FaRegBookmark /> İçeriği Kaydet</>}
-                    </button>
-                </div>
+                {/* --- DÜZELTME 2: Kaydet Butonu Sadece Öğrenciler İçin --- */}
+                {userInfo?.role === 'student' && (
+                    <div className="detail-footer">
+                        <button onClick={handleSaveToggle} className={`save-button ${isSaved ? 'saved' : ''}`}>
+                            {isSaved ? <><FaBookmark /> Kaydedildi</> : <><FaRegBookmark /> İçeriği Kaydet</>}
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
