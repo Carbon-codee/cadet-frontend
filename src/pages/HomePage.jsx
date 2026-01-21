@@ -45,6 +45,7 @@ const HomePage = () => {
                         <div className="hero-text-box">
                             <h1 className="hero-title">Geleceğin <span className="highlight">Denizcileri</span><br />Rotalarını Burada Çiziyor</h1>
                             <p className="hero-subtitle">
+                                "Marine Cadet, denizcilik öğrencileri için en kapsamlı staj platformudur"
                                 Türkiye'nin en prestijli denizcilik şirketleriyle stajyerleri ve akademisyenleri buluşturan ilk ve tek platform.
                             </p>
                             <div className="hero-buttons">
