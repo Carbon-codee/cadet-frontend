@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import './Navbar.css';
-import { FaSearch, FaUserCircle } from 'react-icons/fa';
+import { FaUserCircle } from 'react-icons/fa';
 import ProfileSidebar from './ProfileSidebar';
 import { useAuth } from '../../context/AuthContext';
 
@@ -63,7 +63,7 @@ const Navbar = () => {
         )}
 
         <div className="nav-right-section">
-          {userInfo && <FaSearch className="search-icon" />}
+
           {userInfo ? (
             <FaUserCircle className="profile-icon" onClick={toggleProfileSidebar} />
           ) : (
