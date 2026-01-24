@@ -42,6 +42,24 @@ const StudentUpdateForm = ({ formData, onFormChange, availableCompanies }) => {
         onFormChange({ target: { name: 'preferences', value: { ...formData.preferences, targetCompanies: currentTargets } } });
     };
 
+    // Transcript helpers
+    const handleTranscriptAdd = () => {
+        const courseName = document.getElementById('newCourseName').value;
+        const grade = document.getElementById('newCourseGrade').value;
+        if (courseName && grade) {
+            const currentTranscript = formData.transcript || [];
+            onFormChange({ target: { name: 'transcript', value: [...currentTranscript, { courseName, grade }] } });
+            document.getElementById('newCourseName').value = '';
+            document.getElementById('newCourseGrade').value = '';
+        }
+    };
+
+    const handleTranscriptDelete = (index) => {
+        const currentTranscript = [...(formData.transcript || [])];
+        currentTranscript.splice(index, 1);
+        onFormChange({ target: { name: 'transcript', value: currentTranscript } });
+    };
+
     return (
         <>
             <div className="form-card">
@@ -72,6 +90,52 @@ const StudentUpdateForm = ({ formData, onFormChange, availableCompanies }) => {
                     </div>
                 </div>
             </div>
+
+            <div className="form-card">
+                <h3>Transkript (Ders Notları)</h3>
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', alignItems: 'flex-end' }}>
+                    <div style={{ flex: 1 }}>
+                        <label style={{ fontSize: '0.85rem', marginBottom: '5px', display: 'block' }}>Ders Adı</label>
+                        <input type="text" id="newCourseName" placeholder="örn. Seyir I" style={{ width: '100%', padding: '8px', border: '1px solid #e2e8f0', borderRadius: '6px' }} />
+                    </div>
+                    <div style={{ width: '120px' }}>
+                        <label style={{ fontSize: '0.85rem', marginBottom: '5px', display: 'block' }}>Not</label>
+                        <select id="newCourseGrade" style={{ width: '100%', padding: '8px', border: '1px solid #e2e8f0', borderRadius: '6px', background: 'white' }}>
+                            <option value="">Seçiniz</option>
+                            <option value="AA">AA</option>
+                            <option value="BA+">BA+</option>
+                            <option value="BA">BA</option>
+                            <option value="BB+">BB+</option>
+                            <option value="BB">BB</option>
+                            <option value="CB+">CB+</option>
+                            <option value="CB">CB</option>
+                            <option value="CC+">CC+</option>
+                            <option value="CC">CC</option>
+                            <option value="DC+">DC+</option>
+                            <option value="DC">DC</option>
+                            <option value="DD+">DD+</option>
+                            <option value="DD">DD</option>
+                            <option value="FF">FF</option>
+                            <option value="VF">VF</option>
+                        </select>
+                    </div>
+                    <button type="button" onClick={handleTranscriptAdd} style={{ padding: '9px 15px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
+                        Ekle
+                    </button>
+                </div>
+
+                {formData.transcript && formData.transcript.length > 0 ? (
+                    <ul style={{ listStyle: 'none', padding: 0 }}>
+                        {formData.transcript.map((t, i) => (
+                            <li key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 10px', background: '#f8fafc', marginBottom: '5px', borderRadius: '6px', border: '1px solid #f1f5f9' }}>
+                                <span>{t.courseName} - <strong>{t.grade}</strong></span>
+                                <button type="button" onClick={() => handleTranscriptDelete(i)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem' }}>Sil 🗑️</button>
+                            </li>
+                        ))}
+                    </ul>
+                ) : <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Henüz ders eklenmemiş.</p>}
+            </div>
+
             <div className="form-card">
                 <h3>Aktiviteler & Tercihler</h3>
                 <div className="form-group"><label>Sosyal Aktiviteler (Her satıra bir tane)</label><textarea name="socialActivities" rows="3" value={formData.socialActivities || ''} onChange={onFormChange}></textarea></div>

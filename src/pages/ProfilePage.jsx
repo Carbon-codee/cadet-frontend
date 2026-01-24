@@ -6,7 +6,7 @@ import './ProfilePage.css';
 import {
     FaEnvelope, FaGraduationCap, FaChalkboardTeacher,
     FaStar, FaLanguage, FaCertificate, FaUsers,
-    FaMapMarkerAlt, FaBuilding, FaGlobe, FaUniversity, FaDoorOpen
+    FaMapMarkerAlt, FaBuilding, FaGlobe, FaUniversity, FaDoorOpen, FaPlus, FaTrash
 } from 'react-icons/fa';
 
 // --- ŞİRKET PROFİL GÖRÜNÜMÜ ---
@@ -200,6 +200,17 @@ const StudentProfile = ({ profile }) => {
                             {profile?.successScore || 0}
                         </div>
                     </div>
+
+                    <div style={{ marginTop: '20px', display: 'flex', gap: '15px', justifyContent: 'center' }}>
+                        <div style={{ background: 'linear-gradient(135deg, #6c5ce7, #a29bfe)', color: 'white', padding: '10px 20px', borderRadius: '15px', textAlign: 'center', boxShadow: '0 4px 10px rgba(108, 92, 231, 0.3)' }}>
+                            <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>Toplam XP</div>
+                            <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{profile?.xp || 0}</div>
+                        </div>
+                        <div style={{ background: 'linear-gradient(135deg, #0984e3, #74b9ff)', color: 'white', padding: '10px 20px', borderRadius: '15px', textAlign: 'center', boxShadow: '0 4px 10px rgba(9, 132, 227, 0.3)' }}>
+                            <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>Seviye</div>
+                            <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{profile?.level || 1}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -215,6 +226,30 @@ const StudentProfile = ({ profile }) => {
                 <div className="info-row"><span><FaChalkboardTeacher /> Sınıf</span><span>{profile?.classYear || 'Belirtilmemiş'}</span></div>
                 <div className="info-row"><span><FaStar /> Not Ortalaması (GPA)</span><span>{profile?.gpa ? `${profile.gpa} / 4.00` : 'Belirtilmemiş'}</span></div>
                 <div className="info-row"><span><FaLanguage /> İngilizce Seviyesi</span><span>{profile?.englishLevel || 'Belirtilmemiş'}</span></div>
+
+            </div>
+
+            <div className="profile-card">
+                <h3>Transkript (Ders Notları)</h3>
+
+                {profile?.transcript && profile.transcript.length > 0 ? (
+                    <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+                        <thead>
+                            <tr style={{ background: '#f8f9fa', color: '#666' }}>
+                                <th style={{ padding: '10px', textAlign: 'left', borderBottom: '1px solid #eee' }}>Ders Adı</th>
+                                <th style={{ padding: '10px', textAlign: 'left', borderBottom: '1px solid #eee' }}>Not</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {profile.transcript.map((t, i) => (
+                                <tr key={i}>
+                                    <td style={{ padding: '10px', borderBottom: '1px solid #eee' }}>{t.courseName}</td>
+                                    <td style={{ padding: '10px', borderBottom: '1px solid #eee', fontWeight: 'bold', color: '#2c3e50' }}>{t.grade}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : <p style={{ color: '#999' }}>Henüz ders notu girilmemiş.</p>}
             </div>
 
             <div className="profile-card">

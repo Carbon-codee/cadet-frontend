@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import {
     FaTimes, FaUser, FaCog, FaSignOutAlt,
     FaUserEdit, FaFileAlt, FaBookmark,
-    FaChartLine, FaUsers
+    FaChartLine, FaUsers, FaBrain
 } from 'react-icons/fa';
 
 const ProfileSidebar = ({ isOpen, onClose }) => {
@@ -76,6 +76,9 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
                         <>
                             <Link to="/my-applications" className="sidebar-link" onClick={onClose}>
                                 <FaFileAlt /> Başvurularım
+                            </Link>
+                            <Link to="/study-plan" className="sidebar-link" onClick={onClose}>
+                                <FaBrain /> Akıllı Asistan
                             </Link>
                             <Link to="/saved-content" className="sidebar-link" onClick={onClose}>
                                 <FaBookmark /> Kaydettiklerim

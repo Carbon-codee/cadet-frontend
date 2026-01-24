@@ -29,7 +29,9 @@ import SavedContentPage from './pages/SavedContentPage';
 import MyApplicationsPage from './pages/MyApplicationsPage';
 import InternshipsPage from './pages/InternshipsPage';
 import CompanyDashboard from './pages/CompanyDashboard';
-import CompanyApplicationsHub from './pages/CompanyApplicationsHub'; // BU IMPORT EKSİKTİ
+import CompanyApplicationsHub from './pages/CompanyApplicationsHub';
+import StudyDashboard from './pages/StudyDashboard';
+import StudySessionPage from './pages/StudySessionPage';
 
 function App() {
   return (
@@ -62,6 +64,8 @@ function App() {
         <Route path="/learning/:id" element={<ProtectedRoute><MainLayout><LearningDetailPage /></MainLayout></ProtectedRoute>} />
         <Route path="/saved-content" element={<ProtectedRoute><MainLayout><SavedContentPage /></MainLayout></ProtectedRoute>} />
         <Route path="/gasm" element={<ProtectedRoute><MainLayout><GasmPage /></MainLayout></ProtectedRoute>} />
+        <Route path="/study-plan" element={<ProtectedRoute><MainLayout><StudyDashboard /></MainLayout></ProtectedRoute>} />
+        <Route path="/study-plan/:planId/day/:dayNumber" element={<ProtectedRoute><MainLayout><StudySessionPage /></MainLayout></ProtectedRoute>} />
 
         {/* Şirket Bölümü */}
         <Route path="/company/dashboard" element={<ProtectedRoute><MainLayout><CompanyDashboard /></MainLayout></ProtectedRoute>} />

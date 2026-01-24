@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem('userInfo');
+        localStorage.removeItem('ai_chat_history');
         setUserInfo(null);
     };
 

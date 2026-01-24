@@ -10,6 +10,7 @@ const RoleBasedNavLinks = ({ role }) => {
     return (
       <>
         <NavLink to="/internships" className="nav-link">İlanlar</NavLink>
+        <NavLink to="/study-plan" className="nav-link">Kişisel Gelişim</NavLink>
         <NavLink to="/learning" className="nav-link">Öğrenme</NavLink>
         <NavLink to="/profile" className="nav-link">Profilim</NavLink>
       </>

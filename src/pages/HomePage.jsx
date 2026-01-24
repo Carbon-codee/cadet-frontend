@@ -110,7 +110,7 @@ const HomePage = () => {
             <footer className="main-footer">
                 <div className="footer-content">
                     <div className="footer-col">
-                        <h2>Cadet.</h2>
+                        <h2>Marine Cadet</h2>
                         <p>Denizcilik sektörünün dijitalleşen yüzü.</p>
                     </div>
                     <div className="footer-col">
