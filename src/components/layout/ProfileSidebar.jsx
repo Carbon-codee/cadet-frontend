@@ -56,6 +56,9 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
                     <Link to="/profile" className="sidebar-link" onClick={onClose}>
                         <FaUser /> Profil Bilgilerim
                     </Link>
+                    <Link to="/messages" className="sidebar-link" onClick={onClose}>
+                        <FaFileAlt /> Mesajlar
+                    </Link>
                     <Link to="/profile/update" className="sidebar-link" onClick={onClose}>
                         <FaUserEdit /> Profili Güncelle
                     </Link>
@@ -66,6 +69,9 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
                             <Link to="/company/dashboard" className="sidebar-link" onClick={onClose}>
                                 <FaChartLine /> Dashboard
                             </Link>
+                            <Link to="/company/my-internships" className="sidebar-link" onClick={onClose}>
+                                <FaFileAlt /> İlanlarım
+                            </Link>
                             <Link to="/company/applicants" className="sidebar-link" onClick={onClose}>
                                 <FaUsers /> Adaylar
                             </Link>
@@ -74,6 +80,9 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
 
                     {userInfo?.role === 'student' && (
                         <>
+                            <Link to="/internships" className="sidebar-link" onClick={onClose}>
+                                <FaFileAlt /> İlanlar
+                            </Link>
                             <Link to="/my-applications" className="sidebar-link" onClick={onClose}>
                                 <FaFileAlt /> Başvurularım
                             </Link>

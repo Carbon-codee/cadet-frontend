@@ -59,6 +59,7 @@ const Navbar = () => {
             <NavLink to="/" className="nav-link">Ana Sayfa</NavLink>
             {/* Rol bazlı linkleri buraya çağırıyoruz */}
             <RoleBasedNavLinks role={userInfo.role} />
+            <NavLink to="/messages" className="nav-link">Mesajlar</NavLink>
           </div>
         )}
 

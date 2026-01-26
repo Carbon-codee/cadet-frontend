@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { FaPaperPlane, FaTimes } from 'react-icons/fa';
 import { GiShipWheel } from 'react-icons/gi';
+import { useNavigate } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import './AiAssistant.css';
 
 const AiAssistant = () => {
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
 
     // Load from local storage or default
@@ -75,21 +77,24 @@ const AiAssistant = () => {
                                     const match = part.match(/\[(.*?)\]\((.*?)\)/);
                                     if (match) {
                                         return (
-                                            <a
+                                            <button
                                                 key={idx}
-                                                href={match[2]}
                                                 className="chat-action-btn"
+                                                type="button"
                                                 onClick={(e) => {
-                                                    // Handle internal navigation if it's relative
-                                                    if (match[2].startsWith('/')) {
-                                                        // Use window.location as quick fix or need to import useNavigate but this is inside map
-                                                        // Better: just let it be an anchor but prevent default if we want seamless SPA nav
-                                                        // For now, href is fine, it will refresh page but works.
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    const url = match[2].trim();
+                                                    console.log("Navigating to:", url);
+                                                    if (url.startsWith('/')) {
+                                                        navigate(url);
+                                                    } else {
+                                                        window.open(url, '_blank');
                                                     }
                                                 }}
                                             >
                                                 {match[1]}
-                                            </a>
+                                            </button>
                                         );
                                     }
                                     return part;

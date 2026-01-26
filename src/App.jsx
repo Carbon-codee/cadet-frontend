@@ -32,6 +32,7 @@ import CompanyDashboard from './pages/CompanyDashboard';
 import CompanyApplicationsHub from './pages/CompanyApplicationsHub';
 import StudyDashboard from './pages/StudyDashboard';
 import StudySessionPage from './pages/StudySessionPage';
+import MessagesPage from './pages/MessagesPage';
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
         <Route path="/user-info" element={<ProtectedRoute><MainLayout><UserInfoPage /></MainLayout></ProtectedRoute>} />
 
         {/* Öğrenci Bölümü */}
+        <Route path="/messages" element={<ProtectedRoute><MainLayout><MessagesPage /></MainLayout></ProtectedRoute>} />
         <Route path="/internships" element={<ProtectedRoute><MainLayout><InternshipsPage /></MainLayout></ProtectedRoute>} />
         <Route path="/internships/:id" element={<ProtectedRoute><MainLayout><InternshipDetailPage /></MainLayout></ProtectedRoute>} />
         <Route path="/my-applications" element={<ProtectedRoute><MainLayout><MyApplicationsPage /></MainLayout></ProtectedRoute>} />

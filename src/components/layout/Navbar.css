@@ -10,8 +10,7 @@
 
     /* Boyutlar */
     width: auto;
-    min-width: 800px;
-    /* İçerik sığsın diye genişlik */
+    /* min-width kaldırıldı veya küçültüldü */
     max-width: 95%;
     /* Mobilde taşmasın */
     padding: 10px 40px;
@@ -37,6 +36,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 30px;
+    /* Added gap to prevent overlap */
     z-index: 1000;
     transition: all 0.3s ease;
 }

@@ -100,9 +100,12 @@ const LecturerProfile = ({ profile }) => (
 );
 
 // --- ÖĞRENCİ PROFİL GÖRÜNÜMÜ ---
+import ContactModal from '../components/ContactModal'; // Modal'ı import et
+
 const StudentProfile = ({ profile }) => {
     const { userInfo } = useAuth();
     const [status, setStatus] = useState(profile?.currentStatus || 'Okulda/Tatilde');
+    const [showContactModal, setShowContactModal] = useState(false);
 
     useEffect(() => {
         if (profile?.currentStatus) {
@@ -133,10 +136,33 @@ const StudentProfile = ({ profile }) => {
     };
 
     const isOwnProfile = userInfo?._id === profile?._id;
+    const canContact = !isOwnProfile && userInfo && (userInfo.role === 'company' || userInfo.role === 'lecturer');
 
     return (
         <div className="profile-grid">
-            <div className="profile-card profile-header-card">
+            <ContactModal
+                isOpen={showContactModal}
+                onClose={() => setShowContactModal(false)}
+                recipient={profile}
+            />
+
+            <div className="profile-card profile-header-card" style={{ position: 'relative' }}>
+                {canContact && (
+                    <button
+                        onClick={() => setShowContactModal(true)}
+                        style={{
+                            position: 'absolute', top: '20px', right: '20px',
+                            background: '#005A9C', color: 'white', border: 'none',
+                            padding: '10px 15px', borderRadius: '8px', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '8px',
+                            fontWeight: 'bold', boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                            zIndex: 50
+                        }}
+                    >
+                        <FaEnvelope /> İletişime Geç
+                    </button>
+                )}
+
                 <div className="avatar-container">
                     <div
                         className="avatar-box"
