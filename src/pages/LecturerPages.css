@@ -798,9 +798,263 @@
     color: #868e96;
     text-transform: uppercase;
     font-weight: 700;
-    display: block;
-    margin-bottom: 4px;
 }
+
+/* =========================================
+   YENİ AKADEMİSYEN PANELİ STİLLERİ (Sidebar + Grid)
+   ========================================= */
+
+/* --- MAIN LAYOUT --- */
+.lecturer-dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8fafc;
+    font-family: inherit;
+    color: #334155;
+}
+
+/* --- SIDEBAR --- */
+.dashboard-sidebar.lecturer-sidebar {
+    width: 280px;
+    background: white;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    position: fixed;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: hidden;
+    z-index: 10;
+}
+
+.profile-img-container.lecturer-img {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    border-radius: 1rem;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(44, 62, 80, 0.3);
+}
+
+.xp-badge.lecturer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f0fdfa;
+    color: #0f766e;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: 1px solid #ccfbf1;
+}
+
+.sidebar-module-item.lecturer-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    border: 1px solid transparent;
+    text-decoration: none;
+    color: inherit;
+}
+
+.sidebar-module-item.lecturer-item:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+/* --- MAIN CONTENT --- */
+.dashboard-main.lecturer-main {
+    flex: 1;
+    margin-left: 280px;
+    padding: 0 2rem;
+    /* Remove top/bottom padding */
+    margin-top: 80px;
+    /* Slight adjust for fixed navbar */
+}
+
+/* --- STATS GRID --- */
+.premium-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.5rem;
+    /* Minimized gap */
+    margin-bottom: 0.5rem;
+    /* Minimized margin */
+}
+
+.premium-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.premium-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-color: #cbd5e1;
+    transition: all 0.3s ease;
+}
+
+/* --- ICONS --- */
+.icon-box.purple {
+    background: #f3e8ff;
+    color: #9333ea;
+}
+
+.icon-box.orange {
+    background: #ffedd5;
+    color: #f97316;
+}
+
+/* --- BOTTOM CONTENT GRID --- */
+.premium-content-grid.lecturer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    /* Minimized gap */
+    align-items: start;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .dashboard-sidebar.lecturer-sidebar {
+        display: none;
+    }
+
+    .dashboard-main.lecturer-main {
+        margin-left: 0;
+        width: 100%;
+        padding: 1.5rem;
+    }
+
+    .premium-content-grid.lecturer-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* --- SIDEBAR TEXT & MODULES (Fixes) --- */
+.dashboard-sidebar .section-title {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: block;
+    /* Override flex */
+    border-bottom: none;
+    /* Override if any */
+}
+
+.profile-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+    text-align: center;
+}
+
+.profile-role {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.profile-initials {
+    color: white;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+/* Sidebar Module Items */
+.module-status-indicator {
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    margin-right: 0.75rem;
+    font-size: 1rem;
+}
+
+.module-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.day-number {
+    font-size: 0.7rem;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.module-topic-truncate {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #334155;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Sidebar Profile Alignment */
+.profile-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 1.5rem 0;
+    width: 100%;
+}
+
+.curriculum-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.module-list-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+/* Table Alignment Fix */
+.modern-table th:first-child,
+.modern-table td:first-child {
+    text-align: left;
+    padding-left: 20px;
+}
+
+.modern-table th,
+.modern-table td {
+    vertical-align: middle;
+}
+
 
 .info-item-st span {
     font-size: 1rem;

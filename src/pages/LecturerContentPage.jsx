@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaFilePdf, FaBullhorn, FaTrash, FaEdit, FaEye, FaPlus, FaTimes } from 'react-icons/fa';
-import API from '../api/axiosConfig'; // API Import
+import {
+    FaFilePdf, FaBullhorn, FaTrash, FaEdit, FaEye, FaPlus,
+    FaChalkboardTeacher, FaUsers, FaFileAlt
+} from 'react-icons/fa';
+import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import './LecturerPages.css';
 
@@ -31,12 +34,11 @@ const LecturerContentPage = () => {
         if (userInfo) fetchMyContents();
     }, [userInfo]);
 
-    // Silme İşlemi (API)
     const handleDelete = async (id) => {
         if (window.confirm("Bu içeriği silmek istediğinize emin misiniz?")) {
             try {
                 await API.delete(`/content/${id}`);
-                setContents(contents.filter(item => item._id !== id)); // Listeden çıkar
+                setContents(contents.filter(item => item._id !== id));
             } catch (error) {
                 alert("Silme işlemi başarısız oldu.");
             }
@@ -44,78 +46,136 @@ const LecturerContentPage = () => {
     };
 
     const handleEdit = (item) => {
-        // item._id MongoDB ID'sidir
         navigate('/lecturer/upload', { state: { editMode: true, item: item } });
     };
 
-    // Filtreleme
     const filteredContents = filter === 'Tümü'
         ? contents
         : contents.filter(item =>
             filter === 'Belge' ? (item.type === 'Belge' || item.type === 'Ders Notu') : item.type === 'Duyuru'
         );
 
-    if (loading) return <div style={{ padding: 40, textAlign: 'center' }}>Yükleniyor...</div>;
+    if (loading) return <div className="dashboard-loading"><div className="spinner"></div></div>;
 
     return (
-        <div className="lecturer-page">
-            <div className="page-header">
-                <div>
-                    <h1>Yayınlanan İçerikler</h1>
-                    <p>Paylaştığınız tüm duyuru ve belgeleri buradan yönetin.</p>
-                </div>
-                <Link to="/lecturer/upload" className="submit-button" style={{ width: 'auto', textDecoration: 'none' }}>
-                    <FaPlus /> Yeni İçerik Ekle
-                </Link>
-            </div>
+        <div className="lecturer-dashboard-layout">
+            {/* --- SIDEBAR --- */}
+            <aside className="dashboard-sidebar lecturer-sidebar">
+                <div className="profile-section">
+                    <div className="profile-img-container lecturer-img">
+                        <span className="profile-initials">
+                            {userInfo?.name?.charAt(0) || 'A'}{userInfo?.name?.charAt(1)?.toUpperCase() || ''}
+                        </span>
+                    </div>
+                    <h3 className="profile-name headline-font">{userInfo?.name}</h3>
+                    <p className="profile-role">Akademisyen Paneli</p>
 
-            <div className="content-filter-bar">
-                <div className="filter-group">
-                    <button className={`filter-btn ${filter === 'Tümü' ? 'active' : ''}`} onClick={() => setFilter('Tümü')}>Tümü</button>
-                    <button className={`filter-btn ${filter === 'Duyuru' ? 'active' : ''}`} onClick={() => setFilter('Duyuru')}>Duyurular</button>
-                    <button className={`filter-btn ${filter === 'Belge' ? 'active' : ''}`} onClick={() => setFilter('Belge')}>Belgeler</button>
+                    <div className="xp-badge lecturer-badge">
+                        <FaChalkboardTeacher className="xp-icon" />
+                        <span>Eğitmen</span>
+                    </div>
                 </div>
-                <div style={{ color: '#7f8c8d', fontSize: '0.9rem' }}>Toplam <strong>{filteredContents.length}</strong> içerik</div>
-            </div>
 
-            <div className="content-list">
-                {filteredContents.length > 0 ? (
-                    filteredContents.map(item => (
-                        <div key={item._id} className="manage-card">
-                            <div className="mc-left">
-                                <div className={`mc-icon-box ${item.type === 'Duyuru' ? 'announcement' : 'doc'}`}>
-                                    {item.type === 'Duyuru' ? <FaBullhorn /> : <FaFilePdf />}
+                <div className="sidebar-divider"></div>
+
+                <div className="curriculum-section">
+                    <div className="section-header-row">
+                        <h4 className="section-title">Hızlı Erişim</h4>
+                    </div>
+
+                    <div className="module-list-scroll">
+                        <Link to="/lecturer/upload" className="sidebar-module-item lecturer-item">
+                            <div className="module-status-indicator"><FaPlus style={{ color: '#0ea5e9' }} /></div>
+                            <div className="module-info">
+                                <span className="day-number">İçerik</span>
+                                <span className="module-topic-truncate">Yeni İçerik Yükle</span>
+                            </div>
+                        </Link>
+
+                        <Link to="/lecturer/student-status" className="sidebar-module-item lecturer-item">
+                            <div className="module-status-indicator"><FaUsers style={{ color: '#8b5cf6' }} /></div>
+                            <div className="module-info">
+                                <span className="day-number">Takip</span>
+                                <span className="module-topic-truncate">Öğrenci Durumları</span>
+                            </div>
+                        </Link>
+
+                        <Link to="/lecturer/my-content" className="sidebar-module-item lecturer-item">
+                            <div className="module-status-indicator"><FaFileAlt style={{ color: '#f59e0b' }} /></div>
+                            <div className="module-info">
+                                <span className="day-number">Arşiv</span>
+                                <span className="module-topic-truncate">İçeriklerim</span>
+                            </div>
+                        </Link>
+                    </div>
+                </div>
+            </aside>
+
+            {/* --- MAIN CONTENT --- */}
+            <main className="dashboard-main lecturer-main">
+                <header className="main-header">
+                    <div>
+                        <h1 className="welcome-title">Yayınlanan İçerikler 📄</h1>
+                        <p className="welcome-subtitle">
+                            Paylaştığınız tüm duyuru ve belgeleri buradan yönetin.
+                        </p>
+                    </div>
+                    <div className="header-actions">
+                        <Link to="/lecturer/upload" className="action-btn secondary">
+                            <FaPlus /> Yeni İçerik Ekle
+                        </Link>
+                    </div>
+                </header>
+
+                <div className="content-filter-bar" style={{ marginTop: '20px' }}>
+                    <div className="filter-group">
+                        <button className={`filter-btn ${filter === 'Tümü' ? 'active' : ''}`} onClick={() => setFilter('Tümü')}>Tümü</button>
+                        <button className={`filter-btn ${filter === 'Duyuru' ? 'active' : ''}`} onClick={() => setFilter('Duyuru')}>Duyurular</button>
+                        <button className={`filter-btn ${filter === 'Belge' ? 'active' : ''}`} onClick={() => setFilter('Belge')}>Belgeler</button>
+                    </div>
+                    <div style={{ color: '#64748b', fontSize: '0.9rem' }}>Toplam <strong>{filteredContents.length}</strong> içerik</div>
+                </div>
+
+                <div className="content-list">
+                    {filteredContents.length > 0 ? (
+                        filteredContents.map(item => (
+                            <div key={item._id} className="manage-card">
+                                <div className="mc-left">
+                                    <div className={`mc-icon-box ${item.type === 'Duyuru' ? 'announcement' : 'doc'}`}>
+                                        {item.type === 'Duyuru' ? <FaBullhorn /> : <FaFilePdf />}
+                                    </div>
+                                    <div className="mc-info">
+                                        <h3 onClick={() => navigate(`/learning/${item._id}`)}>{item.title}</h3>
+                                        <div className="mc-meta">
+                                            <span>📅 {new Date(item.createdAt).toLocaleDateString('tr-TR')}</span>
+                                            <span>🎯 {item.targetAudience}</span>
+                                            <span className="badge warning" style={{ fontWeight: 'normal', background: '#f1f5f9', color: '#64748b' }}>{item.type}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="mc-info">
-                                    <h3 onClick={() => navigate(`/learning/${item._id}`)}>{item.title}</h3>
-                                    <div className="mc-meta">
-                                        {/* Tarihi formatla */}
-                                        <span>📅 {new Date(item.createdAt).toLocaleDateString('tr-TR')}</span>
-                                        <span>🎯 {item.targetAudience}</span>
-                                        <span className="badge warning" style={{ fontWeight: 'normal', background: '#eee', color: '#555' }}>{item.type}</span>
+
+                                <div className="mc-right">
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <Link to={`/learning/${item._id}`} className="btn-icon-small btn-edit" title="Görüntüle">
+                                            <FaEye />
+                                        </Link>
+                                        <button className="btn-icon-small btn-edit" title="Düzenle" onClick={() => handleEdit(item)}>
+                                            <FaEdit />
+                                        </button>
+                                        <button className="btn-icon-small btn-delete" title="Sil" onClick={() => handleDelete(item._id)}>
+                                            <FaTrash />
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="mc-right">
-                                <div style={{ display: 'flex', gap: '10px' }}>
-                                    <Link to={`/learning/${item._id}`} className="btn-icon-small btn-edit" title="Görüntüle">
-                                        <FaEye />
-                                    </Link>
-                                    <button className="btn-icon-small btn-edit" title="Düzenle" onClick={() => handleEdit(item)}>
-                                        <FaEdit />
-                                    </button>
-                                    <button className="btn-icon-small btn-delete" title="Sil" onClick={() => handleDelete(item._id)}>
-                                        <FaTrash />
-                                    </button>
-                                </div>
-                            </div>
+                        ))
+                    ) : (
+                        <div className="empty-placeholder">
+                            <p>Bu kategoride içerik bulunamadı.</p>
                         </div>
-                    ))
-                ) : (
-                    <p style={{ textAlign: 'center', color: '#999', padding: '30px' }}>Bu kategoride içerik bulunamadı.</p>
-                )}
-            </div>
+                    )}
+                </div>
+            </main>
         </div>
     );
 };

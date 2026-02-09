@@ -113,14 +113,7 @@ const MessagesPage = () => {
                     )}
 
                     <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #eee', display: 'flex', gap: '15px' }}>
-                        {isSender && !isEditing && (
-                            <button
-                                onClick={() => { setIsEditing(true); setEditContent(selectedMessage.content); }}
-                                style={{ background: '#f39c12', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
-                            >
-                                <FaEdit /> Düzenle
-                            </button>
-                        )}
+
                         <button
                             onClick={() => handleDelete(selectedMessage._id)}
                             style={{ background: '#e74c3c', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}

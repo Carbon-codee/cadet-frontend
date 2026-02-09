@@ -31,9 +31,17 @@ export const AuthProvider = ({ children }) => {
         setUserInfo(null);
     };
 
+    // YENİ: Kullanıcı bilgisini güncelleme (Örn: KVKK onayı sonrası)
+    const updateUser = (updates) => {
+        if (!userInfo) return;
+        const updatedInfo = { ...userInfo, ...updates };
+        localStorage.setItem('userInfo', JSON.stringify(updatedInfo));
+        setUserInfo(updatedInfo);
+    };
+
     return (
         // isLoading'i de value'ya ekle
-        <AuthContext.Provider value={{ userInfo, isLoading, login, logout }}>
+        <AuthContext.Provider value={{ userInfo, isLoading, login, logout, updateUser }}>
             {children}
         </AuthContext.Provider>
     );

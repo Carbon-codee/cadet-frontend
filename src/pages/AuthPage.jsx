@@ -13,7 +13,7 @@ const AuthPage = () => {
     const { login } = useAuth();
 
     const [loginData, setLoginData] = useState({ email: '', password: '' });
-    const [registerData, setRegisterData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+    const [registerData, setRegisterData] = useState({ name: '', email: '', password: '', confirmPassword: '', studentBarcode: '' });
 
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
@@ -99,6 +99,21 @@ const AuthPage = () => {
                                 <input type="text" placeholder={role === 'company' ? 'Şirket Adı' : 'Ad Soyad'} required value={registerData.name} onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })} />
                                 <FaUserTag className="input-icon" />
                             </div>
+
+                            {/* E-DEVLET BARKOD NO (Sadece Öğrenciler İçin) */}
+                            {role === 'student' && (
+                                <div className="modern-input-group">
+                                    <input
+                                        type="text"
+                                        placeholder="E-Devlet Barkod No"
+                                        required
+                                        value={registerData.studentBarcode}
+                                        onChange={(e) => setRegisterData({ ...registerData, studentBarcode: e.target.value })}
+                                    />
+                                    <FaLock className="input-icon" />
+                                </div>
+                            )}
+
                             <div className="modern-input-group">
                                 <input type="email" placeholder="E-posta Adresi" required value={registerData.email} onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })} />
                                 <FaEnvelope className="input-icon" />

@@ -36,7 +36,7 @@ const ApplicantsPage = () => {
 
             // Listeyi güncelle (Sayfayı yenilemeden)
             setApplicants(prev => prev.map(app =>
-                app.user._id === applicantId ? { ...app, status: newStatus } : app
+                (app.user && app.user._id === applicantId) ? { ...app, status: newStatus } : app
             ));
         } catch (error) {
             alert("İşlem başarısız.");
@@ -68,11 +68,11 @@ const ApplicantsPage = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {applicants.map((app) => (
+                                {applicants.filter(app => app.user).map((app) => (
                                     <tr key={app._id} className={app.status === 'Onaylandı' ? 'row-approved' : ''}>
                                         <td>
                                             <div className="candidate-profile">
-                                                <div className="candidate-avatar">{app.user.name.charAt(0)}</div>
+                                                <div className="candidate-avatar">{app.user.name?.charAt(0) || '?'}</div>
                                                 <div>
                                                     <div className="candidate-name">{app.user.name} {app.user.surname}</div>
                                                     <div className="candidate-email">{app.user.email}</div>

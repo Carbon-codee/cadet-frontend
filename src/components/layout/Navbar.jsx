@@ -38,6 +38,15 @@ const RoleBasedNavLinks = ({ role }) => {
     );
   }
 
+  // YENİ EKLENEN KISIM: ADMIN LİNKLERİ
+  if (role === 'admin') {
+    return (
+      <>
+        <NavLink to="/admin/dashboard" className="nav-link">Admin Paneli</NavLink>
+      </>
+    );
+  }
+
   return null;
 };
 

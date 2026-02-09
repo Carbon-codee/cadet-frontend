@@ -28,7 +28,7 @@ const HomePage = () => {
     }, [userInfo]);
 
     return (
-        <div className="landing-page">
+        <div className="homepage-container">
 
             {/* --- VİDEO ARKAPLAN (HERKES İÇİN SABİT) --- */}
             <div className="video-wrapper">
@@ -45,7 +45,7 @@ const HomePage = () => {
                         <div className="hero-text-box">
                             <h1 className="hero-title">Geleceğin <span className="highlight">Denizcileri</span><br />Rotalarını Burada Çiziyor</h1>
                             <p className="hero-subtitle">
-                                "Marine Cadet, denizcilik öğrencileri için en kapsamlı staj platformudur"
+                                Marine Cadet, denizcilik öğrencileri için en kapsamlı staj platformudur.
                                 Türkiye'nin en prestijli denizcilik şirketleriyle stajyerleri ve akademisyenleri buluşturan ilk ve tek platform.
                             </p>
                             <div className="hero-buttons">
@@ -55,12 +55,61 @@ const HomePage = () => {
                         </div>
                     </section>
 
+                    {/* --- FEATURE SECTION (YENİ) --- */}
+                    <section className="features-section">
+                        <div className="section-container">
+                            <h2 className="section-title">Neden Marine Cadet?</h2>
+                            <div className="features-grid">
+                                <div className="feature-card">
+                                    <div className="feature-icon"><FaSearch /></div>
+                                    <h3>Akıllı Staj Arama</h3>
+                                    <p>Siz kriterlerinizi belirleyin, yapay zeka en uygun ilanları size getirsin.</p>
+                                </div>
+                                <div className="feature-card">
+                                    <div className="feature-icon"><FaChartLine /></div>
+                                    <h3>Kişisel Gelişim Planı</h3>
+                                    <p>GPA ve dil seviyenize göre eksiklerinizi analiz edip size özel çalışma programı hazırlıyoruz.</p>
+                                </div>
+                                <div className="feature-card">
+                                    <div className="feature-icon"><FaUserGraduate /></div>
+                                    <h3>Kariyer Asistanı</h3>
+                                    <p>Staj süreciniz boyunca Kaptan AI, her türlü sorunuzda yanınızda.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- STATS SECTION (MEVCUT - STYLE UPDATE) --- */}
                     <section className="stats-section">
                         <div className="stats-grid">
                             <div className="stat-card"><FaUserGraduate className="stat-icon" /><h3>{stats.students}</h3><p>Öğrenci Kayıtlı</p></div>
                             <div className="stat-card"><FaHandshake className="stat-icon" /><h3>{stats.matches}</h3><p>Staj Eşleşmesi</p></div>
                             <div className="stat-card"><FaBuilding className="stat-icon" /><h3>{stats.companies}</h3><p>Partner Şirket</p></div>
                             <div className="stat-card"><FaChartLine className="stat-icon" /><h3>%{stats.rate}</h3><p>İşe Yerleşme Oranı</p></div>
+                        </div>
+                    </section>
+
+                    {/* --- AUDIENCE SECTION (YENİ) --- */}
+                    <section className="audience-section">
+                        <div className="audience-split">
+                            <div className="audience-card student">
+                                <h3>Öğrenciler İçin</h3>
+                                <ul>
+                                    <li><FaSearch /> Binlerce aktif staj ilanı</li>
+                                    <li><FaFileAlt /> Tek tıkla kolay başvuru</li>
+                                    <li><FaGraduationCap /> Sertifikalarını dijitalleştir</li>
+                                </ul>
+                                <Link to="/auth" className="btn-outline white">Hemen Başla</Link>
+                            </div>
+                            <div className="audience-card company">
+                                <h3>Şirketler İçin</h3>
+                                <ul>
+                                    <li><FaUsers /> En yetenekli aday havuzu</li>
+                                    <li><FaClipboardList /> KVKK onaylı süreçler</li>
+                                    <li><FaChartBar /> Detaylı performans analizi</li>
+                                </ul>
+                                <Link to="/auth" className="btn-outline white">Partner Ol</Link>
+                            </div>
                         </div>
                     </section>
                 </>
@@ -117,7 +166,36 @@ const HomePage = () => {
                         <h3>Hızlı Linkler</h3>
                         <ul>
                             <li><Link to="/">Ana Sayfa</Link></li>
-                            {!userInfo && <li><Link to="/auth">Giriş Yap</Link></li>}
+                            {!userInfo && <li><Link to="/auth">Giriş Yap / Kayıt Ol</Link></li>}
+
+                            {/* ÖĞRENCİ LİNKLERİ */}
+                            {userInfo?.role === 'student' && (
+                                <>
+                                    <li><Link to="/internships">Staj İlanları</Link></li>
+                                    <li><Link to="/my-applications">Başvurularım</Link></li>
+                                    <li><Link to="/profile">Profilim</Link></li>
+                                </>
+                            )}
+
+                            {/* ŞİRKET LİNKLERİ */}
+                            {userInfo?.role === 'company' && (
+                                <>
+                                    <li><Link to="/company/dashboard">Panel</Link></li>
+                                    <li><Link to="/company/my-internships">İlanlarım</Link></li>
+                                    <li><Link to="/company/applicants">Adaylar</Link></li>
+                                </>
+                            )}
+
+                            {/* AKADEMİSYEN LİNKLERİ */}
+                            {userInfo?.role === 'lecturer' && (
+                                <>
+                                    <li><Link to="/lecturer/dashboard">Akademik Panel</Link></li>
+                                    <li><Link to="/lecturer/my-content">Ders İçerikleri</Link></li>
+                                </>
+                            )}
+
+                            {/* KVKK LİNKİ */}
+                            <li><Link to="/kvkk">KVKK Aydınlatma Metni</Link></li>
                         </ul>
                     </div>
                     <div className="footer-col">
@@ -130,8 +208,7 @@ const HomePage = () => {
                     <div className="footer-col">
                         <h3>Takip Et</h3>
                         <div className="social-icons">
-                            <a href="#"><FaInstagram /></a>
-                            <a href="#"><FaLinkedin /></a>
+                            <a href="https://www.linkedin.com/in/%C5%9Faban-do%C4%9Fan-3b0a89210/" target="_blank" rel="noopener noreferrer"><FaLinkedin /></a>
                         </div>
                     </div>
                 </div>

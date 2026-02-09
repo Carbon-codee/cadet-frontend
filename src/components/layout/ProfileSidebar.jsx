@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import {
     FaTimes, FaUser, FaCog, FaSignOutAlt,
     FaUserEdit, FaFileAlt, FaBookmark,
-    FaChartLine, FaUsers, FaBrain
+    FaChartLine, FaUsers, FaBrain, FaUserShield
 } from 'react-icons/fa';
 
 const ProfileSidebar = ({ isOpen, onClose }) => {
@@ -45,83 +45,109 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
                             <h4>{userInfo.name}</h4>
                             <p className="user-sub-info">
                                 {userInfo.role === 'company' ? 'Şirket Hesabı' :
-                                    userInfo.role === 'lecturer' ? 'Akademisyen' : 'Öğrenci'}
+                                    userInfo.role === 'lecturer' ? 'Akademisyen' :
+                                        userInfo.role === 'admin' ? 'Admin' : 'Öğrenci'}
                             </p>
                         </div>
                     </div>
                 )}
 
                 <div className="sidebar-content">
-                    {/* --- ORTAK LİNKLER --- */}
-                    <Link to="/profile" className="sidebar-link" onClick={onClose}>
-                        <FaUser /> Profil Bilgilerim
-                    </Link>
-                    <Link to="/messages" className="sidebar-link" onClick={onClose}>
-                        <FaFileAlt /> Mesajlar
-                    </Link>
-                    <Link to="/profile/update" className="sidebar-link" onClick={onClose}>
-                        <FaUserEdit /> Profili Güncelle
-                    </Link>
 
-                    {/* --- ROL BAZLI LİNKLER --- */}
-                    {userInfo?.role === 'company' && (
+                    {userInfo?.role === 'admin' ? (
+                        // --- ADMIN MENÜSÜ ---
                         <>
-                            <Link to="/company/dashboard" className="sidebar-link" onClick={onClose}>
-                                <FaChartLine /> Dashboard
+                            <Link to="/admin/dashboard" className="sidebar-link" onClick={onClose}>
+                                <FaUserShield /> Admin Paneli
                             </Link>
-                            <Link to="/company/my-internships" className="sidebar-link" onClick={onClose}>
-                                <FaFileAlt /> İlanlarım
+                            <Link to="/messages" className="sidebar-link" onClick={onClose}>
+                                <FaFileAlt /> Mesajlar
                             </Link>
-                            <Link to="/company/applicants" className="sidebar-link" onClick={onClose}>
-                                <FaUsers /> Adaylar
+                            <button className="sidebar-link logout-btn" onClick={handleLogout}>
+                                <FaSignOutAlt /> Çıkış Yap
+                            </button>
+                        </>
+                    ) : (
+                        // --- DİĞER ROLLERİN MENÜSÜ ---
+                        <>
+                            {/* ORTAK LİNKLER */}
+                            <Link to="/profile" className="sidebar-link" onClick={onClose}>
+                                <FaUser /> Profil Bilgilerim
                             </Link>
+                            <Link to="/messages" className="sidebar-link" onClick={onClose}>
+                                <FaFileAlt /> Mesajlar
+                            </Link>
+                            <Link to="/profile/update" className="sidebar-link" onClick={onClose}>
+                                <FaUserEdit /> Profili Güncelle
+                            </Link>
+
+                            {/* ROL BAZLI LİNKLER - COMPANY */}
+                            {userInfo?.role === 'company' && (
+                                <>
+                                    <Link to="/company/dashboard" className="sidebar-link" onClick={onClose}>
+                                        <FaChartLine /> Dashboard
+                                    </Link>
+                                    <Link to="/company/my-internships" className="sidebar-link" onClick={onClose}>
+                                        <FaFileAlt /> İlanlarım
+                                    </Link>
+                                    <Link to="/company/applicants" className="sidebar-link" onClick={onClose}>
+                                        <FaUsers /> Adaylar
+                                    </Link>
+                                </>
+                            )}
+
+                            {/* ROL BAZLI LİNKLER - STUDENT */}
+                            {userInfo?.role === 'student' && (
+                                <>
+                                    <Link to="/internships" className="sidebar-link" onClick={onClose}>
+                                        <FaFileAlt /> İlanlar
+                                    </Link>
+                                    <Link to="/my-applications" className="sidebar-link" onClick={onClose}>
+                                        <FaFileAlt /> Başvurularım
+                                    </Link>
+                                    <Link to="/study-plan" className="sidebar-link" onClick={onClose}>
+                                        <FaBrain /> Akıllı Asistan
+                                    </Link>
+                                    <Link to="/saved-content" className="sidebar-link" onClick={onClose}>
+                                        <FaBookmark /> Kaydettiklerim
+                                    </Link>
+                                </>
+                            )}
+
+                            {/* ROL BAZLI LİNKLER - LECTURER */}
+                            {userInfo?.role === 'lecturer' && (
+                                <>
+                                    <Link to="/lecturer/dashboard" className="sidebar-link" onClick={onClose}>
+                                        <FaChartLine /> Akademik Panel
+                                    </Link>
+                                    <Link to="/lecturer/my-content" className="sidebar-link" onClick={onClose}>
+                                        <FaFileAlt /> İçeriklerim
+                                    </Link>
+                                    <Link to="/lecturer/upload" className="sidebar-link" onClick={onClose}>
+                                        <FaFileAlt /> Yeni Paylaşım
+                                    </Link>
+                                </>
+                            )}
+
+                            <div className="divider"></div>
+
+                            {/* HESAP AYARLARI */}
+                            <Link to="/kvkk" className="sidebar-link" onClick={onClose}>
+                                <FaUserShield /> Kişisel Verilerin Korunması (KVKK)
+                            </Link>
+
+                            <Link to="/user-info" className="sidebar-link" onClick={onClose}>
+                                <FaCog /> Şifre ve E-posta Ayarları
+                            </Link>
+
+                            <button className="sidebar-link logout-btn" onClick={handleLogout}>
+                                <FaSignOutAlt /> Çıkış Yap
+                            </button>
                         </>
                     )}
-
-                    {userInfo?.role === 'student' && (
-                        <>
-                            <Link to="/internships" className="sidebar-link" onClick={onClose}>
-                                <FaFileAlt /> İlanlar
-                            </Link>
-                            <Link to="/my-applications" className="sidebar-link" onClick={onClose}>
-                                <FaFileAlt /> Başvurularım
-                            </Link>
-                            <Link to="/study-plan" className="sidebar-link" onClick={onClose}>
-                                <FaBrain /> Akıllı Asistan
-                            </Link>
-                            <Link to="/saved-content" className="sidebar-link" onClick={onClose}>
-                                <FaBookmark /> Kaydettiklerim
-                            </Link>
-                        </>
-                    )}
-
-                    {userInfo?.role === 'lecturer' && (
-                        <>
-                            <Link to="/lecturer/dashboard" className="sidebar-link" onClick={onClose}>
-                                <FaChartLine /> Akademik Panel
-                            </Link>
-                            <Link to="/lecturer/my-content" className="sidebar-link" onClick={onClose}>
-                                <FaFileAlt /> İçeriklerim
-                            </Link>
-                            <Link to="/lecturer/upload" className="sidebar-link" onClick={onClose}>
-                                <FaFileAlt /> Yeni Paylaşım
-                            </Link>
-                        </>
-                    )}
-
-                    <div className="divider"></div>
-
-                    {/* --- HESAP AYARLARI (Şifre/Mail) --- */}
-                    <Link to="/user-info" className="sidebar-link" onClick={onClose}>
-                        <FaCog /> Şifre ve E-posta Ayarları
-                    </Link>
-
-                    <button className="sidebar-link logout-btn" onClick={handleLogout}>
-                        <FaSignOutAlt /> Çıkış Yap
-                    </button>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

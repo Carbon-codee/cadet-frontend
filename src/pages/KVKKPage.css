@@ -1,0 +1,154 @@
+/* KVKK Page Styles */
+.kvkk-page-container {
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #333;
+}
+
+.kvkk-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Hafif gölge */
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+}
+
+.kvkk-header {
+    background: #002B5B; /* Uygulamanın ana rengi */
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+.kvkk-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.last-updated {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.kvkk-content-box {
+    padding: 2.5rem;
+    max-height: 500px; /* Çok uzun olursa scroll olsun */
+    overflow-y: auto;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #eee;
+}
+
+.kvkk-content-box h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+    color: #002B5B;
+    font-size: 1.2rem;
+}
+
+.kvkk-content-box h3:first-child {
+    margin-top: 0;
+}
+
+.kvkk-content-box p, .kvkk-content-box ul {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.kvkk-content-box ul {
+    padding-left: 1.5rem;
+    list-style-type: disc;
+}
+
+/* Scrollbar Style */
+.kvkk-content-box::-webkit-scrollbar {
+    width: 8px;
+}
+.kvkk-content-box::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.kvkk-content-box::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+.kvkk-content-box::-webkit-scrollbar-thumb:hover {
+    background: #b3b3b3;
+}
+
+/* Actions Area */
+.kvkk-actions {
+    padding: 2rem;
+    background: white;
+}
+
+.approval-status {
+    display: flex;
+    align-items: center; /* Veya flex-start eğer metin çok uzunsa */
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+
+.status-icon {
+    font-size: 3rem;
+    flex-shrink: 0;
+}
+
+/* Approved State */
+.approval-status.approved {
+    background-color: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #047857;
+}
+
+/* Pending State */
+.approval-status.pending {
+    background-color: #fff7ed;
+    border-color: #fed7aa;
+    color: #9a3412;
+    flex-direction: column; /* Mobilde alt alta olsun diye starting point, ama desktopta row daha iyi */
+    align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+    .approval-status.pending {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+.approval-form {
+    flex: 1;
+}
+
+.approval-form p {
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.btn-approve-kvkk {
+    background-color: #002B5B;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-approve-kvkk:hover {
+    background-color: #001a38;
+}
+
+.btn-approve-kvkk:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

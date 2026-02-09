@@ -11,6 +11,9 @@ import AuthPage from './pages/AuthPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
+import KVKKModal from './components/KVKKModal';
+import KVKKPage from './pages/KVKKPage'; // YENİ
+import AdminDashboard from './pages/AdminDashboard'; // YENİ: Admin Paneli
 import LearningPage from './pages/LearningPage';
 import LearningDetailPage from './pages/LearningDetailPage';
 import ProfilePage from './pages/ProfilePage';
@@ -37,6 +40,7 @@ import MessagesPage from './pages/MessagesPage';
 function App() {
   return (
     <Router>
+      <KVKKModal /> {/* YENİ: Her sayfada çalışması için Router içine ekledim */}
       <Routes>
         {/* =========================================
            1. HERKESE AÇIK (PUBLIC) ROTALAR
@@ -46,6 +50,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
+        <Route path="/admin/dashboard" element={<MainLayout><AdminDashboard /></MainLayout>} /> {/* YENİ: Admin Rotası - Navbar Düzeltildi */}
 
         {/* =========================================
            2. KORUMALI (PRIVATE) ROTALAR
@@ -56,6 +61,7 @@ function App() {
         <Route path="/profile/:id" element={<ProtectedRoute><MainLayout><ProfilePage /></MainLayout></ProtectedRoute>} />
         <Route path="/profile/update" element={<ProtectedRoute><MainLayout><ProfileUpdatePage /></MainLayout></ProtectedRoute>} />
         <Route path="/user-info" element={<ProtectedRoute><MainLayout><UserInfoPage /></MainLayout></ProtectedRoute>} />
+        <Route path="/kvkk" element={<ProtectedRoute><MainLayout><KVKKPage /></MainLayout></ProtectedRoute>} />
 
         {/* Öğrenci Bölümü */}
         <Route path="/messages" element={<ProtectedRoute><MainLayout><MessagesPage /></MainLayout></ProtectedRoute>} />

@@ -104,144 +104,190 @@ const StudyDashboard = () => {
         fetchInitialData();
     };
 
-    if (loading) return <div style={{ padding: '20px', textAlign: 'center' }}>Yükleniyor...</div>;
+    if (loading) return <div className="loading-container">Veriler Yükleniyor...</div>;
+
+    const completedCount = plan ? plan.modules.filter(m => m.isCompleted).length : 0;
+    const totalCount = plan ? plan.modules.length : 0;
+    const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+    const nextModule = plan ? plan.modules.find(m => !m.isCompleted) : null;
 
     return (
-        <div className="study-dashboard">
-            <div className="dashboard-container">
-                <header className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                        <h1 className="dashboard-title">
-                            {viewingArchived ? 'Geçmiş Plan İncelemesi' : 'Kişisel Gelişim'}
-                        </h1>
-                        <p className="dashboard-subtitle">
-                            {viewingArchived ? 'Bu plan salt okunur moddadır.' : 'Hedeflerinizdeki şirkete girmek için eksiklerinizi tamamlayın.'}
-                        </p>
+        <div className="study-dashboard-layout">
+            {/* --- SIDEBAR --- */}
+            <aside className="dashboard-sidebar">
+                <div className="profile-section">
+                    <div className="profile-img-container">
+                        <span className="profile-initials">
+                            {user?.name?.charAt(0) || 'U'}{user?.surname?.charAt(0) || ''}
+                        </span>
                     </div>
+                    <h3 className="profile-name">{user?.name} {user?.surname}</h3>
+                    <p className="profile-role">{user?.role === 'student' ? 'Öğrenci' : 'Kullanıcı'}</p>
+
+                    <div className="xp-badge">
+                        <FaStar className="xp-icon" />
+                        <span>{user?.xp || 0} XP</span>
+                    </div>
+                </div>
+
+                <div className="sidebar-divider"></div>
+
+                <div className="curriculum-section">
+                    <h4 className="section-title">Çalışma Programı</h4>
+                    {!plan ? (
+                        <p className="no-plan-text">Aktif planınız yok.</p>
+                    ) : (
+                        <div className="module-list-scroll">
+                            {plan.modules.map((module) => (
+                                <div
+                                    key={module._id}
+                                    className={`sidebar-module-item ${module.isCompleted ? 'completed' : ''} ${module === nextModule ? 'active' : ''} ${module.isLocked ? 'locked' : ''}`}
+                                    onClick={() => handleDayClick(module)}
+                                >
+                                    <div className="module-status-indicator">
+                                        {module.isCompleted ? <FaStar /> : (module.isLocked ? <FaLock /> : <div className="dot" />)}
+                                    </div>
+                                    <div className="module-info">
+                                        <span className="day-number">Gün {module.dayNumber}</span>
+                                        <span className="module-topic-truncate">{module.topic}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </aside>
+
+            {/* --- MAIN CONTENT --- */}
+            <main className="dashboard-main">
+                <header className="main-header">
                     <div>
+                        <h1 className="welcome-title">Hoş Geldin, {user?.name}!</h1>
+                        <p className="welcome-subtitle">
+                            {plan ? `Hedef: ${plan.targetCompany?.name || 'Belirlenmemiş Şirket'}` : 'Kariyer hedeflerin için bir plan oluştur.'}
+                        </p>
+                        {viewingArchived && <span className="archive-badge">Geçmiş Plan Modu</span>}
+                    </div>
+                    <div className="header-actions">
                         {viewingArchived ? (
-                            <button onClick={handleBackToCurrent} className="change-plan-btn" style={{ borderColor: '#3b82f6', color: '#2563eb', background: '#eff6ff' }}>
+                            <button onClick={handleBackToCurrent} className="action-btn secondary">
                                 Güncel Plana Dön
                             </button>
                         ) : (
-                            <button onClick={handleArchivePlan} className="change-plan-btn">
-                                Hedef Değiştir / Yeni Plan
+                            <button onClick={handleArchivePlan} className="action-btn outline">
+                                Planı Değiştir / Arşivle
                             </button>
                         )}
                     </div>
                 </header>
 
                 {message && (
-                    <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#dbeafe', color: '#1e40af', borderRadius: '0.75rem' }}>
+                    <div className="dashboard-alert">
                         {message}
                     </div>
                 )}
 
                 {!plan ? (
-                    <div className="create-plan-card">
-                        <div className="brain-icon-container">
-                            <FaBrain className="brain-icon" />
-                        </div>
-                        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem', color: '#1e293b' }}>
-                            Kişiselleştirilmiş Çalışma Programı Oluştur
-                        </h2>
-                        <p style={{ color: '#64748b', marginBottom: '2rem', maxWidth: '40rem', margin: '0 auto 2rem' }}>
-                            GPA ve İngilizce seviyeniz, hedeflediğiniz şirketin standartlarına göre analiz edilecek ve gerekirse size özel 60 günlük bir program hazırlanacaktır.
-                        </p>
+                    <div className="create-plan-container">
+                        <div className="create-plan-card">
+                            <div className="brain-icon-container">
+                                <FaBrain className="brain-icon" />
+                            </div>
+                            <h2>Kişisel Gelişim Planı Oluştur</h2>
+                            <p>Hedeflediğin şirkete girmek için yapay zeka destekli 60 günlük programını hazırla.</p>
 
-                        <div className="create-plan-form">
-                            <label style={{ display: 'block', textAlign: 'left', fontSize: '0.875rem', fontWeight: '500', color: '#334155', marginBottom: '0.5rem' }}>
-                                Hedef Şirket Seçin
-                            </label>
-                            <select
-                                value={selectedCompany}
-                                onChange={(e) => setSelectedCompany(e.target.value)}
-                                className="company-select"
-                            >
-                                <option value="">Şirket Seçiniz...</option>
-                                {targetCompanies.length > 0 ? targetCompanies.map(comp => (
-                                    <option key={comp._id || comp} value={comp._id || comp}>
-                                        {comp.name || 'Şirket ' + (comp._id || comp)}
-                                    </option>
-                                )) : <option disabled>Listenizde şirket yok (Profilinizden ekleyin)</option>}
-                            </select>
-
-                            <button
-                                onClick={handleCreatePlan}
-                                className="create-btn"
-                            >
-                                Analiz Et ve Plan Oluştur
-                            </button>
+                            <div className="create-plan-form">
+                                <select
+                                    value={selectedCompany}
+                                    onChange={(e) => setSelectedCompany(e.target.value)}
+                                    className="company-select"
+                                >
+                                    <option value="">Hedef Şirket Seçiniz...</option>
+                                    {targetCompanies.length > 0 ? targetCompanies.map(comp => (
+                                        <option key={comp._id || comp} value={comp._id || comp}>
+                                            {comp.name || 'Şirket ' + (comp._id || comp)}
+                                        </option>
+                                    )) : <option disabled>Listenizde şirket yok</option>}
+                                </select>
+                                <button onClick={handleCreatePlan} className="create-btn">
+                                    <FaBrain /> Planı Oluştur
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ) : (
-                    <div>
-                        {/* ... Existing Dashboard Content ... */}
-                        <div className="stats-grid">
-                            <div className="stat-card">
-                                <div className="stat-icon orange">
-                                    <FaStar />
+                    <div className="dashboard-content-grid">
+                        {/* Highlights Row */}
+                        <div className="highlights-row">
+                            <div className="highlight-card progress-card">
+                                <div className="card-header">
+                                    <span>Genel İlerleme</span>
+                                    <FaChartLine className="card-icon" />
                                 </div>
-                                <div>
-                                    <p className="stat-label">Toplam XP</p>
-                                    <p className="stat-value">{user?.xp || 0} XP</p>
+                                <div className="progress-circle-container">
+                                    <div className="progress-text">
+                                        <span className="percent">%{progress}</span>
+                                        <span className="label">Tamamlandı</span>
+                                    </div>
+                                    <svg className="progress-ring" width="120" height="120">
+                                        <circle className="progress-ring__circle-bg" stroke="#e2e8f0" strokeWidth="8" fill="transparent" r="52" cx="60" cy="60" />
+                                        <circle
+                                            className="progress-ring__circle"
+                                            stroke="#3b82f6"
+                                            strokeWidth="8"
+                                            fill="transparent"
+                                            r="52" cx="60" cy="60"
+                                            style={{ strokeDasharray: `${2 * Math.PI * 52}`, strokeDashoffset: `${2 * Math.PI * 52 * (1 - progress / 100)}` }}
+                                        />
+                                    </svg>
+                                </div>
+                                <div className="stats-mini-row">
+                                    <div className="stat-mini">
+                                        <span className="val">{completedCount}</span>
+                                        <span className="lbl">Tamamlanan</span>
+                                    </div>
+                                    <div className="stat-mini">
+                                        <span className="val">{totalCount - completedCount}</span>
+                                        <span className="lbl">Kalan</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="stat-card">
-                                <div className="stat-icon green">
-                                    <FaChartLine />
+                            {nextModule ? (
+                                <div className="highlight-card active-module-card">
+                                    <div className="active-badge">BUGÜNÜN DERSİ</div>
+                                    <h2 className="active-module-title">{nextModule.topic}</h2>
+                                    <p className="active-module-day">Gün {nextModule.dayNumber}</p>
+                                    <button className="start-lesson-btn" onClick={() => handleDayClick(nextModule)}>
+                                        Derse Başla <FaUnlock />
+                                    </button>
                                 </div>
-                                <div>
-                                    <p className="stat-label">İlerleme</p>
-                                    <p className="stat-value">
-                                        {Math.round((plan.modules.filter(m => m.isCompleted).length / plan.modules.length) * 100)}%
-                                    </p>
+                            ) : (
+                                <div className="highlight-card finished-card">
+                                    <div className="trophy-icon">🏆</div>
+                                    <h2>Tebrikler!</h2>
+                                    <p>Tüm programı tamamladınız.</p>
                                 </div>
-                            </div>
-
-                            <div className="stat-card">
-                                <div className="stat-icon purple">
-                                    <FaBrain />
-                                </div>
-                                <div>
-                                    <p className="stat-label">Kalan Gün</p>
-                                    <p className="stat-value">
-                                        {plan.modules.filter(m => !m.isCompleted).length}
-                                    </p>
-                                </div>
-                            </div>
+                            )}
                         </div>
 
-                        {/* Modules Grid */}
-                        <div className="modules-grid">
+                        {/* Recent Modules / Upcoming (Grid) */}
+                        <h3 className="section-header">Program Akışı</h3>
+                        <div className="modules-grid-view">
                             {plan.modules.map((module) => (
                                 <div
                                     key={module._id}
                                     onClick={() => handleDayClick(module)}
-                                    className={`module-card ${module.isCompleted ? 'completed' : ''} ${module.isLocked ? 'locked' : ''}`}
+                                    className={`module-card-modern ${module.isCompleted ? 'completed' : ''} ${module === nextModule ? 'current' : ''} ${module.isLocked ? 'locked' : ''}`}
                                 >
-                                    <div className="module-header">
-                                        <span className="day-badge">
-                                            Gün {module.dayNumber}
-                                        </span>
-                                        {module.isCompleted ? (
-                                            <FaStar style={{ color: '#eab308' }} /> // yellow-500
-                                        ) : module.isLocked ? (
-                                            <FaLock style={{ color: '#94a3b8' }} /> // slate-400
-                                        ) : (
-                                            <FaUnlock style={{ color: '#3b82f6' }} /> // blue-500
-                                        )}
+                                    <div className="card-top">
+                                        <span className="day-pill">Gün {module.dayNumber}</span>
+                                        {module.isCompleted && <FaStar className="status-icon completed" />}
+                                        {module.isLocked && <FaLock className="status-icon locked" />}
                                     </div>
-
-                                    <h3 className="module-title">
-                                        {module.topic}
-                                    </h3>
-
+                                    <h4 className="topic-text">{module.topic}</h4>
                                     {module.isLocked && module.unlockDate && (
-                                        <p className="unlock-date">
-                                            Açılacağı tarih: {new Date(module.unlockDate).toLocaleDateString()}
-                                        </p>
+                                        <div className="unlock-info">{new Date(module.unlockDate).toLocaleDateString()}</div>
                                     )}
                                 </div>
                             ))}
@@ -249,11 +295,9 @@ const StudyDashboard = () => {
                     </div>
                 )}
 
-                {/* YENİ EKLENEN KISIM: Plan Geçmişi */}
+                {/* Geçmiş Planlar (Sidebar'da da olabilir ama altta kalması daha temiz) */}
                 {!viewingArchived && <HistorySection onSelectPlan={handleViewHistory} />}
-
-                {/* NOTE: Global AI Assistant is added via Context or Layout mostly, but kept here if local */}
-            </div>
+            </main>
         </div>
     );
 };
@@ -277,37 +321,28 @@ const HistorySection = ({ onSelectPlan }) => {
         fetchHistory();
     }, []);
 
-    if (loading) return null;
-    if (history.length === 0) return null;
+    if (loading || history.length === 0) return null;
 
     return (
-        <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid #e2e8f0' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#64748b', marginBottom: '1rem' }}>
-                Geçmiş Çalışma Programlarım
-            </h3>
-            <div className="modules-grid">
+        <div className="history-section-container">
+            <h3 className="history-title">Geçmiş Çalışma Programlarım</h3>
+            <div className="history-grid">
                 {history.map(plan => (
                     <div
                         key={plan._id}
                         onClick={() => onSelectPlan(plan)}
-                        style={{
-                            background: 'white', padding: '1.5rem', borderRadius: '1rem',
-                            border: '1px solid #e2e8f0', opacity: 0.8, cursor: 'pointer',
-                            transition: 'all 0.2s'
-                        }}
-                        onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#3b82f6'; e.currentTarget.style.opacity = '1'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.opacity = '0.8'; }}
+                        className="history-card"
                     >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                            <span style={{ fontWeight: 'bold', color: '#475569' }}>
+                        <div className="history-header">
+                            <span className="company-name">
                                 {plan.targetCompany?.name || 'Şirket Bilinmiyor'}
                             </span>
-                            <span style={{ fontSize: '0.875rem', color: '#94a3b8' }}>
+                            <span className="date-tag">
                                 {new Date(plan.createdAt).toLocaleDateString()}
                             </span>
                         </div>
-                        <div style={{ fontSize: '0.875rem', color: '#64748b' }}>
-                            Tamamlanan: %{Math.round((plan.modules.filter(m => m.isCompleted).length / plan.modules.length) * 100)}
+                        <div className="progress-bar-mini">
+                            <div className="progress-fill" style={{ width: `${Math.round((plan.modules.filter(m => m.isCompleted).length / plan.modules.length) * 100)}%` }}></div>
                         </div>
                     </div>
                 ))}

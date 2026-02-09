@@ -36,7 +36,23 @@ const AiAssistant = () => {
 
         try {
             const res = await API.post('/study-plan/chat', { message: userMsg });
+
+            // 1. Add Assistant Message
             setMessages(prev => [...prev, { role: 'assistant', text: res.data.reply }]);
+
+            // 2. Handle Action (If any)
+            if (res.data.action && res.data.action.type === 'navigate') {
+                const path = res.data.action.path;
+                console.log("AI Navigation Action:", path);
+
+                // Add a small system message about navigation
+                // setMessages(prev => [...prev, { role: 'system', text: `🔄 Yönlendiriliyorsunuz: ${path}` }]);
+
+                setTimeout(() => {
+                    navigate(path);
+                }, 1000); // Small delay for user to read
+            }
+
         } catch (error) {
             console.error(error);
             let errorMsg = 'Üzgünüm, şu an bağlantı kuramıyorum.';
