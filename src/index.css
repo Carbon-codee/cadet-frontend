@@ -14,6 +14,10 @@ body {
   /* Yatay taşmayı engelle */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Yeni Marka Renkleri */
+  --primary-navy: #1B263B;
+  --primary-teal: #00B4D8;
 }
 
 /* Sayfa içeriğinin Navbar tarafından ezilmesini önleyen genel kural */

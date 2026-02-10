@@ -3,8 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import './AuthPage.css';
-const heroVideo = '/hero-video.mp4'; // Direkt public klasöründen al
-import { FaUser, FaBuilding, FaChalkboardTeacher, FaEnvelope, FaLock, FaUserTag, FaAnchor, FaShip } from 'react-icons/fa';
+import { FaUser, FaBuilding, FaChalkboardTeacher, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -37,115 +36,112 @@ const AuthPage = () => {
 
     return (
         <div className="auth-wrapper">
-            {/* ARKAPLAN VİDEO */}
-            <video className="auth-video-bg" autoPlay loop muted playsInline>
-                <source src={heroVideo} type="video/mp4" />
-            </video>
-            <div className="auth-overlay"></div>
+            <div className={`auth-container ${!isLogin ? 'right-panel-active' : ''}`}>
 
-            {/* ANA PANEL */}
-            <div className="glass-panel">
+                {/* --- KAYIT OL FORMU (SOLDA GİZLİ, SAĞA KAYINCA AÇILIR) --- */}
+                <div className="form-container sign-up-container">
+                    <form onSubmit={handleRegisterSubmit} className="auth-form">
+                        <h2 className="form-header">Hesap Oluştur</h2>
 
-                {/* SOL TARAF (GÖRSEL) */}
-                <div className="auth-visual-side">
-                    <div className="visual-circle vc-1"></div>
-                    <div className="visual-circle vc-2"></div>
-
-                    <FaAnchor style={{ fontSize: '4rem', color: '#64ffda', marginBottom: '20px', filter: 'drop-shadow(0 0 10px rgba(100,255,218,0.5))' }} />
-
-                    <div className="visual-content">
-                        <h2>{isLogin ? 'Rotanı Çiz' : 'Mürettebata Katıl'}</h2>
-                        <p>
-                            {isLogin
-                                ? 'Denizcilik dünyasının en prestijli platformuna tekrar hoş geldin.'
-                                : 'Kariyerine yön vermek ve sektörün liderleriyle buluşmak için ilk adımı at.'}
-                        </p>
-                    </div>
-                </div>
-
-                {/* SAĞ TARAF (FORM) */}
-                <div className="auth-form-side">
-                    <h2 className="form-title">{isLogin ? 'Giriş Yap' : 'Hesap Oluştur'}</h2>
-
-                    {!isLogin && (
-                        <div className="role-tabs">
-                            <button type="button" className={`role-tab ${role === 'student' ? 'active' : ''}`} onClick={() => setRole('student')}>
+                        <div className="role-selector">
+                            <button type="button" className={`role-btn ${role === 'student' ? 'active' : ''}`} onClick={() => setRole('student')}>
                                 <FaUser /> Öğrenci
                             </button>
-                            <button type="button" className={`role-tab ${role === 'company' ? 'active' : ''}`} onClick={() => setRole('company')}>
+                            <button type="button" className={`role-btn ${role === 'company' ? 'active' : ''}`} onClick={() => setRole('company')}>
                                 <FaBuilding /> Şirket
                             </button>
-                            <button type="button" className={`role-tab ${role === 'lecturer' ? 'active' : ''}`} onClick={() => setRole('lecturer')}>
+                            <button type="button" className={`role-btn ${role === 'lecturer' ? 'active' : ''}`} onClick={() => setRole('lecturer')}>
                                 <FaChalkboardTeacher /> Hoca
                             </button>
                         </div>
-                    )}
 
-                    {isLogin ? (
-                        <form onSubmit={handleLoginSubmit}>
-                            <div className="modern-input-group">
-                                <input type="email" placeholder="E-posta Adresi" required value={loginData.email} onChange={(e) => setLoginData({ ...loginData, email: e.target.value })} />
-                                <FaEnvelope className="input-icon" />
-                            </div>
-                            <div className="modern-input-group">
-                                <input type="password" placeholder="Şifre" required value={loginData.password} onChange={(e) => setLoginData({ ...loginData, password: e.target.value })} />
-                                <FaLock className="input-icon" />
-                            </div>
-                            <button type="submit" className="neon-btn">GİRİŞ YAP</button>
-                        </form>
-                    ) : (
-                        <form onSubmit={handleRegisterSubmit}>
-                            <div className="modern-input-group">
-                                <input type="text" placeholder={role === 'company' ? 'Şirket Adı' : 'Ad Soyad'} required value={registerData.name} onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })} />
-                                <FaUserTag className="input-icon" />
-                            </div>
+                        <div className="input-group">
+                            <input type="text" placeholder={role === 'company' ? 'Şirket Adı' : 'Ad Soyad'} required value={registerData.name} onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })} />
+                        </div>
 
-                            {/* E-DEVLET BARKOD NO (Sadece Öğrenciler İçin) */}
-                            {role === 'student' && (
-                                <div className="modern-input-group">
-                                    <input
-                                        type="text"
-                                        placeholder="E-Devlet Barkod No"
-                                        required
-                                        value={registerData.studentBarcode}
-                                        onChange={(e) => setRegisterData({ ...registerData, studentBarcode: e.target.value })}
-                                    />
-                                    <FaLock className="input-icon" />
-                                </div>
-                            )}
-
-                            <div className="modern-input-group">
-                                <input type="email" placeholder="E-posta Adresi" required value={registerData.email} onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })} />
-                                <FaEnvelope className="input-icon" />
+                        {role === 'student' && (
+                            <div className="input-group">
+                                <input type="text" placeholder="E-Devlet Barkod No" required value={registerData.studentBarcode} onChange={(e) => setRegisterData({ ...registerData, studentBarcode: e.target.value })} />
                             </div>
-                            <div className="modern-input-group">
-                                <input type="password" placeholder="Şifre" required value={registerData.password} onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })} />
-                                <FaLock className="input-icon" />
-                            </div>
-                            <div className="modern-input-group">
-                                <input type="password" placeholder="Şifre Tekrar" required value={registerData.confirmPassword} onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })} />
-                                <FaLock className="input-icon" />
-                            </div>
-                            <button type="submit" className="neon-btn">KAYIT OL</button>
-                        </form>
-                    )}
-
-                    <div className="toggle-text">
-                        <p>
-                            {isLogin ? "Hesabın yok mu?" : "Zaten hesabın var mı?"}
-                            <span onClick={() => setIsLogin(!isLogin)}>
-                                {isLogin ? " Hemen Kayıt Ol" : " Giriş Yap"}
-                            </span>
-                        </p>
-
-                        {/* Şifremi Unuttum Linki Alt Satıra, Daha Zarif */}
-                        {isLogin && (
-                            <Link to="/forgot-password" title="Şifre Sıfırlama" className="forgot-link-new">
-                                Şifremi unuttun mu?
-                            </Link>
                         )}
+
+                        <div className="input-group">
+                            <input type="email" placeholder="E-posta Adresi" required value={registerData.email} onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })} />
+                        </div>
+                        <div className="input-group">
+                            <input type="password" placeholder="Şifre" required value={registerData.password} onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })} />
+                        </div>
+                        <div className="input-group">
+                            <input type="password" placeholder="Şifre Tekrar" required value={registerData.confirmPassword} onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })} />
+                        </div>
+
+                        <button type="submit" className="submit-btn">KAYIT OL</button>
+                    </form>
+                </div>
+
+                {/* --- GİRİŞ YAP FORMU (SAĞDA, SOLA KAYINCA GİZLENİR) --- */}
+                <div className="form-container sign-in-container">
+                    <form onSubmit={handleLoginSubmit} className="auth-form">
+                        <h2 className="form-header">Giriş Yap</h2>
+
+                        <div className="input-group">
+                            <input type="email" placeholder="E-posta Adresi" required value={loginData.email} onChange={(e) => setLoginData({ ...loginData, email: e.target.value })} />
+                        </div>
+                        <div className="input-group">
+                            <input type="password" placeholder="Şifre" required value={loginData.password} onChange={(e) => setLoginData({ ...loginData, password: e.target.value })} />
+                        </div>
+
+                        <div className="form-footer">
+                            <Link to="/forgot-password" className="forgot-pass">Şifremi unuttum?</Link>
+                        </div>
+
+                        <button type="submit" className="submit-btn">GİRİŞ YAP</button>
+                    </form>
+                </div>
+
+                {/* ORTA DEĞİŞTİRME BUTONU - Artık Ana Container'ın Parçası */}
+                <button className="toggle-btn" onClick={() => setIsLogin(!isLogin)}>
+                    {isLogin ? <FaChevronRight /> : <FaChevronLeft />}
+                </button>
+
+                {/* --- KAYAN KAPAK (OVERLAY) --- */}
+                <div className="overlay-container">
+                    <div className="overlay">
+
+                        {/* SOL TARAFTAKI PANEL (Giriş Ekranında Görünür -> Logo ve Metin) */}
+                        {/* Normalde "Sign In" container sağda, "Overlay" soldadır. Overlay sağa kayar. 
+                            Fakat overlay içinde iki farklı içerik vardır: "Login için" ve "Register için".
+                            
+                            Overlay Left Panel: Register moduna geçince görünür (Sağda dururken).
+                            Overlay Right Panel: Login modunda görünür (Solda dururken).
+                        */}
+
+                        <div className="overlay-panel overlay-left">
+                            {/* Burası Register Modundayken (Panel Sağda) SOL TARAFTA kalan formu çağırmak için overlayin içindeki içerik DEĞİL.
+                                 Overlay Left Panel -> Overlay containerının sol yarısı.
+                                 Overlay Right Panel -> Overlay containerının sağ yarısı.
+                                 
+                                 Sliding Logic:
+                                 - Default (Login): Overlay Solda. Overlay Right Panel görünür. (Metin: Join Us / Sign Up) -> Tıklayınca Register Modu.
+                                 - Active (Register): Overlay Sağa Kayar. Overlay Left Panel görünür. (Metin: Welcome Back / Sign In) -> Tıklayınca Login Modu.
+                             */}
+
+                            {/* REGISTER MODUNDAYKEN GÖRÜNEN PANEL (Overlay Sağda Duruyor, İçerik Solundan Bakıyor) -> "Tekrar Hoşgeldiniz" */}
+                            <img src="/logo.png" alt="Marine Cadet Logo" className="auth-logo" />
+                            <h2>Tekrar Hoşgeldiniz!</h2>
+                            <p>Denizcilik kariyerinize devam etmek için giriş yapın.</p>
+                        </div>
+
+                        <div className="overlay-panel overlay-right">
+                            {/* LOGIN MODUNDAYKEN GÖRÜNEN PANEL (Overlay Solda Duruyor, İçerik Sağdan Bakıyor) -> "Aramıza Katılın" */}
+                            <img src="/logo.png" alt="Marine Cadet Logo" className="auth-logo" />
+                            <h2>Aramıza Katılın!</h2>
+                            <p>Hemen kayıt olun ve staj fırsatlarını yakalayın.</p>
+                        </div>
+
                     </div>
                 </div>
+
             </div>
         </div>
     );

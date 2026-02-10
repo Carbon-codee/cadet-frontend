@@ -248,7 +248,10 @@ const AdminDashboard = () => {
 
     return (
         <div style={{ padding: '30px', backgroundColor: '#f7fafc', minHeight: '100vh', position: 'relative' }}>
-            <h1 style={{ color: '#2d3748', marginBottom: '30px', fontWeight: '800' }}>Admin Kontrol Paneli</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px' }}>
+                <img src="/logo.png-modified.png" alt="Marine Cadet Logo" style={{ height: '50px', width: 'auto', borderRadius: '50%', backgroundColor: 'transparent' }} />
+                <h1 style={{ color: '#1B263B', margin: 0, fontWeight: '800' }}>Admin Kontrol Paneli</h1>
+            </div>
 
             <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '40px' }}>
                 <StatCard title="Toplam Öğrenci" value={stats.totalStudents} icon={<FaUserGraduate />} color="#3182ce" />
@@ -273,8 +276,8 @@ const AdminDashboard = () => {
                             padding: '10px 20px',
                             border: 'none',
                             background: 'none',
-                            borderBottom: activeTab === tab.key ? '3px solid #3182ce' : '3px solid transparent',
-                            color: activeTab === tab.key ? '#3182ce' : '#718096',
+                            borderBottom: activeTab === tab.key ? '3px solid #00B4D8' : '3px solid transparent',
+                            color: activeTab === tab.key ? '#00B4D8' : '#718096',
                             fontWeight: activeTab === tab.key ? 'bold' : 'normal',
                             cursor: 'pointer',
                             display: 'flex',
@@ -326,7 +329,7 @@ const AdminDashboard = () => {
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
                                 <button type="button" onClick={() => setShowEmailModal(false)} style={{ padding: '10px 20px', borderRadius: '5px', border: 'none', backgroundColor: '#e2e8f0', color: '#4a5568', cursor: 'pointer' }}>İptal</button>
-                                <button type="submit" disabled={sendingEmail} style={{ padding: '10px 20px', borderRadius: '5px', border: 'none', backgroundColor: '#3182ce', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <button type="submit" disabled={sendingEmail} style={{ padding: '10px 20px', borderRadius: '5px', border: 'none', backgroundColor: '#00B4D8', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     {sendingEmail ? 'Gönderiliyor...' : <><FaPaperPlane /> Gönder</>}
                                 </button>
                             </div>
