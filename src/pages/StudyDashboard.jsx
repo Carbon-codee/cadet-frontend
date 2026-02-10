@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import API from '../api/axiosConfig';
-import { FaLock, FaUnlock, FaStar, FaBrain, FaChartLine } from 'react-icons/fa';
+import { FaLock, FaUnlock, FaStar, FaBrain, FaChartLine, FaBuilding, FaCheckCircle, FaHistory } from 'react-icons/fa';
 import QuizModal from '../components/QuizModal';
 import AiAssistant from '../components/AiAssistant';
+import { useAuth } from '../context/AuthContext'; // Import useAuth
 import './StudyDashboard.css'; // Import the CSS file
 
 const StudyDashboard = () => {
+    const navigate = useNavigate(); // Add navigate
+    const { userInfo } = useAuth(); // Get global user info
     const [loading, setLoading] = useState(true);
     const [plan, setPlan] = useState(null);
     const [user, setUser] = useState(null);
@@ -69,12 +73,25 @@ const StudyDashboard = () => {
     };
 
     const handleDayClick = (day) => {
-        if (day.isLocked) return;
-        if (day.isCompleted) return; // Or allow review?
+        // Check if module is locked
+        if (day.isLocked) {
+            if (day.unlockDate) {
+                const unlockTime = new Date(day.unlockDate);
+                const now = new Date();
+
+                if (unlockTime > now) {
+                    const timeRemaining = Math.ceil((unlockTime - now) / (1000 * 60 * 60)); // hours
+                    alert(`Bu ders henüz kilitli! Yaklaşık ${timeRemaining} saat sonra açılacak.\n\nKilit Açılma Zamanı: ${unlockTime.toLocaleString('tr-TR')}`);
+                    return;
+                }
+            } else {
+                alert('Bu ders kilitli! Önceki dersleri tamamlayın.');
+                return;
+            }
+        }
 
         // Navigate to dedicated session page
-        window.location.href = `/study-plan/${plan._id}/day/${day.dayNumber}`;
-        // Using navigate hook would be better but window.location works for now or I can add useNavigate
+        navigate(`/study-plan/${plan._id}/day/${day.dayNumber}`);
     };
 
     const handleArchivePlan = async () => {
@@ -104,12 +121,30 @@ const StudyDashboard = () => {
         fetchInitialData();
     };
 
+
     if (loading) return <div className="loading-container">Veriler Yükleniyor...</div>;
 
     const completedCount = plan ? plan.modules.filter(m => m.isCompleted).length : 0;
     const totalCount = plan ? plan.modules.length : 0;
     const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-    const nextModule = plan ? plan.modules.find(m => !m.isCompleted) : null;
+
+    // Find next available module (not completed AND unlocked/available)
+    const nextModule = plan ? plan.modules.find(m => {
+        if (m.isCompleted) return false;
+        if (!m.isLocked) return true;
+
+        // If locked but has unlock date, check if time has passed
+        if (m.unlockDate) {
+            const unlockTime = new Date(m.unlockDate);
+            const now = new Date();
+            return unlockTime <= now; // Available if unlock time has passed
+        }
+
+        return false; // Locked without unlock date
+    }) : null;
+
+    // Fallback to local user state if context is missing for some reason, but prefer context for live updates
+    const displayUser = userInfo || user;
 
     return (
         <div className="study-dashboard-layout">
@@ -117,24 +152,24 @@ const StudyDashboard = () => {
             <aside className="dashboard-sidebar">
                 <div className="profile-section">
                     <div className="profile-img-container">
-                        {user?.profilePicture && !user.profilePicture.includes('anonymous-avatar-icon') ? (
+                        {displayUser?.profilePicture && !displayUser.profilePicture.includes('anonymous-avatar-icon') ? (
                             <img
-                                src={user.profilePicture}
-                                alt={user.name}
+                                src={displayUser.profilePicture}
+                                alt={displayUser.name}
                                 style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
                             />
                         ) : (
                             <span className="profile-initials">
-                                {user?.name?.charAt(0) || 'U'}{user?.surname?.charAt(0) || ''}
+                                {displayUser?.name?.charAt(0) || 'U'}{displayUser?.surname?.charAt(0) || ''}
                             </span>
                         )}
                     </div>
-                    <h3 className="profile-name">{user?.name} {user?.surname}</h3>
-                    <p className="profile-role">{user?.role === 'student' ? 'Öğrenci' : 'Kullanıcı'}</p>
+                    <h3 className="profile-name">{displayUser?.name} {displayUser?.surname}</h3>
+                    <p className="profile-role">{displayUser?.role === 'student' ? 'Öğrenci' : 'Kullanıcı'}</p>
 
                     <div className="xp-badge">
                         <FaStar className="xp-icon" />
-                        <span>{user?.xp || 0} XP</span>
+                        <span>{displayUser?.xp || 0} XP</span>
                     </div>
                 </div>
 
@@ -196,31 +231,64 @@ const StudyDashboard = () => {
                 )}
 
                 {!plan ? (
-                    <div className="create-plan-container">
-                        <div className="create-plan-card">
-                            <div className="brain-icon-container">
-                                <FaBrain className="brain-icon" />
+                    <div className="create-plan-wrapper">
+                        {/* 1. Header Section */}
+                        <div className="plan-header-section">
+                            <div className="header-icon-box">
+                                <FaBrain className="header-icon-large" />
                             </div>
-                            <h2>Kişisel Gelişim Planı Oluştur</h2>
-                            <p>Hedeflediğin şirkete girmek için yapay zeka destekli 60 günlük programını hazırla.</p>
+                            <h1 className="creation-title">Kişisel Gelişim Planı Oluştur</h1>
+                            <p className="creation-desc">
+                                Kariyer hedeflerine ulaşmak için yapay zeka destekli, 60 günlük kişiselleştirilmiş çalışma programını hemen hazırla.
+                                Aşağıdaki listeden hedeflediğin şirketi seçerek başla.
+                            </p>
+                        </div>
 
-                            <div className="create-plan-form">
-                                <select
-                                    value={selectedCompany}
-                                    onChange={(e) => setSelectedCompany(e.target.value)}
-                                    className="company-select"
-                                >
-                                    <option value="">Hedef Şirket Seçiniz...</option>
-                                    {targetCompanies.length > 0 ? targetCompanies.map(comp => (
-                                        <option key={comp._id || comp} value={comp._id || comp}>
-                                            {comp.name || 'Şirket ' + (comp._id || comp)}
-                                        </option>
-                                    )) : <option disabled>Listenizde şirket yok</option>}
-                                </select>
-                                <button onClick={handleCreatePlan} className="create-btn">
-                                    <FaBrain /> Planı Oluştur
-                                </button>
-                            </div>
+                        {/* 2. Company Cards Section */}
+                        <div className="plan-company-section">
+                            <h3 className="section-label">Hedef Şirketini Seç</h3>
+
+                            {targetCompanies.length > 0 ? (
+                                <div className="company-grid-large">
+                                    {targetCompanies.map(comp => {
+                                        const compId = comp._id || comp;
+                                        const compName = comp.name || 'Şirket ' + compId;
+                                        const isSelected = selectedCompany === compId;
+
+                                        return (
+                                            <div
+                                                key={compId}
+                                                className={`company-card-large ${isSelected ? 'selected' : ''}`}
+                                                onClick={() => setSelectedCompany(isSelected ? '' : compId)}
+                                            >
+                                                <div className="company-icon-circle">
+                                                    <FaBuilding />
+                                                </div>
+                                                <span className="company-name-large">{compName}</span>
+                                                {/* Optional: Add sector or location if avail */}
+                                                <div className="selection-indicator">
+                                                    {isSelected ? <FaCheckCircle /> : <div className="circle-outline" />}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="no-companies-large-msg">
+                                    Listenizde kayıtlı hedef şirket bulunamadı. Lütfen önce profilinizden hedef şirket ekleyin.
+                                </div>
+                            )}
+                        </div>
+
+                        {/* 3. Action Section */}
+                        <div className="plan-action-section">
+                            <button
+                                onClick={handleCreatePlan}
+                                className="create-plan-big-btn"
+                                disabled={!selectedCompany}
+                            >
+                                <FaBrain /> Planı Oluştur
+                            </button>
                         </div>
                     </div>
                 ) : (
@@ -333,7 +401,9 @@ const HistorySection = ({ onSelectPlan }) => {
 
     return (
         <div className="history-section-container">
-            <h3 className="history-title">Geçmiş Çalışma Programlarım</h3>
+            <h3 className="history-title">
+                <FaHistory /> Geçmiş Çalışma Programlarım
+            </h3>
             <div className="history-grid">
                 {history.map(plan => (
                     <div

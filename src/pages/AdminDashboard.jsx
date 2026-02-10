@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { FaUserGraduate, FaBuilding, FaChalkboardTeacher, FaBriefcase, FaFileSignature, FaCheckCircle, FaTimesCircle, FaClock, FaCopy, FaEnvelope, FaPaperPlane, FaTimes } from 'react-icons/fa';
+import { FaUserGraduate, FaBuilding, FaChalkboardTeacher, FaBriefcase, FaFileSignature, FaCheckCircle, FaTimesCircle, FaClock, FaCopy, FaEnvelope, FaPaperPlane, FaTimes, FaBook, FaClipboardList } from 'react-icons/fa';
 
 const AdminDashboard = () => {
     const [stats, setStats] = useState({
@@ -248,9 +248,50 @@ const AdminDashboard = () => {
 
     return (
         <div style={{ padding: '30px', backgroundColor: '#f7fafc', minHeight: '100vh', position: 'relative' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px' }}>
-                <img src="/logo.png-modified.png" alt="Marine Cadet Logo" style={{ height: '50px', width: 'auto', borderRadius: '50%', backgroundColor: 'transparent' }} />
-                <h1 style={{ color: '#1B263B', margin: 0, fontWeight: '800' }}>Admin Kontrol Paneli</h1>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    <img src="/logo.png-modified.png" alt="Marine Cadet Logo" style={{ height: '50px', width: 'auto', borderRadius: '50%', backgroundColor: 'transparent' }} />
+                    <h1 style={{ color: '#1B263B', margin: 0, fontWeight: '800' }}>Admin Kontrol Paneli</h1>
+                </div>
+
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <button
+                        onClick={() => navigate('/admin/lessons')}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '10px 20px',
+                            backgroundColor: '#1E293B',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            fontWeight: '600',
+                            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                        }}
+                    >
+                        <FaBook /> Ders Havuzu
+                    </button>
+                    <button
+                        onClick={() => navigate('/admin/student-plans')}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '10px 20px',
+                            backgroundColor: '#3b82f6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            fontWeight: '600',
+                            boxShadow: '0 4px 6px rgba(59,130,246,0.3)'
+                        }}
+                    >
+                        <FaClipboardList /> Öğrenci Planları
+                    </button>
+                </div>
             </div>
 
             <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '40px' }}>

@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { FaCheckCircle, FaTimesCircle, FaSpinner } from 'react-icons/fa';
-import './AuthPage.css';
-// DÜZELTME: Import yerine direkt public yolunu kullanıyoruz
-const heroVideo = '/hero-video.mp4';
+import './VerifyEmailPage.css';
 
 const VerifyEmailPage = () => {
     const { token } = useParams();
@@ -25,37 +23,51 @@ const VerifyEmailPage = () => {
         switch (status) {
             case 'success':
                 return (
-                    <>
-                        <FaCheckCircle style={{ fontSize: '4rem', color: '#4cc9f0', marginBottom: '20px' }} />
-                        <h2 className="form-title" style={{ marginBottom: '10px' }}>Tebrikler!</h2>
-                        <p style={{ color: '#a8b2d1' }}>Hesabınız başarıyla doğrulandı.</p>
-                        <Link to="/auth" className="neon-btn" style={{ textDecoration: 'none', marginTop: '20px', display: 'inline-block', textAlign: 'center' }}>Giriş Yap</Link>
-                    </>
+                    <div className="verify-content success-content">
+                        <div className="icon-wrapper success-icon">
+                            <FaCheckCircle />
+                        </div>
+                        <h1 className="verify-title">Tebrikler!</h1>
+                        <p className="verify-message">Hesabınız başarıyla doğrulandı.</p>
+                        <p className="verify-submessage">Artık platformumuza giriş yapabilir ve tüm özellikleri kullanabilirsiniz.</p>
+                        <Link to="/auth" className="verify-button success-button">
+                            Giriş Yap
+                        </Link>
+                    </div>
                 );
             case 'error':
                 return (
-                    <>
-                        <FaTimesCircle style={{ fontSize: '4rem', color: '#e74c3c', marginBottom: '20px' }} />
-                        <h2 className="form-title" style={{ marginBottom: '10px' }}>Hata</h2>
-                        <p style={{ color: '#a8b2d1' }}>Bağlantı geçersiz veya süresi dolmuş.</p>
-                        <Link to="/auth" style={{ color: '#4cc9f0', marginTop: '20px', display: 'block' }}>Giriş Sayfasına Dön</Link>
-                    </>
+                    <div className="verify-content error-content">
+                        <div className="icon-wrapper error-icon">
+                            <FaTimesCircle />
+                        </div>
+                        <h1 className="verify-title">Doğrulama Başarısız</h1>
+                        <p className="verify-message">Doğrulama bağlantısı geçersiz veya süresi dolmuş.</p>
+                        <p className="verify-submessage">Lütfen tekrar kayıt olun veya yeni bir doğrulama e-postası isteyin.</p>
+                        <Link to="/auth" className="verify-button error-button">
+                            Giriş Sayfasına Dön
+                        </Link>
+                    </div>
                 );
             default:
                 return (
-                    <>
-                        <FaSpinner className="fa-spin" style={{ fontSize: '3rem', color: '#4cc9f0', marginBottom: '20px' }} />
-                        <h2 className="form-title">Doğrulanıyor...</h2>
-                    </>
+                    <div className="verify-content loading-content">
+                        <div className="icon-wrapper loading-icon">
+                            <FaSpinner className="spin-animation" />
+                        </div>
+                        <h1 className="verify-title">Hesabınız Doğrulanıyor...</h1>
+                        <p className="verify-message">Lütfen bekleyin, hesabınız doğrulanıyor.</p>
+                    </div>
                 );
         }
     };
 
     return (
-        <div className="auth-wrapper">
-            <video className="auth-video-bg" autoPlay loop muted playsInline><source src={heroVideo} type="video/mp4" /></video>
-            <div className="auth-overlay"></div>
-            <div className="glass-panel" style={{ height: 'auto', minHeight: '400px', maxWidth: '500px', flexDirection: 'column', padding: '40px', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="verify-page">
+            <div className="verify-card">
+                <div className="verify-logo">
+                    <img src="/logo.png-modified.png" alt="Marine Cadet Logo" />
+                </div>
                 {renderContent()}
             </div>
         </div>

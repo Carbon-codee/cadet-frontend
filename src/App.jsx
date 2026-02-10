@@ -38,6 +38,10 @@ import StudyDashboard from './pages/StudyDashboard';
 import StudySessionPage from './pages/StudySessionPage';
 import MessagesPage from './pages/MessagesPage';
 
+import LessonRepositoryPage from './pages/LessonRepositoryPage'; // YENİ: Ders Havuzu
+import LessonPreviewPage from './pages/LessonPreviewPage';
+import AdminStudentPlansPage from './pages/AdminStudentPlansPage';
+
 function App() {
   return (
     <Router>
@@ -51,7 +55,10 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
-        <Route path="/admin/dashboard" element={<MainLayout><AdminDashboard /></MainLayout>} /> {/* YENİ: Admin Rotası - Navbar Düzeltildi */}
+        <Route path="/admin/dashboard" element={<MainLayout><AdminDashboard /></MainLayout>} />
+        <Route path="/admin/lessons" element={<MainLayout><LessonRepositoryPage /></MainLayout>} /> {/* Admin Ders Havuzu */}
+        <Route path="/admin/lessons/:id" element={<MainLayout><LessonPreviewPage /></MainLayout>} />
+        <Route path="/admin/student-plans" element={<MainLayout><AdminStudentPlansPage /></MainLayout>} />
 
         {/* =========================================
            2. KORUMALI (PRIVATE) ROTALAR

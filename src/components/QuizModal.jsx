@@ -47,24 +47,48 @@ const QuizModal = ({ planId, day, onClose, onComplete }) => {
 
     const calculateResults = async () => {
         let correctCount = 0;
+        let correctIds = [];
+
         questions.forEach((q, index) => {
             const userAnswer = answers[index];
             if (userAnswer && q.correctAnswer && userAnswer.trim() === q.correctAnswer.trim()) {
                 correctCount++;
+                if (q._id) correctIds.push(q._id);
             }
         });
         setScore(correctCount);
-        setViewMode('result');
 
-        // API call to save results
+        // API call to save results BEFORE showing result screen
         try {
-            await API.post('/study-plan/submit', {
+            const response = await API.post('/study-plan/submit', {
                 planId,
                 dayNumber: day.dayNumber,
-                correctCount
+                correctCount,
+                correctQuestionIds: correctIds
             });
+
+            // Check if passed
+            if (response.data.passed) {
+                setViewMode('result');
+                // Optionally show unlock time
+                if (response.data.nextDayUnlockTime) {
+                    const unlockTime = new Date(response.data.nextDayUnlockTime);
+                    console.log(`Next day unlocks at: ${unlockTime.toLocaleString('tr-TR')}`);
+                }
+            } else {
+                // Test failed
+                alert(response.data.message || 'Test başarısız! Lütfen tekrar deneyin.');
+                onClose(); // Close modal to allow retry
+            }
         } catch (error) {
             console.error("Error submitting quiz", error);
+            if (error.response && error.response.data && error.response.data.message) {
+                alert(error.response.data.message);
+                onClose(); // Close modal on error to allow retry
+            } else {
+                // Fallback: show result anyway if API error
+                setViewMode('result');
+            }
         }
     };
 
@@ -78,6 +102,15 @@ const QuizModal = ({ planId, day, onClose, onComplete }) => {
             return <p key={i} className="content-paragraph">{line}</p>;
         });
     };
+
+    const getYoutubeEmbedUrl = (url) => {
+        if (!url) return null;
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : null;
+    };
+
+    const embedUrl = getYoutubeEmbedUrl(day.youtubeUrl);
 
     return (
         <div className="quiz-modal-overlay">
@@ -98,6 +131,20 @@ const QuizModal = ({ planId, day, onClose, onComplete }) => {
                                 <FaBookOpen className="lecture-icon" />
                                 <span>Tahmini Okuma Süresi: 5 dk</span>
                             </div>
+
+                            {embedUrl && (
+                                <div className="video-wrapper-modal" style={{ marginBottom: "1rem", borderRadius: "8px", overflow: "hidden" }}>
+                                    <iframe
+                                        width="100%"
+                                        height="250"
+                                        src={embedUrl}
+                                        title="Ders Videosu"
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                    ></iframe>
+                                </div>
+                            )}
 
                             <div className="lecture-content-scroll">
                                 {renderContent(day.lectureContent || "Bu konu için içerik hazırlanmamış.")}

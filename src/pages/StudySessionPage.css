@@ -103,6 +103,59 @@
     line-height: 1.8;
     font-size: 1.05rem;
     margin-bottom: 3rem;
+    /* Ensure markdown content spans reasonably */
+}
+
+/* --- MARKDOWN TABLE STYLES --- */
+.markdown-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 1rem;
+    background-color: #0f172a;
+    /* Darker background for table */
+    border-radius: 8px;
+    overflow: hidden;
+    /* For rounded corners on header */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.markdown-content th,
+.markdown-content td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #334155;
+}
+
+.markdown-content th {
+    background-color: #1B263B;
+    /* Corporate Navy */
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+}
+
+.markdown-content tr:nth-child(even) {
+    background-color: #1e293b;
+    /* Zebra stripe */
+}
+
+.markdown-content tr:hover {
+    background-color: #334155;
+    /* Hover effect */
+    transition: background-color 0.2s;
+}
+
+/* --- MERMAID DIAGRAM STYLES --- */
+.mermaid {
+    display: flex;
+    justify-content: center;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
 }
 
 .session-heading {

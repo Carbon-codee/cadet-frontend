@@ -2,12 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaArrowLeft, FaBookOpen, FaLightbulb, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import ReactMarkdown from 'react-markdown'; // Markdown renderer
+import remarkMath from 'remark-math'; // Math syntax support
+import rehypeKatex from 'rehype-katex'; // KaTeX rendering
+import remarkGfm from 'remark-gfm'; // Tables and GFM support
+import mermaid from 'mermaid'; // Diagram support
 import API from '../api/axiosConfig';
 import './StudySessionPage.css';
+
+import { useAuth } from '../context/AuthContext'; // Import useAuth
 
 const StudySessionPage = () => {
     const { planId, dayNumber } = useParams();
     const navigate = useNavigate();
+    const { updateUser } = useAuth(); // Get updateUser
 
     const [loading, setLoading] = useState(true);
     const [moduleData, setModuleData] = useState(null);
@@ -18,6 +26,7 @@ const StudySessionPage = () => {
     const [answers, setAnswers] = useState({});
     const [isAnswered, setIsAnswered] = useState(false);
     const [score, setScore] = useState(0);
+    const [earnedXp, setEarnedXp] = useState(0); // Track earned XP for display
 
     useEffect(() => {
         fetchContent();
@@ -27,12 +36,30 @@ const StudySessionPage = () => {
         try {
             setLoading(true);
             const res = await API.get(`/study-plan/${planId}/day/${dayNumber}`);
+
+            // Check if module is locked
+            if (res.data.isLocked && res.data.unlockDate) {
+                const unlockTime = new Date(res.data.unlockDate);
+                const now = new Date();
+
+                if (unlockTime > now) {
+                    const timeRemaining = Math.ceil((unlockTime - now) / (1000 * 60 * 60));
+                    alert(`Bu ders henüz kilitli! Yaklaşık ${timeRemaining} saat sonra açılacak.\n\nKilit Açılma Zamanı: ${unlockTime.toLocaleString('tr-TR')}`);
+                    navigate('/study-plan');
+                    return;
+                }
+            }
+
             setModuleData(res.data);
 
             // If completed, maybe show result directly or allow review? 
             // For now, let's just load lecture normally.
         } catch (error) {
             console.error("Content load error", error);
+            if (error.response?.status === 403) {
+                alert('Bu derse erişim yetkiniz yok.');
+                navigate('/study-plan');
+            }
         } finally {
             setLoading(false);
         }
@@ -58,14 +85,25 @@ const StudySessionPage = () => {
         }
     };
 
+    const getYoutubeEmbedUrl = (url) => {
+        if (!url) return null;
+        // Updated regex to handle more youtube URL variations including watch?v=
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : null;
+    };
+
     const finishQuiz = async () => {
         // Calculate score
         let correct = 0;
+        let correctIds = [];
+
         moduleData.questions.forEach((q, idx) => {
             const userAns = answers[idx]?.trim();
             const correctAns = q.correctAnswer?.trim();
             if (userAns && correctAns && userAns === correctAns) {
                 correct++;
+                if (q._id) correctIds.push(q._id);
             }
         });
         setScore(correct);
@@ -73,11 +111,24 @@ const StudySessionPage = () => {
 
         // Save to backend
         try {
-            await API.post('/study-plan/submit', {
+            const res = await API.post('/study-plan/submit', {
                 planId,
                 dayNumber: parseInt(dayNumber),
-                correctCount: correct
+                correctCount: correct,
+                correctQuestionIds: correctIds // Send Detailed Results for Dynamic XP
             });
+
+            // Update local state for display if needed
+            if (res.data.gainedXp) {
+                setEarnedXp(res.data.gainedXp);
+            }
+
+            // CRITICAL: Update Global Auth Context
+            // This ensures ProfilePage and Dashboard Sidebar show updated XP immediately
+            if (res.data.totalXp) {
+                updateUser({ xp: res.data.totalXp });
+            }
+
         } catch (error) {
             console.error("Submit error", error);
         }
@@ -95,23 +146,78 @@ const StudySessionPage = () => {
         return '';
     };
 
-    // Rendering Helpers
+    // Initialize Mermaid
+    useEffect(() => {
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'default',
+            securityLevel: 'loose',
+            fontFamily: 'Inter, sans-serif'
+        });
+    }, []);
+
+    const Mermaid = ({ chart }) => {
+        const [svg, setSvg] = useState('');
+
+        useEffect(() => {
+            const renderChart = async () => {
+                try {
+                    const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+                    const { svg } = await mermaid.render(id, chart);
+                    setSvg(svg);
+                } catch (error) {
+                    console.error('Mermaid render error:', error);
+                    setSvg('<p style="color:red">Grafik oluşturulamadı</p>');
+                }
+            };
+            if (chart) renderChart();
+        }, [chart]);
+
+        return <div className="mermaid" dangerouslySetInnerHTML={{ __html: svg }} />;
+    };
+
+    // Rendering Helpers - Using ReactMarkdown for LaTeX Support & Mermaid
     const renderLectureContent = () => {
         if (!moduleData?.lectureContent) return <p>İçerik yükleniyor...</p>;
 
-        return moduleData.lectureContent.split('\n').map((line, i) => {
-            if (line.startsWith('## ')) return <motion.h2 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }} key={i} className="session-heading">{line.replace('## ', '')}</motion.h2>;
-            if (line.startsWith('### ')) return <motion.h3 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }} key={i} className="session-subheading">{line.replace('### ', '')}</motion.h3>;
-            if (line.startsWith('- ')) return <motion.li initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.05 }} key={i} className="session-list-item">{line.replace('- ', '')}</motion.li>;
-            if (line.startsWith('> ')) return <motion.blockquote initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: i * 0.05 }} key={i} className="session-quote">{line.replace('> ', '')}</motion.blockquote>;
-            if (line.startsWith('**') && line.endsWith('**')) return <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.05 }} key={i} className="session-paragraph bold">{line.replace(/\*\*/g, '')}</motion.p>;
-            if (line.trim() === '') return <br key={i} />;
-            return <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.05 }} key={i} className="session-paragraph">{line}</motion.p>;
-        });
+        return (
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="markdown-body"
+            >
+                <ReactMarkdown
+                    remarkPlugins={[remarkMath, remarkGfm]}
+                    rehypePlugins={[rehypeKatex]}
+                    components={{
+                        code({ node, inline, className, children, ...props }) {
+                            const match = /language-(\w+)/.exec(className || '');
+                            if (!inline && match && match[1] === 'mermaid') {
+                                return <Mermaid chart={String(children).replace(/\n$/, '')} />;
+                            }
+                            return !inline && match ? (
+                                <code className={className} {...props}>
+                                    {children}
+                                </code>
+                            ) : (
+                                <code className={className} {...props}>
+                                    {children}
+                                </code>
+                            );
+                        }
+                    }}
+                >
+                    {moduleData.lectureContent}
+                </ReactMarkdown>
+            </motion.div>
+        );
     };
 
     if (loading) return <div className="loading-screen">Ders İçeriği Hazırlanıyor...<br /><span style={{ fontSize: '0.9rem', color: '#aaa' }}>Yapay zeka notlarınızı derliyor</span></div>;
     if (!moduleData) return <div className="error-screen">İçerik bulunamadı.</div>;
+
+    const embedUrl = getYoutubeEmbedUrl(moduleData.youtubeUrl);
 
     return (
         <div className="study-session-page">
@@ -143,13 +249,41 @@ const StudySessionPage = () => {
                                 <p>Aşağıdaki notları dikkatlice okuyun ve hazır hissettiğinizde teste geçin.</p>
                             </div>
 
+                            {/* YouTube Integration */}
+                            {embedUrl && (
+                                <div className="video-container" style={{ marginBottom: "1rem", borderRadius: "12px", overflow: "hidden", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
+                                    <iframe
+                                        width="100%"
+                                        height="400"
+                                        src={embedUrl}
+                                        title="Ders Videosu"
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                    ></iframe>
+                                </div>
+                            )}
+
+
+
                             <div className="markdown-content">
                                 {renderLectureContent()}
                             </div>
 
-                            <button onClick={handleStartQuiz} className="start-quiz-btn">
-                                <FaLightbulb /> Teste Başla
-                            </button>
+                            {/* Conditional Button based on completion status */}
+                            {!moduleData.isCompleted ? (
+                                <button onClick={handleStartQuiz} className="start-quiz-btn">
+                                    <FaLightbulb /> Teste Başla
+                                </button>
+                            ) : (
+                                <div className="completed-notice" style={{
+                                    marginTop: '2rem', padding: '1rem', background: '#ecfdf5',
+                                    border: '1px solid #10b981', borderRadius: '12px', color: '#047857',
+                                    fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'
+                                }}>
+                                    <FaCheckCircle /> Bu modülü başarıyla tamamladınız.
+                                </div>
+                            )}
                         </motion.div>
                     )}
 
