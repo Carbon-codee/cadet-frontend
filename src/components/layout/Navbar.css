@@ -63,10 +63,27 @@
 
 .logo-img {
     height: 45px;
-    width: auto;
+    /* Standart yükseklik */
+    width: 45px;
+    /* Kare olması için */
     object-fit: contain;
     border-radius: 50%;
     background-color: transparent;
+}
+
+/* YENİ: Profil Resmi için sınıf */
+.nav-profile-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.nav-profile-img:hover {
+    transform: scale(1.05);
 }
 
 /* --- ORTA LİNKLER KAPSAYICISI --- */

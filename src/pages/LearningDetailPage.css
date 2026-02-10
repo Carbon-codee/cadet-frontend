@@ -1,149 +1,425 @@
-/* --- SAYFA GENEL --- */
-.learning-detail-page {
-    background-color: #F0F4F8;
-    min-height: 90vh;
-    padding: 40px 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* LAYOUT - SIDEBAR + MAIN */
+.learning-detail-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0fdfa 0%, #f5f7fa 50%, #fef3f2 100%);
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* ===== LEFT SIDEBAR ===== */
+.instructor-sidebar {
+    background: linear-gradient(180deg, #ffffff 0%, #f0fdfa 100%);
+    border-right: 1px solid #99f6e4;
+    color: #1f2937;
+    padding: 30px 20px;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-/* --- GERİ DÖN BUTONU --- */
-.page-back-link {
-    width: 100%;
-    max-width: 900px;
-    margin-bottom: 20px;
-    display: inline-flex;
-    text-decoration: none;
-}
-
-.page-back-link span {
-    background-color: white;
-    color: #5b6b7c;
-    padding: 10px 20px;
-    border-radius: 30px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+.sidebar-back-link {
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.3s;
-    border: 1px solid #e1e4e8;
-}
-
-.page-back-link:hover span {
-    color: #002B5B;
-    transform: translateX(-5px);
-    border-color: #002B5B;
-}
-
-/* --- KART --- */
-.detail-container {
-    background: white;
-    width: 100%;
-    max-width: 900px;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 43, 91, 0.1);
-    overflow: hidden;
-}
-
-/* --- BAŞLIK ALANI (RENK DÜZELTME BURADA) --- */
-.detail-header {
-    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-    padding: 60px 40px;
-    text-align: center;
-    position: relative;
-}
-
-.detail-header h1 {
-    font-size: 2.5rem;
-    margin: 0 0 20px 0;
-    font-weight: 800;
-    line-height: 1.2;
-    color: #ffffff !important;
-    /* KESİN BEYAZ */
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-}
-
-.meta-info {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.9);
-    /* Hafif transparan beyaz */
-    background: rgba(255, 255, 255, 0.15);
-    padding: 10px 25px;
-    border-radius: 50px;
-    display: inline-flex;
-    backdrop-filter: blur(5px);
-    align-items: center;
-}
-
-/* HOCA LİNKİ */
-.author-link {
-    color: #FFD700;
-    /* Altın Sarısı */
+    color: #6b7280;
     text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+    padding: 10px 15px;
+    background: #f3f4f6;
+    border-radius: 8px;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.sidebar-back-link:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.instructor-profile {
+    text-align: center;
+    padding: 15px 0;
+}
+
+.instructor-avatar {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 12px auto;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+}
+
+.instructor-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-initials {
+    font-size: 2rem;
     font-weight: 700;
-    border-bottom: 1px dotted #FFD700;
-    margin-left: 5px;
+    color: #6b7280;
+}
+
+.instructor-name {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 8px 0 4px 0;
+    color: #111827;
+}
+
+.instructor-role {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.instructor-dept {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin: 4px 0 12px 0;
+}
+
+.view-profile-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    color: #374151;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.view-profile-btn:hover {
+    background: #e5e7eb;
+    border-color: #d1d5db;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background: #e5e7eb;
+    margin: 25px 0;
+}
+
+.recent-posts-section {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin: 0 0 15px 0;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.post-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #4b5563;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.post-item:hover {
+    background: #f3f4f6;
+    color: #111827;
+    border-color: #e5e7eb;
+}
+
+.post-item.active {
+    background: #ccfbf1;
+    border-color: #14b8a6;
+    color: #0f766e;
+}
+
+.post-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.post-icon.video {
+    color: #ef4444;
+}
+
+.post-icon.pdf {
+    color: #3b82f6;
+}
+
+.post-icon.note {
+    color: #f59e0b;
+}
+
+.post-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.post-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.post-date {
+    font-size: 0.7rem;
+    color: #9ca3af;
+}
+
+.no-posts {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 0.85rem;
+    padding: 20px 0;
+}
+
+/* ===== MAIN CONTENT ===== */
+.content-main {
+    background: #f5f7fa;
+    padding: 40px 50px;
+    overflow-y: auto;
+}
+
+.content-header {
+    background: linear-gradient(135deg, #475569 0%, #334155 100%);
+    padding: 50px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(71, 85, 105, 0.25);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.content-header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 15px 0;
+    line-height: 1.3;
+    color: white;
+}
+
+.content-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.meta-badge {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+    color: white;
+    font-size: 0.85rem;
+    backdrop-filter: blur(10px);
+}
+
+.meta-divider {
+    color: #d1d5db;
+}
+
+.content-body {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #374151;
+}
+
+.content-body p {
+    margin-bottom: 20px;
+}
+
+.media-section {
+    margin-top: 30px;
+}
+
+.media-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #111827;
+}
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(20, 184, 166, 0.15);
+    max-width: 100%;
+    /* Tam genişlik */
+    margin: 0;
+    /* Kenarlarda boşluk yok */
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.pdf-card,
+.file-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+.pdf-icon,
+.file-icon {
+    font-size: 2.5rem;
+    color: #ef4444;
+}
+
+.pdf-info,
+.file-info {
+    flex: 1;
+}
+
+.pdf-info h4,
+.file-info h4 {
+    margin: 0 0 5px 0;
+    color: #111827;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.pdf-info span,
+.file-info span {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.download-btn {
+    padding: 10px 20px;
+    background: #14b8a6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     transition: all 0.2s;
     cursor: pointer;
+    font-size: 0.9rem;
 }
 
-.author-link:hover {
-    color: #fff;
-    border-bottom: 1px solid #fff;
+.download-btn:hover {
+    background: #0d9488;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4);
 }
 
-/* --- İÇERİK --- */
-.detail-content {
-    padding: 50px;
-    font-size: 1.15rem;
-    line-height: 1.8;
-    color: #2c3e50;
-    white-space: pre-wrap;
-}
-
-/* --- FOOTER --- */
-.detail-footer {
-    padding: 25px 50px;
-    background-color: #f8f9fa;
-    border-top: 1px solid #eee;
+.content-footer {
+    padding: 30px 0 0 0;
     display: flex;
     justify-content: flex-end;
 }
 
-.save-button {
-    padding: 12px 30px;
-    border-radius: 50px;
-    font-weight: 700;
-    font-size: 1rem;
+.save-btn {
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    transition: all 0.3s;
-    border: none;
+    gap: 8px;
+    transition: all 0.2s;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #6b7280;
 }
 
-.save-button:not(.saved) {
-    background-color: white;
-    color: #555;
-    border: 1px solid #ddd;
+.save-btn:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+    color: #374151;
 }
 
-.save-button:not(.saved):hover {
-    background-color: #f1f2f6;
-    color: #333;
-}
-
-.save-button.saved {
-    background-color: #27ae60;
+.save-btn.saved {
+    background: #14b8a6;
     color: white;
-    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+    border-color: #14b8a6;
+    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
+}
+
+.save-btn.saved:hover {
+    background: #0d9488;
+    border-color: #0d9488;
+}
+
+/* RESPONSIVE */
+@media (max-width: 968px) {
+    .learning-detail-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .instructor-sidebar {
+        position: relative;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .content-main {
+        padding: 30px 20px;
+    }
+
+    .content-header,
+    .content-body {
+        padding: 25px;
+    }
+
+    .content-header h1 {
+        font-size: 1.5rem;
+    }
 }

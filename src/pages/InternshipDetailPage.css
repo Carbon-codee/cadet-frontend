@@ -1,234 +1,292 @@
-/* --- GENEL SAYFA --- */
+/* === INTERNSHIP DETAIL PAGE - MODERN STYLING === */
 .internship-detail-page {
-    padding: 20px;
-    background-color: #f0f2f5;
+    padding: 2rem 3rem;
+    padding-top: 100px;
+    background-color: #f8fafc;
     min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
-/* --- 3 SÜTUNLU LAYOUT (SOL - ORTA - SAĞ) --- */
+/* Three Column Layout */
 .page-layout {
     display: grid;
-    /* Sol ve Sağ 350px, Orta esnek */
-    grid-template-columns: 350px 1fr 350px;
-    gap: 30px;
+    grid-template-columns: 340px 1fr 340px;
+    gap: 2rem;
     max-width: 1600px;
     margin: 0 auto;
     align-items: start;
 }
 
-/* Yan Sütun Başlıkları */
+/* Column Titles */
 .column-title {
-    font-size: 1.1rem;
+    font-size: 0.875rem;
     font-weight: 800;
     text-transform: uppercase;
-    color: #2c3e50;
-    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
     text-align: center;
-    padding-bottom: 10px;
     border-bottom: 3px solid;
     display: block;
 }
 
 .title-left {
-    border-color: #27ae60;
-    color: #27ae60;
+    border-color: #10b981;
+    color: #10b981;
 }
 
-/* Yeşil */
 .title-right {
-    border-color: #3498db;
-    color: #3498db;
+    border-color: #3b82f6;
+    color: #3b82f6;
 }
 
-/* Mavi */
-
-/* --- ORTA KART (İLAN DETAYI) --- */
+/* Main Detail Container */
 .detail-container {
     background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
     overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.02);
 }
 
 .detail-header {
-    background: linear-gradient(135deg, #002B5B 0%, #005A9C 100%);
-    padding: 50px 30px;
+    background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+    padding: 3rem 2.5rem;
     color: white;
     text-align: center;
 }
 
 .detail-header h1 {
-    font-size: 2.2rem;
-    margin: 0 0 10px 0;
+    font-size: 2.25rem;
+    margin: 0 0 1rem 0;
     font-weight: 800;
+    line-height: 1.3;
 }
 
 .detail-header p {
-    font-size: 1.1rem;
+    font-size: 1.125rem;
     opacity: 0.9;
+    margin: 0;
 }
 
+/* Company Profile Link */
+.company-profile-link {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-size: 1.125rem;
+    margin-top: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 0.25rem;
+    transition: all 0.2s;
+    font-weight: 600;
+}
+
+.company-profile-link:hover {
+    color: white;
+    border-bottom-color: white;
+}
+
+/* Detail Content */
 .detail-content {
-    padding: 40px;
+    padding: 2.5rem;
 }
 
-/* Bilgi Kutucukları */
+/* Date Info Bar */
+.date-info-bar {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #fbbf24;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    color: #78350f;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.date-info-bar span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.date-info-bar strong {
+    color: #451a03;
+    font-weight: 700;
+}
+
+/* Info Grid */
 .info-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
 .info-box {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #e1e4e8;
+    background: #f8fafc;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 2px solid #e2e8f0;
+    transition: all 0.2s;
+}
+
+.info-box:hover {
+    border-color: #cbd5e1;
+    background: white;
 }
 
 .info-label {
     font-size: 0.75rem;
-    color: #7f8c8d;
+    color: #64748b;
     text-transform: uppercase;
     font-weight: 700;
+    letter-spacing: 0.05em;
     display: block;
+    margin-bottom: 0.5rem;
 }
 
 .info-value {
-    font-size: 1.1rem;
-    color: #2c3e50;
+    font-size: 1.125rem;
+    color: #1e293b;
     font-weight: 700;
 }
 
 .description-text {
     font-size: 1rem;
     line-height: 1.7;
-    color: #444;
+    color: #475569;
     white-space: pre-wrap;
+    margin-top: 1rem;
 }
 
-/* Alt Butonlar */
+/* Detail Footer */
 .detail-footer {
-    padding: 20px 40px;
-    background: #fafbfc;
-    border-top: 1px solid #eee;
+    padding: 1.5rem 2.5rem;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
     text-align: right;
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 0.75rem;
 }
 
-/* --- ADAY KARTLARI (YAN SÜTUNLAR İÇİN) --- */
+/* Scout Cards (Candidate Cards) */
 .scout-card {
     background: white;
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-    border: 1px solid #f0f0f0;
-    transition: transform 0.2s;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s;
     position: relative;
     overflow: hidden;
 }
 
 .scout-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .scout-card.fav {
-    border-top: 5px solid #27ae60;
+    border-top: 4px solid #10b981;
 }
 
 .scout-card.other {
-    border-top: 5px solid #3498db;
+    border-top: 4px solid #3b82f6;
 }
 
-/* Avatar ve İsim */
+/* Card Top Row */
 .card-top-row {
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .scout-avatar {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    font-size: 1.2rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-weight: 700;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
 }
 
 .scout-name {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
-    color: #2c3e50;
+    color: #1e293b;
     margin: 0;
-    line-height: 1.2;
+    line-height: 1.3;
 }
 
 .scout-dept {
     font-size: 0.8rem;
-    color: #7f8c8d;
+    color: #64748b;
+    font-weight: 600;
 }
 
-/* Rozetler */
+/* Badges */
 .badges-container {
     display: flex;
-    gap: 8px;
-    margin-bottom: 15px;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
     flex-wrap: wrap;
 }
 
 .mini-badge {
     font-size: 0.75rem;
-    padding: 4px 10px;
-    border-radius: 6px;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
     font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .bg-gpa {
-    background: #fff3e0;
-    color: #e67e22;
+    background: #fed7aa;
+    color: #c2410c;
 }
 
 .bg-eng {
-    background: #e0f2f1;
-    color: #009688;
+    background: #a7f3d0;
+    color: #047857;
 }
 
-/* --- SKOR BARI (GÜÇLENDİRİLDİ) --- */
+/* Score Section */
 .score-section {
-    margin-top: 10px;
+    margin-top: 1rem;
 }
 
 .score-header {
     display: flex;
     justify-content: space-between;
     font-size: 0.8rem;
-    color: #555;
-    margin-bottom: 5px;
+    color: #475569;
+    margin-bottom: 0.5rem;
     font-weight: 600;
 }
 
 .score-track {
     width: 100%;
     height: 12px;
-    /* Daha kalın */
-    background: #e9ecef;
+    background: #e2e8f0;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-    /* İç gölge */
 }
 
 .score-fill {
@@ -237,113 +295,256 @@
     transition: width 1s ease-in-out;
 }
 
+/* Inspect Button */
 .btn-inspect {
     display: block;
     width: 100%;
     text-align: center;
-    margin-top: 15px;
-    padding: 8px 0;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.625rem;
+    font-size: 0.875rem;
     font-weight: 600;
     text-decoration: none;
-    border: 1px solid transparent;
-    transition: 0.2s;
+    border: 2px solid;
+    transition: all 0.2s;
 }
 
 .btn-inspect.fav {
-    background: #e8f5e9;
-    color: #27ae60;
-    border-color: #27ae60;
+    background: #d1fae5;
+    color: #047857;
+    border-color: #10b981;
 }
 
 .btn-inspect.fav:hover {
-    background: #27ae60;
+    background: #10b981;
     color: white;
 }
 
 .btn-inspect.other {
-    background: #e3f2fd;
-    color: #1976d2;
-    border-color: #1976d2;
+    background: #dbeafe;
+    color: #1e40af;
+    border-color: #3b82f6;
 }
 
 .btn-inspect.other:hover {
-    background: #1976d2;
+    background: #3b82f6;
     color: white;
 }
 
-/* MOBİL UYUM */
+/* Responsive Design */
 @media (max-width: 1200px) {
     .page-layout {
         grid-template-columns: 1fr;
-        /* Tek sütuna düş */
         max-width: 800px;
     }
 
-    .scout-column {
+    .side-column {
         order: 2;
     }
 
-    /* Adayları alta al */
     .detail-container {
         order: 1;
-        margin-bottom: 40px;
+        margin-bottom: 2rem;
     }
-
-    /* İlanı üste al */
 }
 
-/* --- YENİ EKLENEN STİLLER --- */
+@media (max-width: 768px) {
+    .internship-detail-page {
+        padding: 1.5rem;
+        padding-top: 100px;
+    }
 
-/* Şirket Profili Linki */
-.company-profile-link {
-    color: #a7c5e8;
-    /* Açık mavi */
-    text-decoration: none;
-    font-size: 1.1rem;
-    margin-top: 5px;
+    .detail-header {
+        padding: 2rem 1.5rem;
+    }
+
+    .detail-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .detail-content {
+        padding: 1.5rem;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .date-info-bar {
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .detail-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .company-profile-link {
+        font-size: 1rem;
+    }
+}
+
+/* === COMPANY SIDEBAR (FOR STUDENTS) === */
+.company-sidebar-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    text-align: center;
+}
+
+.company-logo-section {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.company-logo-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.company-logo-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+}
+
+.company-sidebar-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 1rem 0;
+}
+
+.view-company-profile-btn {
     display: inline-flex;
     align-items: center;
-    border-bottom: 1px dashed rgba(167, 197, 232, 0.5);
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
     transition: all 0.2s;
 }
 
-.company-profile-link:hover {
-    color: #ffffff;
-    border-bottom: 1px solid white;
+.view-company-profile-btn:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-/* Tarih Bilgi Çubuğu */
-.date-info-bar {
-    background-color: #fff9db;
-    /* Çok hafif sarı, dikkat çeksin diye */
-    border: 1px solid #f1e0a8;
-    padding: 15px 20px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 30px;
-    color: #555;
-    font-size: 0.95rem;
+.sidebar-divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 1.5rem 0;
 }
 
-.date-info-bar span {
+.sidebar-section-title {
+    font-size: 0.875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    margin: 0 0 1rem 0;
+}
+
+.company-jobs-list {
     display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.company-job-item {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: block;
+}
+
+.company-job-item:hover {
+    border-color: #3b82f6;
+    background: #f8fafc;
+    transform: translateX(4px);
+}
+
+.job-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.job-item-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.3;
+    flex: 1;
+}
+
+.job-item-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.job-item-meta {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    font-size: 0.8rem;
+    color: #64748b;
 }
 
-.date-info-bar strong {
-    color: #2c3e50;
+.job-item-salary {
+    font-weight: 700;
+    color: #10b981;
 }
 
-/* Mobilde tarihler alt alta */
-@media (max-width: 600px) {
-    .date-info-bar {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-    }
+/* Applied Jobs Specific Styles */
+.applied-job-item {
+    border-left: 3px solid #3b82f6;
+}
+
+.applied-job-item:hover {
+    border-left-color: #2563eb;
+}
+
+.applied-badge {
+    background: #e0f2fe !important;
+    color: #0369a1 !important;
+}
+
+.job-company-name {
+    font-weight: 600;
+    color: #475569;
+    font-size: 0.85rem;
 }

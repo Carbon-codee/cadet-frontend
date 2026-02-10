@@ -63,9 +63,17 @@ const LecturerContentPage = () => {
             <aside className="dashboard-sidebar lecturer-sidebar">
                 <div className="profile-section">
                     <div className="profile-img-container lecturer-img">
-                        <span className="profile-initials">
-                            {userInfo?.name?.charAt(0) || 'A'}{userInfo?.name?.charAt(1)?.toUpperCase() || ''}
-                        </span>
+                        {userInfo?.profilePicture && !userInfo.profilePicture.includes('anonymous-avatar-icon') ? (
+                            <img
+                                src={userInfo.profilePicture}
+                                alt={userInfo.name}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                            />
+                        ) : (
+                            <span className="profile-initials">
+                                {userInfo?.name?.charAt(0) || 'A'}{userInfo?.name?.charAt(1)?.toUpperCase() || ''}
+                            </span>
+                        )}
                     </div>
                     <h3 className="profile-name headline-font">{userInfo?.name}</h3>
                     <p className="profile-role">Akademisyen Paneli</p>

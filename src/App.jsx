@@ -26,6 +26,7 @@ import InternshipDetailPage from './pages/InternshipDetailPage';
 import LecturerDashboard from './pages/LecturerDashboard';
 import LecturerContentPage from './pages/LecturerContentPage';
 import LecturerUploadPage from './pages/LecturerUploadPage';
+import LecturerResourcePage from './pages/lecturer/LecturerResourcePage'; // YENİ
 import LecturerStudentTrackingPage from './pages/LecturerStudentTrackingPage';
 import GasmPage from './pages/GasmPage';
 import SavedContentPage from './pages/SavedContentPage';
@@ -89,6 +90,7 @@ function App() {
         <Route path="/lecturer/dashboard" element={<ProtectedRoute><MainLayout><LecturerDashboard /></MainLayout></ProtectedRoute>} />
         <Route path="/lecturer/my-content" element={<ProtectedRoute><MainLayout><LecturerContentPage /></MainLayout></ProtectedRoute>} />
         <Route path="/lecturer/upload" element={<ProtectedRoute><MainLayout><LecturerUploadPage /></MainLayout></ProtectedRoute>} />
+        <Route path="/lecturer/resources" element={<ProtectedRoute><MainLayout><LecturerResourcePage /></MainLayout></ProtectedRoute>} />
         <Route path="/lecturer/student-status" element={<ProtectedRoute><MainLayout><LecturerStudentTrackingPage /></MainLayout></ProtectedRoute>} />
 
       </Routes>

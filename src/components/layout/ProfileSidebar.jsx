@@ -37,9 +37,12 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
                 {userInfo && (
                     <div className="sidebar-user-info">
                         <img
-                            src={`https://placehold.co/100x100/002B5B/FFFFFF?text=${getInitials(userInfo.name)}`}
+                            src={userInfo.profilePicture && !userInfo.profilePicture.includes('anonymous-avatar-icon')
+                                ? userInfo.profilePicture
+                                : `https://placehold.co/100x100/002B5B/FFFFFF?text=${getInitials(userInfo.name)}`}
                             alt="Profil"
                             className="sidebar-avatar"
+                            style={{ objectFit: 'cover' }}
                         />
                         <div className="user-details">
                             <h4>{userInfo.name}</h4>

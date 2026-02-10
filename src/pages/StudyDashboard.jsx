@@ -117,9 +117,17 @@ const StudyDashboard = () => {
             <aside className="dashboard-sidebar">
                 <div className="profile-section">
                     <div className="profile-img-container">
-                        <span className="profile-initials">
-                            {user?.name?.charAt(0) || 'U'}{user?.surname?.charAt(0) || ''}
-                        </span>
+                        {user?.profilePicture && !user.profilePicture.includes('anonymous-avatar-icon') ? (
+                            <img
+                                src={user.profilePicture}
+                                alt={user.name}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                            />
+                        ) : (
+                            <span className="profile-initials">
+                                {user?.name?.charAt(0) || 'U'}{user?.surname?.charAt(0) || ''}
+                            </span>
+                        )}
                     </div>
                     <h3 className="profile-name">{user?.name} {user?.surname}</h3>
                     <p className="profile-role">{user?.role === 'student' ? 'Öğrenci' : 'Kullanıcı'}</p>

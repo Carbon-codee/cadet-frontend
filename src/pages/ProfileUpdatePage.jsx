@@ -27,7 +27,7 @@ const calculateScore = (formData) => {
 };
 
 // --- ÖĞRENCİ FORMU (AYNI) ---
-const StudentUpdateForm = ({ formData, onFormChange, availableCompanies }) => {
+const StudentUpdateForm = ({ formData, onFormChange, availableCompanies, uploadDoc }) => {
     const handleShipTypeToggle = (type) => {
         let currentTypes = formData.preferences?.shipTypes || [];
         if (currentTypes.includes(type)) currentTypes = currentTypes.filter(t => t !== type);
@@ -139,7 +139,49 @@ const StudentUpdateForm = ({ formData, onFormChange, availableCompanies }) => {
             <div className="form-card">
                 <h3>Aktiviteler & Tercihler</h3>
                 <div className="form-group"><label>Sosyal Aktiviteler (Her satıra bir tane)</label><textarea name="socialActivities" rows="3" value={formData.socialActivities || ''} onChange={onFormChange}></textarea></div>
-                <div className="form-group"><label>Sertifikalar (Her satıra bir tane)</label><textarea name="documentsText" rows="3" value={formData.documentsText || ''} onChange={onFormChange}></textarea></div>
+
+                <div className="form-group" style={{ marginTop: '20px', padding: '15px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                    <h4 style={{ fontSize: '1rem', marginBottom: '15px', color: '#334155' }}>Portfolyo Belgeleri (PDF / Resim - Max 5MB)</h4>
+
+                    {/* CV Yükleme */}
+                    <div style={{ marginBottom: '15px' }}>
+                        <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', fontWeight: '600' }}>Özgeçmiş (CV) {formData.cvUrl && "✅ Yüklü"}</label>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <input type="file" id="cvUpload" accept=".pdf,image/*" style={{ fontSize: '0.9rem' }} />
+                            <button type="button" onClick={() => uploadDoc('cv', 'cvUpload')} className="btn-upload-small">Yükle</button>
+                        </div>
+                        {formData.cvUrl && <a href={formData.cvUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6' }}>Görüntüle</a>}
+                    </div>
+
+                    {/* Transkript Yükle */}
+                    <div style={{ marginBottom: '15px' }}>
+                        <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', fontWeight: '600' }}>Transkript (Resmi Belge) {formData.transcriptUrl && "✅ Yüklü"}</label>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <input type="file" id="transcriptUpload" accept=".pdf,image/*" style={{ fontSize: '0.9rem' }} />
+                            <button type="button" onClick={() => uploadDoc('transcript', 'transcriptUpload')} className="btn-upload-small">Yükle</button>
+                        </div>
+                        {formData.transcriptUrl && <a href={formData.transcriptUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6' }}>Görüntüle</a>}
+                    </div>
+
+                    {/* Sertifika Yükle */}
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', fontWeight: '600' }}>Sertifika Ekle</label>
+                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                            <input type="text" id="certName" placeholder="Sertifika Adı" style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }} />
+                            <input type="file" id="certUpload" accept=".pdf,image/*" style={{ fontSize: '0.9rem' }} />
+                            <button type="button" onClick={() => uploadDoc('certificate', 'certUpload')} className="btn-upload-small">Ekle</button>
+                        </div>
+                        {formData.certificates && formData.certificates.length > 0 && (
+                            <ul style={{ marginTop: '10px', paddingLeft: '20px', fontSize: '0.9rem' }}>
+                                {formData.certificates.map((cert, idx) => (
+                                    <li key={idx}>
+                                        <a href={cert.url} target="_blank" rel="noopener noreferrer">{cert.name}</a>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </div>
             </div>
             <div className="form-card">
                 <h3>Kariyer Tercihleri</h3>
@@ -266,6 +308,64 @@ const ProfileUpdatePage = () => {
         }
     };
 
+    const uploadDoc = async (type, inputId) => {
+        const fileInput = document.getElementById(inputId);
+        const file = fileInput?.files[0];
+
+        if (!file) {
+            alert("Lütfen bir dosya seçin.");
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            alert("Dosya boyutu 5MB'ı geçemez.");
+            return;
+        }
+
+        const uploadFormData = new FormData();
+        let endpoint = '';
+
+        if (type === 'cv') {
+            uploadFormData.append('cv', file);
+            endpoint = '/users/upload-cv';
+        } else if (type === 'transcript') {
+            uploadFormData.append('transcript', file);
+            endpoint = '/users/upload-transcript-pdf';
+        } else if (type === 'certificate') {
+            const certName = document.getElementById('certName').value;
+            if (!certName) {
+                alert("Lütfen sertifika adı girin.");
+                return;
+            }
+            uploadFormData.append('certificate', file);
+            uploadFormData.append('name', certName);
+            endpoint = '/users/upload-certificate';
+        }
+
+        try {
+            const { data } = await API.post(endpoint, uploadFormData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            alert("Yükleme başarılı!");
+
+            // State güncelle
+            setFormData(prev => {
+                const newData = { ...prev };
+                if (type === 'cv') newData.cvUrl = data.cvUrl;
+                if (type === 'transcript') newData.transcriptUrl = data.transcriptUrl;
+                if (type === 'certificate') newData.certificates = data.certificates;
+                return newData;
+            });
+
+            // Inputları temizle
+            fileInput.value = '';
+            if (type === 'certificate') document.getElementById('certName').value = '';
+
+        } catch (error) {
+            console.error("Upload Error:", error);
+            alert("Yükleme sırasında hata oluştu.");
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         let dataToSubmit = { ...formData };
@@ -319,7 +419,7 @@ const ProfileUpdatePage = () => {
         <div className="profile-update-page">
             <div className="page-header"><h1>Profili Düzenle</h1></div>
             <form className="update-form" onSubmit={handleSubmit}>
-                {userInfo.role === 'student' && <StudentUpdateForm formData={formData} onFormChange={handleChange} availableCompanies={companies} />}
+                {userInfo.role === 'student' && <StudentUpdateForm formData={formData} onFormChange={handleChange} availableCompanies={companies} uploadDoc={uploadDoc} />}
                 {userInfo.role === 'company' && <CompanyUpdateForm formData={formData} onFormChange={handleChange} />}
                 {userInfo.role === 'lecturer' && <LecturerUpdateForm formData={formData} onFormChange={handleChange} />}
                 <div className="save-button-container"><button type="submit" className="save-button">Değişiklikleri Kaydet</button></div>

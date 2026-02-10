@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import API from '../api/axiosConfig'; // API importu
-import { FaFilePdf, FaVideo, FaBookOpen, FaRocket } from 'react-icons/fa'; // FaRocket eklendi
+import API from '../api/axiosConfig';
+import { FaFilePdf, FaVideo, FaBookOpen, FaChalkboardTeacher } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 import './LearningPage.css';
 
@@ -12,23 +12,20 @@ const LearningPage = () => {
     const [savedItems, setSavedItems] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState('Tümü');
+    const [selectedInstructor, setSelectedInstructor] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                // 1. İÇERİKLERİ VERİTABANINDAN ÇEK (API)
                 const { data } = await API.get('/content');
                 setAllContent(data);
 
-                // 2. KİŞİYE ÖZEL KAYITLARI ÇEK (LocalStorage'dan ID kontrolü)
+                // Fetch saved items
                 if (userInfo && userInfo._id) {
                     const userKey = `savedLearningItems_${userInfo._id}`;
                     const savedIds = JSON.parse(localStorage.getItem(userKey) || '[]');
-
-                    // Veritabanından gelen veriler ile kaydedilen ID'leri eşleştir
                     const userSavedItems = data.filter(item => savedIds.includes(item._id));
                     setSavedItems(userSavedItems);
                 }
@@ -42,98 +39,217 @@ const LearningPage = () => {
         fetchData();
     }, [userInfo]);
 
-    // Filtreleme Mantığı
+    // Get unique instructors who have shared content
+    const instructors = useMemo(() => {
+        if (!Array.isArray(allContent)) return [];
+
+        const instructorMap = new Map();
+        allContent.forEach(item => {
+            if (item.author && item.author._id) {
+                if (!instructorMap.has(item.author._id)) {
+                    instructorMap.set(item.author._id, {
+                        ...item.author,
+                        contentCount: 1
+                    });
+                } else {
+                    const existing = instructorMap.get(item.author._id);
+                    existing.contentCount += 1;
+                }
+            }
+        });
+
+        return Array.from(instructorMap.values()).sort((a, b) =>
+            b.contentCount - a.contentCount
+        );
+    }, [allContent]);
+
+    // Filter content
     const filteredContent = useMemo(() => {
         if (!Array.isArray(allContent)) return [];
-        return allContent.filter(item => {
+
+        const filtered = allContent.filter(item => {
             const categoryMatch = activeCategory === 'Tümü' ||
                 (activeCategory === 'PDF' && (item.type === 'Belge' || item.type === 'Ders Notu')) ||
+                (activeCategory === 'Video' && item.type === 'Video') ||
                 (activeCategory === 'Duyuru' && item.type === 'Duyuru');
-            const searchMatch = (item.title || '').toLowerCase().includes(searchTerm.toLowerCase());
-            return categoryMatch && searchMatch;
+
+            const instructorMatch = !selectedInstructor ||
+                item.author?._id === selectedInstructor;
+
+            return categoryMatch && instructorMatch;
         });
-    }, [searchTerm, activeCategory, allContent]);
+
+        // Sort by date (newest first)
+        return filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }, [activeCategory, selectedInstructor, allContent]);
 
     const getContentIcon = (type) => {
         if (type === 'Belge' || type === 'Ders Notu') return <div className="content-icon pdf"><FaFilePdf /></div>;
         if (type === 'Duyuru') return <div className="content-icon note"><FaBookOpen /></div>;
+        if (type === 'Video') return <div className="content-icon video"><FaVideo /></div>;
         return <div className="content-icon video"><FaVideo /></div>;
     };
 
-    if (loading) return <div style={{ padding: 40, textAlign: 'center', color: '#666' }}>Yükleniyor...</div>;
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+    };
+
+    if (loading) return <div className="dashboard-loading"><div className="spinner"></div></div>;
 
     return (
-        <div className="learning-page-container">
-            {/* SOL SÜTUN */}
-            <aside className="left-sidebar">
-
-                {/* --- YENİ EKLENEN GASM BUTONU --- */}
-                <Link to="/gasm" style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-                    marginBottom: '25px', padding: '15px',
-                    background: 'linear-gradient(135deg, #008080 0%, #004d4d 100%)',
-                    color: 'white', borderRadius: '12px',
-                    textDecoration: 'none', fontWeight: 'bold',
-                    boxShadow: '0 4px 15px rgba(0,128,128,0.3)',
-                    transition: 'transform 0.2s'
-                }}>
-                    <FaRocket /> <span>GASM Sınav Hazırlık</span>
-                </Link>
-                {/* ---------------------------------- */}
-
-                <h3>Materyal Ara</h3>
-                <div className="search-box">
-                    <input type="text" placeholder="Konu, başlık..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+        <div className="learning-dashboard-layout">
+            {/* LEFT SIDEBAR */}
+            <aside className="dashboard-sidebar">
+                {/* Categories */}
+                <div className="curriculum-section">
+                    <h4 className="section-title">Kategoriler</h4>
+                    <div className="module-list-scroll">
+                        <div
+                            className={`sidebar-module-item ${activeCategory === 'Tümü' ? 'active' : ''}`}
+                            onClick={() => { setActiveCategory('Tümü'); setSelectedInstructor(null); }}
+                        >
+                            <div className="module-info">
+                                <span className="module-topic-truncate">📚 Tümü</span>
+                            </div>
+                        </div>
+                        <div
+                            className={`sidebar-module-item ${activeCategory === 'Video' ? 'active' : ''}`}
+                            onClick={() => { setActiveCategory('Video'); setSelectedInstructor(null); }}
+                        >
+                            <div className="module-info">
+                                <span className="module-topic-truncate">📹 Videolar</span>
+                            </div>
+                        </div>
+                        <div
+                            className={`sidebar-module-item ${activeCategory === 'PDF' ? 'active' : ''}`}
+                            onClick={() => { setActiveCategory('PDF'); setSelectedInstructor(null); }}
+                        >
+                            <div className="module-info">
+                                <span className="module-topic-truncate">📄 PDF & Belgeler</span>
+                            </div>
+                        </div>
+                        <div
+                            className={`sidebar-module-item ${activeCategory === 'Duyuru' ? 'active' : ''}`}
+                            onClick={() => { setActiveCategory('Duyuru'); setSelectedInstructor(null); }}
+                        >
+                            <div className="module-info">
+                                <span className="module-topic-truncate">📢 Duyurular</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h3>Kategoriler</h3>
-                <ul className="category-list">
-                    <li className={`category-item ${activeCategory === 'Tümü' ? 'active' : ''}`} onClick={() => setActiveCategory('Tümü')}>Tümü</li>
-                    <li className={`category-item ${activeCategory === 'PDF' ? 'active' : ''}`} onClick={() => setActiveCategory('PDF')}>PDF & Belgeler</li>
-                    <li className={`category-item ${activeCategory === 'Duyuru' ? 'active' : ''}`} onClick={() => setActiveCategory('Duyuru')}>Duyurular</li>
-                </ul>
+
+                <div className="sidebar-divider"></div>
+
+                {/* Instructors */}
+                <div className="curriculum-section">
+                    <h4 className="section-title">Paylaşan Hocalar</h4>
+                    <div className="module-list-scroll">
+                        {instructors.map(instructor => (
+                            <div
+                                key={instructor._id}
+                                className={`sidebar-module-item instructor-item ${selectedInstructor === instructor._id ? 'active' : ''}`}
+                                onClick={() => setSelectedInstructor(selectedInstructor === instructor._id ? null : instructor._id)}
+                            >
+                                <div className="instructor-avatar-small">
+                                    {instructor.profilePicture && !instructor.profilePicture.includes('anonymous') ? (
+                                        <img src={instructor.profilePicture} alt={instructor.name} />
+                                    ) : (
+                                        <span>{instructor.name?.charAt(0) || 'A'}</span>
+                                    )}
+                                </div>
+                                <div className="module-info">
+                                    <span className="module-topic-truncate">{instructor.name}</span>
+                                    <span className="day-number">{instructor.contentCount} içerik</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </aside>
 
-            {/* ORTA SÜTUN */}
-            <main className="main-content">
-                <div className="content-list">
+            {/* MAIN CONTENT */}
+            <main className="dashboard-main">
+                <header className="main-header">
+                    <div>
+                        <h1 className="welcome-title">
+                            Öğrenme Materyalleri 📚
+                        </h1>
+                        <p className="welcome-subtitle">
+                            {selectedInstructor
+                                ? `${instructors.find(i => i._id === selectedInstructor)?.name} tarafından paylaşılan içerikler`
+                                : `Tüm akademisyenler tarafından paylaşılan ${filteredContent.length} içerik`
+                            }
+                        </p>
+                    </div>
+                </header>
+
+                <div className="content-grid">
                     {filteredContent.length > 0 ? (
-                        [...filteredContent].reverse().map(item => (
-                            <div key={item._id} className="content-card">
-                                {getContentIcon(item.type)}
-                                <div className="content-details">
-                                    <h4>{item.title}</h4>
-                                    <p>{`${(item.content || '').substring(0, 100)}...`}</p>
-                                    <div className="author">
-                                        Yükleyen: {item.author?.name || 'Akademisyen'}
+                        filteredContent.map(item => (
+                            <div key={item._id} className="learning-content-card">
+                                <div className="card-header-row">
+                                    {getContentIcon(item.type)}
+                                    <div className="card-meta">
+                                        <span className="content-type-badge">{item.type}</span>
+                                        <span className="content-date">{formatDate(item.createdAt)}</span>
                                     </div>
                                 </div>
-                                <Link to={`/learning/${item._id}`} className="view-button">
-                                    Görüntüle
-                                </Link>
+                                <h3 className="card-title">{item.title}</h3>
+                                <p className="card-description">
+                                    {(item.content || '').substring(0, 120)}...
+                                </p>
+                                <div className="card-footer">
+                                    <div className="author-info">
+                                        <div className="author-avatar-tiny">
+                                            {item.author?.profilePicture && !item.author.profilePicture.includes('anonymous') ? (
+                                                <img src={item.author.profilePicture} alt={item.author.name} />
+                                            ) : (
+                                                <span>{item.author?.name?.charAt(0) || 'A'}</span>
+                                            )}
+                                        </div>
+                                        <span className="author-name">{item.author?.name || 'Akademisyen'}</span>
+                                    </div>
+                                    <Link to={`/learning/${item._id}`} className="view-btn-modern">
+                                        Görüntüle →
+                                    </Link>
+                                </div>
                             </div>
                         ))
                     ) : (
-                        <div style={{ textAlign: 'center', color: '#999', padding: '40px', background: 'white', borderRadius: '12px' }}>
-                            Bu kriterlere uygun içerik bulunamadı.
+                        <div className="empty-placeholder-large">
+                            <FaBookOpen style={{ fontSize: '3rem', color: '#e2e8f0', marginBottom: '1rem' }} />
+                            <h3>İçerik Bulunamadı</h3>
+                            <p>Bu kriterlere uygun içerik bulunmuyor.</p>
                         </div>
                     )}
                 </div>
             </main>
 
-            {/* SAĞ SÜTUN */}
-            <aside className="right-sidebar">
-                <h3>Kaydedilenler ({savedItems.length})</h3>
-                {savedItems.length > 0 ? (
-                    <ul className="category-list" style={{ gap: '5px', display: 'flex', flexDirection: 'column' }}>
-                        {[...savedItems].reverse().map(item => (
-                            <Link to={`/learning/${item._id}`} key={item._id} className="category-item" style={{ textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                {item.title}
-                            </Link>
-                        ))}
-                    </ul>
-                ) : (
-                    <p style={{ fontSize: '0.9rem', color: '#999' }}>Henüz kaydedilmiş bir içerik yok.</p>
-                )}
+            {/* RIGHT SIDEBAR */}
+            <aside className="dashboard-sidebar right-sidebar">
+                <div className="curriculum-section">
+                    <h4 className="section-title">Kaydedilenler ({savedItems.length})</h4>
+                    <div className="module-list-scroll">
+                        {savedItems.length > 0 ? (
+                            savedItems.map(item => (
+                                <Link
+                                    to={`/learning/${item._id}`}
+                                    key={item._id}
+                                    className="sidebar-module-item saved-item"
+                                >
+                                    <div className="module-info">
+                                        <span className="day-number">{item.type}</span>
+                                        <span className="module-topic-truncate">{item.title}</span>
+                                    </div>
+                                </Link>
+                            ))
+                        ) : (
+                            <p className="no-plan-text">Henüz kaydedilmiş içerik yok.</p>
+                        )}
+                    </div>
+                </div>
             </aside>
         </div>
     );

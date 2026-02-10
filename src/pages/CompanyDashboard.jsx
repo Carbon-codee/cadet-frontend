@@ -116,9 +116,18 @@ const CompanyDashboard = () => {
             <aside className="dashboard-sidebar company-sidebar">
                 <div className="profile-section">
                     <div className="profile-img-container company-img">
-                        <span className="profile-initials">
-                            {userInfo?.name?.charAt(0) || 'C'}{userInfo?.name?.charAt(1)?.toUpperCase() || ''}
-                        </span>
+                        {userInfo?.profilePicture && !userInfo.profilePicture.includes('anonymous-avatar-icon') ? (
+                            <img
+                                src={userInfo.profilePicture}
+                                alt={userInfo.name}
+                                className="profile-image"
+                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                            />
+                        ) : (
+                            <span className="profile-initials">
+                                {userInfo?.name?.charAt(0) || 'C'}{userInfo?.name?.charAt(1)?.toUpperCase() || ''}
+                            </span>
+                        )}
                     </div>
                     <h3 className="profile-name">{userInfo?.name}</h3>
                     <p className="profile-role">Kurumsal Hesap</p>

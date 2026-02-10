@@ -77,7 +77,17 @@ const Navbar = () => {
         <div className="nav-right-section">
 
           {userInfo ? (
-            <FaUserCircle className="profile-icon" onClick={toggleProfileSidebar} />
+            <div onClick={toggleProfileSidebar} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+              {userInfo.profilePicture && !userInfo.profilePicture.includes('anonymous-avatar-icon') ? (
+                <img
+                  src={userInfo.profilePicture}
+                  alt="Profile"
+                  className="nav-profile-img"
+                />
+              ) : (
+                <FaUserCircle className="profile-icon" />
+              )}
+            </div>
           ) : (
             <Link to="/auth">
               <button className="login-button">Giriş Yap / Kayıt Ol</button>

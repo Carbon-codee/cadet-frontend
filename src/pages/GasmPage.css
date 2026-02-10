@@ -1,7 +1,7 @@
 /* --- GASM SINAV MODÜLÜ STİLLERİ --- */
 .gasm-wrapper {
     min-height: 100vh;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     color: #2d3436;
     background: linear-gradient(135deg, #e0f7fa 0%, #4dd0e1 100%);
     padding-bottom: 50px;

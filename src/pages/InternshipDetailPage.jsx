@@ -16,6 +16,8 @@ const InternshipDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [hasApplied, setHasApplied] = useState(false);
     const [scoutData, setScoutData] = useState(null);
+    const [companyInternships, setCompanyInternships] = useState([]);
+    const [appliedInternships, setAppliedInternships] = useState([]);
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -28,6 +30,33 @@ const InternshipDetailPage = () => {
                         (app.user === userInfo._id) || (app.user._id === userInfo._id)
                     );
                     setHasApplied(isApplied);
+
+                    // Fetch company's other active internships
+                    try {
+                        const companyId = data.company._id || data.company;
+                        const allInternshipsRes = await API.get('/internships');
+                        const companyJobs = allInternshipsRes.data
+                            .filter(job =>
+                                job._id !== id &&
+                                (job.company._id === companyId || job.company === companyId) &&
+                                job.isActive
+                            )
+                            .slice(0, 5); // Get max 5 recent jobs
+                        setCompanyInternships(companyJobs);
+                    } catch (err) { console.error(err); }
+
+                    // Fetch student's applied internships
+                    try {
+                        const myApplicationsRes = await API.get('/users/my-applications');
+                        console.log('Applied internships API response:', myApplicationsRes.data);
+                        const recentApplied = myApplicationsRes.data
+                            .filter(job => job._id !== id)
+                            .slice(0, 5); // Get max 5 recent applications
+                        setAppliedInternships(recentApplied);
+                        console.log('Filtered applied internships:', recentApplied);
+                    } catch (err) {
+                        console.error('Error fetching applied internships:', err);
+                    }
                 }
 
                 if (userInfo?.role === 'company') {
@@ -68,8 +97,12 @@ const InternshipDetailPage = () => {
     const ScoutCard = ({ student, isFav }) => (
         <div className={`scout-card ${isFav ? 'fav' : 'other'}`}>
             <div className="card-top-row">
-                <div className="scout-avatar" style={{ background: isFav ? '#27ae60' : '#3498db' }}>
-                    {student.name.charAt(0)}
+                <div className="scout-avatar" style={{ background: isFav ? '#27ae60' : '#3498db', overflow: 'hidden' }}>
+                    {student.profilePicture && !student.profilePicture.includes('anonymous-avatar-icon') ? (
+                        <img src={student.profilePicture} alt={student.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                        <span>{student.name.charAt(0)}{student.surname?.charAt(0) || ''}</span>
+                    )}
                 </div>
                 <div>
                     <h4 className="scout-name">{student.name} {student.surname} {isFav && '❤️'}</h4>
@@ -105,8 +138,49 @@ const InternshipDetailPage = () => {
                 <div className="side-column">
                     {isOwner && (
                         <>
-                            <span className="column-title title-left">🌟 HEDEFLEYENLER</span>
+                            <span className="column-title title-left">🌟 HED EFLEYENLER</span>
                             {scoutData?.favorited?.length > 0 ? scoutData.favorited.map(stu => <ScoutCard key={stu._id} student={stu} isFav={true} />) : <p style={{ textAlign: 'center', color: '#999' }}>Yok.</p>}
+                        </>
+                    )}
+
+                    {userInfo?.role === 'student' && internship && (
+                        <>
+                            <div className="company-sidebar-card">
+                                <div className="company-logo-section">
+                                    {internship.company?.profilePicture && !internship.company.profilePicture.includes('anonymous') ? (
+                                        <img src={internship.company.profilePicture} alt={internship.company.name} className="company-logo-img" />
+                                    ) : (
+                                        <div className="company-logo-placeholder">
+                                            <FaBuilding />
+                                        </div>
+                                    )}
+                                </div>
+                                <h3 className="company-sidebar-name">{internship.company?.name || 'Şirket'}</h3>
+                                <Link to={`/profile/${companyProfileId}`} className="view-company-profile-btn">
+                                    <FaBuilding /> Şirket Profilini Görüntüle
+                                </Link>
+                            </div>
+
+                            {companyInternships.length > 0 && (
+                                <>
+                                    <div className="sidebar-divider"></div>
+                                    <h4 className="sidebar-section-title">📋 Diğer İlanlar</h4>
+                                    <div className="company-jobs-list">
+                                        {companyInternships.map(job => (
+                                            <Link to={`/internships/${job._id}`} key={job._id} className="company-job-item">
+                                                <div className="job-item-header">
+                                                    <span className="job-item-title">{job.title}</span>
+                                                    <span className="job-item-badge">{job.shipType}</span>
+                                                </div>
+                                                <div className="job-item-meta">
+                                                    <span>{job.location}</span>
+                                                    <span className="job-item-salary">{job.salary}$</span>
+                                                </div>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
                         </>
                     )}
                 </div>
@@ -173,6 +247,35 @@ const InternshipDetailPage = () => {
                         <>
                             <span className="column-title title-right">📋 DİĞER ADAYLAR</span>
                             {scoutData?.others?.length > 0 ? scoutData.others.map(stu => <ScoutCard key={stu._id} student={stu} isFav={false} />) : <p style={{ textAlign: 'center', color: '#999' }}>Yok.</p>}
+                        </>
+                    )}
+
+                    {userInfo?.role === 'student' && (
+                        <>
+                            <h4 className="sidebar-section-title">📌 Son Başvurularım</h4>
+                            {appliedInternships.length > 0 ? (
+                                <div className="company-jobs-list">
+                                    {appliedInternships.map(job => (
+                                        <Link to={`/internships/${job._id}`} key={job._id} className="company-job-item applied-job-item">
+                                            <div className="job-item-header">
+                                                <span className="job-item-title">{job.title}</span>
+                                                <span className="job-item-badge applied-badge">{job.shipType}</span>
+                                            </div>
+                                            <div className="job-item-meta">
+                                                <span className="job-company-name">{job.company?.name || 'Şirket'}</span>
+                                            </div>
+                                            <div className="job-item-meta">
+                                                <span>{job.location}</span>
+                                                <span className="job-item-salary">{job.salary}$</span>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'white', borderRadius: '1rem', border: '1px solid #f1f5f9' }}>
+                                    <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: 0 }}>Henüz başka ilanlara başvuru yapmadınız.</p>
+                                </div>
+                            )}
                         </>
                     )}
                 </div>
