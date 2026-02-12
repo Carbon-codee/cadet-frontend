@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // Layout ve Koruma
 import MainLayout from './components/layout/MainLayout';
 import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 
 // Sayfalar
 import HomePage from './pages/HomePage';
@@ -41,6 +42,7 @@ import MessagesPage from './pages/MessagesPage';
 import LessonRepositoryPage from './pages/LessonRepositoryPage'; // YENİ: Ders Havuzu
 import LessonPreviewPage from './pages/LessonPreviewPage';
 import AdminStudentPlansPage from './pages/AdminStudentPlansPage';
+import AdminStudentPlanDetailPage from './pages/AdminStudentPlanDetailPage';
 
 function App() {
   return (
@@ -57,8 +59,11 @@ function App() {
         <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
         <Route path="/admin/dashboard" element={<MainLayout><AdminDashboard /></MainLayout>} />
         <Route path="/admin/lessons" element={<MainLayout><LessonRepositoryPage /></MainLayout>} /> {/* Admin Ders Havuzu */}
-        <Route path="/admin/lessons/:id" element={<MainLayout><LessonPreviewPage /></MainLayout>} />
-        <Route path="/admin/student-plans" element={<MainLayout><AdminStudentPlansPage /></MainLayout>} />
+        <Route path="/admin/lessons/:slug" element={<MainLayout><LessonPreviewPage /></MainLayout>} />
+        <Route path="/lessons" element={<MainLayout><LessonRepositoryPage /></MainLayout>} /> {/* SEO: Public Ders Havuzu */}
+        <Route path="/lessons/:slug" element={<MainLayout><LessonPreviewPage /></MainLayout>} /> {/* SEO: Public Ders Detay */}
+        <Route path="/admin/student-plans" element={<ProtectedAdminRoute><MainLayout><AdminStudentPlansPage /></MainLayout></ProtectedAdminRoute>} />
+        <Route path="/admin/student-plans/:id" element={<ProtectedAdminRoute><MainLayout><AdminStudentPlanDetailPage /></MainLayout></ProtectedAdminRoute>} />
 
         {/* =========================================
            2. KORUMALI (PRIVATE) ROTALAR
@@ -74,20 +79,21 @@ function App() {
         {/* Öğrenci Bölümü */}
         <Route path="/messages" element={<ProtectedRoute><MainLayout><MessagesPage /></MainLayout></ProtectedRoute>} />
         <Route path="/internships" element={<ProtectedRoute><MainLayout><InternshipsPage /></MainLayout></ProtectedRoute>} />
-        <Route path="/internships/:id" element={<ProtectedRoute><MainLayout><InternshipDetailPage /></MainLayout></ProtectedRoute>} />
+        <Route path="/internships/:slug" element={<ProtectedRoute><MainLayout><InternshipDetailPage /></MainLayout></ProtectedRoute>} />
         <Route path="/my-applications" element={<ProtectedRoute><MainLayout><MyApplicationsPage /></MainLayout></ProtectedRoute>} />
         <Route path="/learning" element={<ProtectedRoute><MainLayout><LearningPage /></MainLayout></ProtectedRoute>} />
-        <Route path="/learning/:id" element={<ProtectedRoute><MainLayout><LearningDetailPage /></MainLayout></ProtectedRoute>} />
+        <Route path="/learning/:slug" element={<ProtectedRoute><MainLayout><LearningDetailPage /></MainLayout></ProtectedRoute>} />
         <Route path="/saved-content" element={<ProtectedRoute><MainLayout><SavedContentPage /></MainLayout></ProtectedRoute>} />
         <Route path="/gasm" element={<ProtectedRoute><MainLayout><GasmPage /></MainLayout></ProtectedRoute>} />
         <Route path="/study-plan" element={<ProtectedRoute><MainLayout><StudyDashboard /></MainLayout></ProtectedRoute>} />
-        <Route path="/study-plan/:planId/day/:dayNumber" element={<ProtectedRoute><MainLayout><StudySessionPage /></MainLayout></ProtectedRoute>} />
+        <Route path="/study-plan/:planSlug" element={<ProtectedRoute><MainLayout><StudyDashboard /></MainLayout></ProtectedRoute>} />
+        <Route path="/study-plan/:planSlug/:lessonSlug" element={<ProtectedRoute><MainLayout><StudySessionPage /></MainLayout></ProtectedRoute>} />
 
         {/* Şirket Bölümü */}
         <Route path="/company/dashboard" element={<ProtectedRoute><MainLayout><CompanyDashboard /></MainLayout></ProtectedRoute>} />
         <Route path="/company/my-internships" element={<ProtectedRoute><MainLayout><MyInternshipsPage /></MainLayout></ProtectedRoute>} />
         <Route path="/company/create-internship" element={<ProtectedRoute><MainLayout><CreateInternshipPage /></MainLayout></ProtectedRoute>} />
-        <Route path="/company/edit-internship/:id" element={<ProtectedRoute><MainLayout><CreateInternshipPage /></MainLayout></ProtectedRoute>} />
+        <Route path="/company/edit-internship/:id" element={<ProtectedRoute><MainLayout><CreateInternshipPage /></MainLayout></ProtectedRoute>} />{/* Edit by ID, internal usage */}
 
         {/* ADAYLAR BÖLÜMÜ (DÜZELTİLEN KISIM BURASI) */}
         <Route path="/company/applicants" element={<ProtectedRoute><MainLayout><CompanyApplicationsHub /></MainLayout></ProtectedRoute>} />

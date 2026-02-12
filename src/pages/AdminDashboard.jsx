@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { FaUserGraduate, FaBuilding, FaChalkboardTeacher, FaBriefcase, FaFileSignature, FaCheckCircle, FaTimesCircle, FaClock, FaCopy, FaEnvelope, FaPaperPlane, FaTimes, FaBook, FaClipboardList } from 'react-icons/fa';
 
@@ -17,6 +18,7 @@ const AdminDashboard = () => {
     const [allUsers, setAllUsers] = useState([]);
     const [activeTab, setActiveTab] = useState('pending'); // 'pending', 'students', 'companies', 'lecturers'
     const [loading, setLoading] = useState(true);
+    const [processing, setProcessing] = useState(false);
 
     // Email Modal State
     const [showEmailModal, setShowEmailModal] = useState(false);
@@ -27,6 +29,20 @@ const AdminDashboard = () => {
 
     const { userInfo } = useAuth();
     const navigate = useNavigate();
+    const { theme } = useTheme();
+
+    useEffect(() => {
+        // Apply dark theme class to body globally ONLY if dark mode is active
+        if (theme === 'dark') {
+            document.body.classList.add('dark-tech-theme');
+        } else {
+            document.body.classList.remove('dark-tech-theme');
+        }
+
+        return () => {
+            document.body.classList.remove('dark-tech-theme');
+        };
+    }, [theme]);
 
     useEffect(() => {
         if (!userInfo || userInfo.role !== 'admin') {
@@ -59,11 +75,14 @@ const AdminDashboard = () => {
         e.stopPropagation();
         if (!window.confirm("Bu kullanıcıyı onaylamak istediğinize emin misiniz?")) return;
         try {
+            setProcessing(true);
             await API.post(`/admin/approve-user/${id}`);
             alert("Kullanıcı onaylandı.");
             fetchData();
         } catch (error) {
             alert("Hata: " + (error.response?.data?.message || error.message));
+        } finally {
+            setProcessing(false);
         }
     };
 
@@ -71,11 +90,14 @@ const AdminDashboard = () => {
         e.stopPropagation();
         if (!window.confirm("Bu kullanıcıyı REDDETMEK ve SİLMEK istediğinize emin misiniz?")) return;
         try {
+            setProcessing(true);
             await API.post(`/admin/reject-user/${id}`);
             alert("Kullanıcı silindi.");
             fetchData();
         } catch (error) {
             alert("Hata: " + (error.response?.data?.message || error.message));
+        } finally {
+            setProcessing(false);
         }
     };
 
@@ -117,28 +139,57 @@ const AdminDashboard = () => {
     };
 
     const StatCard = ({ title, value, icon, color }) => (
-        <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', minWidth: '200px', flex: 1 }}>
-            <div style={{ backgroundColor: color, padding: '15px', borderRadius: '50%', color: 'white', fontSize: '1.5rem', marginRight: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{
+            background: theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : '#fff',
+            backdropFilter: theme === 'dark' ? 'blur(12px)' : 'none',
+            padding: '20px',
+            borderRadius: '15px',
+            border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid #e2e8f0',
+            display: 'flex',
+            alignItems: 'center',
+            minWidth: '200px',
+            flex: 1,
+            boxShadow: theme === 'dark' ? '0 8px 32px rgba(0, 0, 0, 0.3)' : '0 4px 6px rgba(0,0,0,0.05)'
+        }}>
+            <div style={{
+                backgroundColor: color,
+                padding: '15px',
+                borderRadius: '12px',
+                color: 'white',
+                fontSize: '1.5rem',
+                marginRight: '15px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                boxShadow: `0 0 20px ${color}44`
+            }}>
                 {icon}
             </div>
             <div>
-                <h3 style={{ margin: 0, color: '#718096', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{title}</h3>
-                <p style={{ margin: '5px 0 0 0', fontSize: '1.8rem', fontWeight: 'bold', color: '#2d3748' }}>{value}</p>
+                <h3 style={{ margin: 0, color: theme === 'dark' ? 'rgba(255, 255, 255, 0.5)' : '#718096', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}>{title}</h3>
+                <p style={{ margin: '5px 0 0 0', fontSize: '1.8rem', fontWeight: 'bold', color: theme === 'dark' ? '#fff' : '#2d3748', textShadow: theme === 'dark' ? '0 0 10px rgba(255,255,255,0.2)' : 'none' }}>{value}</p>
             </div>
         </div>
     );
 
     const UserTable = ({ users, showActions = false }) => (
-        <div style={{ overflowX: 'auto', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+        <div style={{
+            overflowX: 'auto',
+            background: theme === 'dark' ? 'rgba(10, 15, 30, 0.7)' : '#fff',
+            backdropFilter: theme === 'dark' ? 'blur(10px)' : 'none',
+            borderRadius: '16px',
+            border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #e2e8f0',
+            boxShadow: theme === 'dark' ? '0 10px 40px rgba(0,0,0,0.4)' : '0 2px 4px rgba(0,0,0,0.05)'
+        }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                    <tr style={{ backgroundColor: '#edf2f7', textAlign: 'left', color: '#4a5568' }}>
-                        <th style={{ padding: '15px' }}>Ad Soyad / Firma Adı</th>
-                        <th style={{ padding: '15px' }}>E-posta</th>
-                        <th style={{ padding: '15px' }}>Rol</th>
-                        <th style={{ padding: '15px' }}>Detay (Bölüm/Sektör)</th>
-                        <th style={{ padding: '15px' }}>Durum</th>
-                        <th style={{ padding: '15px', textAlign: 'center' }}>İşlemler</th>
+                    <tr style={{ borderBottom: theme === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid #edf2f7', textAlign: 'left', color: theme === 'dark' ? '#00B4D8' : '#4a5568', backgroundColor: theme === 'dark' ? 'transparent' : '#edf2f7' }}>
+                        <th style={{ padding: '18px 20px', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Ad Soyad / Firma Adı</th>
+                        <th style={{ padding: '18px 20px', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>E-posta</th>
+                        <th style={{ padding: '18px 20px', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Rol</th>
+                        <th style={{ padding: '18px 20px', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Detay (Bölüm/Sektör)</th>
+                        <th style={{ padding: '18px 20px', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Durum</th>
+                        <th style={{ padding: '18px 20px', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'center' }}>İşlemler</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -150,15 +201,16 @@ const AdminDashboard = () => {
                                 key={user._id}
                                 onClick={() => handleRowClick(user._id)}
                                 style={{
-                                    borderBottom: '1px solid #e2e8f0',
+                                    borderBottom: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.05)' : '1px solid #e2e8f0',
                                     transition: 'background-color 0.2s',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    color: theme === 'dark' ? '#e2e8f0' : '#4a5568'
                                 }}
-                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7fafc'}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : '#f7fafc'}
                                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                             >
-                                <td style={{ padding: '15px' }}>
-                                    <div style={{ fontWeight: '500' }}>{user.name} {user.surname}</div>
+                                <td style={{ padding: '18px 20px' }}>
+                                    <div style={{ fontWeight: '600', color: theme === 'dark' ? '#fff' : '#2d3748' }}>{user.name} {user.surname}</div>
                                     {/* BARKOD ALANI - YENİ YERİ */}
                                     {user.role === 'student' && user.studentBarcode && (
                                         <div
@@ -247,11 +299,16 @@ const AdminDashboard = () => {
     const filteredUsers = activeTab === 'pending' ? pendingUsers : allUsers.filter(u => u.role === activeTab);
 
     return (
-        <div style={{ padding: '30px', backgroundColor: '#f7fafc', minHeight: '100vh', position: 'relative' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <img src="/logo.png-modified.png" alt="Marine Cadet Logo" style={{ height: '50px', width: 'auto', borderRadius: '50%', backgroundColor: 'transparent' }} />
-                    <h1 style={{ color: '#1B263B', margin: 0, fontWeight: '800' }}>Admin Kontrol Paneli</h1>
+        <div style={{ padding: '40px', background: 'transparent', minHeight: '100vh', position: 'relative', color: theme === 'dark' ? '#fff' : 'var(--text-color)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '40px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                    <div style={{ background: theme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : '#fff', padding: '10px', borderRadius: '50%', border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #e2e8f0' }}>
+                        <img src="/logo.png-modified.png" alt="Marine Cadet Logo" style={{ height: '50px', width: 'auto' }} />
+                    </div>
+                    <div>
+                        <h1 style={{ color: theme === 'dark' ? '#fff' : '#1e293b', margin: 0, fontWeight: '900', fontSize: '2rem', letterSpacing: '-0.5px' }}>Admin Kontrol Paneli</h1>
+                        <p style={{ color: theme === 'dark' ? 'rgba(255, 255, 255, 0.5)' : '#718096', margin: 0, fontSize: '0.9rem' }}>Sistem yönetim ve kullanıcı yetkilendirme merkezi</p>
+                    </div>
                 </div>
 
                 <div style={{ display: 'flex', gap: '10px' }}>
@@ -303,7 +360,7 @@ const AdminDashboard = () => {
                 <StatCard title="Yerleşen Öğrenci" value={stats.totalPlacements} icon={<FaCheckCircle />} color="#319795" />
             </div>
 
-            <div style={{ marginBottom: '20px', borderBottom: '2px solid #e2e8f0', display: 'flex', gap: '20px' }}>
+            <div style={{ marginBottom: '30px', borderBottom: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #e2e8f0', display: 'flex', gap: '30px' }}>
                 {[
                     { key: 'pending', label: 'Onay Bekleyenler', icon: <FaClock /> },
                     { key: 'student', label: 'Tüm Öğrenciler', icon: <FaUserGraduate /> },
@@ -314,18 +371,18 @@ const AdminDashboard = () => {
                         key={tab.key}
                         onClick={() => setActiveTab(tab.key)}
                         style={{
-                            padding: '10px 20px',
+                            padding: '12px 10px',
                             border: 'none',
                             background: 'none',
                             borderBottom: activeTab === tab.key ? '3px solid #00B4D8' : '3px solid transparent',
-                            color: activeTab === tab.key ? '#00B4D8' : '#718096',
-                            fontWeight: activeTab === tab.key ? 'bold' : 'normal',
+                            color: activeTab === tab.key ? '#00B4D8' : theme === 'dark' ? 'rgba(255, 255, 255, 0.4)' : '#718096',
+                            fontWeight: activeTab === tab.key ? '700' : '500',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '8px',
-                            fontSize: '1rem',
-                            transition: 'all 0.2s'
+                            gap: '10px',
+                            fontSize: '0.95rem',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                         }}
                     >
                         {tab.icon} {tab.label}
@@ -341,31 +398,31 @@ const AdminDashboard = () => {
             <UserTable users={filteredUsers} showActions={activeTab === 'pending'} />
 
             {showEmailModal && (
-                <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-                    <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '10px', width: '500px', maxWidth: '90%', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                            <h3 style={{ margin: 0, color: '#2d3748' }}>Mesaj Gönder: {selectedUser?.name}</h3>
-                            <button onClick={() => setShowEmailModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#e53e3e', fontSize: '1.2rem' }}><FaTimes /></button>
+                <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backdropFilter: 'blur(8px)', backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+                    <div style={{ backgroundColor: theme === 'dark' ? '#131922' : '#fff', border: theme === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e2e8f0', padding: '30px', borderRadius: '20px', width: '500px', maxWidth: '90%', boxShadow: '0 25px 50px rgba(0,0,0,0.5)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+                            <h3 style={{ margin: 0, color: theme === 'dark' ? '#fff' : '#2d3748', fontSize: '1.2rem' }}>Mesaj Gönder: {selectedUser?.name}</h3>
+                            <button onClick={() => setShowEmailModal(false)} style={{ background: 'rgba(229, 62, 62, 0.1)', width: '30px', height: '30px', border: 'none', borderRadius: '50%', cursor: 'pointer', color: '#e53e3e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FaTimes /></button>
                         </div>
                         <form onSubmit={handleSendEmail}>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#718096' }}>Konu</label>
+                            <div style={{ marginBottom: '20px' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: theme === 'dark' ? 'rgba(255,255,255,0.6)' : '#718096', fontSize: '0.85rem' }}>Konu</label>
                                 <input
                                     type="text"
                                     required
                                     value={emailSubject}
                                     onChange={(e) => setEmailSubject(e.target.value)}
-                                    style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #cbd5e0' }}
+                                    style={{ width: '100%', padding: '12px 15px', borderRadius: '10px', border: theme === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid #cbd5e0', background: theme === 'dark' ? 'rgba(255,255,255,0.05)' : '#fff', color: theme === 'dark' ? '#fff' : '#2d3748' }}
                                 />
                             </div>
-                            <div style={{ marginBottom: '20px' }}>
-                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#718096' }}>Mesaj</label>
+                            <div style={{ marginBottom: '25px' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: theme === 'dark' ? 'rgba(255,255,255,0.6)' : '#718096', fontSize: '0.85rem' }}>Mesaj</label>
                                 <textarea
                                     required
                                     value={emailMessage}
                                     onChange={(e) => setEmailMessage(e.target.value)}
                                     rows="6"
-                                    style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #cbd5e0', resize: 'vertical' }}
+                                    style={{ width: '100%', padding: '12px 15px', borderRadius: '10px', border: theme === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid #cbd5e0', background: theme === 'dark' ? 'rgba(255,255,255,0.05)' : '#fff', color: theme === 'dark' ? '#fff' : '#2d3748', resize: 'vertical' }}
                                 ></textarea>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>

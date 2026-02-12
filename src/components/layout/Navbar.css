@@ -157,7 +157,27 @@
 .nav-right-section {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
+}
+
+.theme-toggle-btn {
+    background: none;
+    border: none;
+    color: #e0d4b0;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.theme-toggle-btn:hover {
+    color: #fff;
+    transform: scale(1.1) rotate(15deg);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .search-icon,

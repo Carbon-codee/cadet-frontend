@@ -4,28 +4,8 @@ import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import { FaBook, FaSearch, FaEye } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 
-// Simple styling here, can move to CSS file later
-// Light theme styling
-const pageStyle = {
-    padding: '2rem',
-    backgroundColor: '#f8fafc', // Light background
-    minHeight: '100vh',
-    color: '#1e293b', // Dark text
-    paddingTop: '100px'
-};
-
-const cardStyle = {
-    backgroundColor: '#ffffff', // White card
-    padding: '1.5rem',
-    borderRadius: '1rem',
-    marginBottom: '1rem',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    border: '1px solid #e2e8f0', // Light border
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' // Soft shadow
-};
 
 const LessonRepositoryPage = () => {
     const [lessons, setLessons] = useState([]);
@@ -35,7 +15,39 @@ const LessonRepositoryPage = () => {
 
     // Auth context might be used later for role checks, keeping it for now
     const { user } = useAuth();
+    const { theme } = useTheme();
     const navigate = useNavigate();
+
+    // Theme-aware styles
+    const pageStyle = {
+        padding: '2rem',
+        backgroundColor: theme === 'dark' ? 'transparent' : '#f8fafc',
+        minHeight: '100vh',
+        color: theme === 'dark' ? '#fff' : '#1e293b',
+        paddingTop: '100px'
+    };
+
+    const cardStyle = {
+        backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : '#ffffff',
+        backdropFilter: theme === 'dark' ? 'blur(10px)' : 'none',
+        padding: '1.5rem',
+        borderRadius: '1rem',
+        marginBottom: '1rem',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid #e2e8f0',
+        boxShadow: theme === 'dark' ? '0 10px 30px rgba(0, 0, 0, 0.3)' : '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
+    };
+
+    useEffect(() => {
+        if (theme === 'dark') {
+            document.body.classList.add('dark-tech-theme');
+        } else {
+            document.body.classList.remove('dark-tech-theme');
+        }
+        return () => document.body.classList.remove('dark-tech-theme');
+    }, [theme]);
 
     useEffect(() => {
         fetchLessons();
@@ -67,7 +79,8 @@ const LessonRepositoryPage = () => {
     };
 
     const handleView = (lesson) => {
-        navigate(`/admin/lessons/${lesson._id}`);
+        const pathPrefix = window.location.pathname.startsWith('/admin') ? '/admin/lessons' : '/lessons';
+        navigate(`${pathPrefix}/${lesson.slug || lesson._id}`);
     };
 
     if (loading) return <div style={pageStyle}>Yükleniyor...</div>;
@@ -76,17 +89,17 @@ const LessonRepositoryPage = () => {
         <div style={pageStyle}>
             <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                    <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>
-                        <FaBook style={{ marginRight: '10px' }} />
+                    <h1 style={{ fontSize: '2rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '10px', color: theme === 'dark' ? '#fff' : '#1e293b' }}>
+                        <FaBook style={{ color: theme === 'dark' ? '#00f3ff' : '#3b82f6' }} />
                         Eğitim İçerik Havuzu
                     </h1>
-                    <span style={{ backgroundColor: '#3b82f6', padding: '0.5rem 1rem', borderRadius: '20px', fontSize: '0.9rem' }}>
+                    <span style={{ backgroundColor: theme === 'dark' ? 'rgba(0, 180, 216, 0.2)' : '#3b82f6', color: theme === 'dark' ? '#00f3ff' : '#fff', padding: '0.5rem 1rem', borderRadius: '20px', fontSize: '0.9rem', border: theme === 'dark' ? '1px solid #00f3ff' : 'none' }}>
                         Toplam {lessons.length} Ders
                     </span>
                 </div>
 
                 <div style={{ position: 'relative', marginBottom: '2rem' }}>
-                    <FaSearch style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                    <FaSearch style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: theme === 'dark' ? '#00f3ff' : '#94a3b8' }} />
                     <input
                         type="text"
                         placeholder="Ders ara (Konu başlığı)..."
@@ -95,12 +108,13 @@ const LessonRepositoryPage = () => {
                         style={{
                             width: '100%',
                             padding: '1rem 1rem 1rem 3rem',
-                            backgroundColor: '#ffffff',
-                            border: '1px solid #e2e8f0',
+                            backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : '#ffffff',
+                            border: theme === 'dark' ? '1px solid rgba(0, 243, 255, 0.2)' : '1px solid #e2e8f0',
                             borderRadius: '0.5rem',
-                            color: '#1e293b',
+                            color: theme === 'dark' ? '#fff' : '#1e293b',
                             fontSize: '1rem',
-                            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                            boxShadow: theme === 'dark' ? '0 0 15px rgba(0, 243, 255, 0.1)' : '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                            outline: 'none'
                         }}
                     />
                 </div>
@@ -116,18 +130,32 @@ const LessonRepositoryPage = () => {
                             whileHover={{ scale: 1.01, borderColor: '#3b82f6', cursor: 'pointer' }}
                         >
                             <div>
-                                <h3 style={{ fontSize: '1.2rem', fontWeight: '600', color: '#1e293b', marginBottom: '0.5rem' }}>
+                                <h3 style={{ fontSize: '1.2rem', fontWeight: '600', color: theme === 'dark' ? '#fff' : '#1e293b', marginBottom: '0.5rem' }}>
                                     {lesson.displayTopic || lesson.topic}
                                 </h3>
-                                <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+                                <p style={{ color: theme === 'dark' ? 'rgba(255, 255, 255, 0.5)' : '#64748b', fontSize: '0.9rem' }}>
                                     Son Güncelleme: {new Date(lesson.lastUpdated).toLocaleDateString('tr-TR')}
                                 </p>
                                 <div style={{ marginTop: '0.5rem', display: 'flex', gap: '10px' }}>
-                                    <span style={{ fontSize: '0.8rem', backgroundColor: '#f1f5f9', padding: '2px 8px', borderRadius: '4px', color: '#475569', border: '1px solid #e2e8f0' }}>
+                                    <span style={{
+                                        fontSize: '0.8rem',
+                                        backgroundColor: theme === 'dark' ? 'rgba(0, 243, 255, 0.1)' : '#f1f5f9',
+                                        padding: '2px 8px',
+                                        borderRadius: '4px',
+                                        color: theme === 'dark' ? '#00f3ff' : '#475569',
+                                        border: theme === 'dark' ? '1px solid rgba(0, 243, 255, 0.2)' : '1px solid #e2e8f0'
+                                    }}>
                                         {lesson.questions?.length || 0} Soru
                                     </span>
                                     {lesson.youtubeUrl && (
-                                        <span style={{ fontSize: '0.8rem', backgroundColor: '#fee2e2', padding: '2px 8px', borderRadius: '4px', color: '#ef4444', border: '1px solid #fecaca' }}>
+                                        <span style={{
+                                            fontSize: '0.8rem',
+                                            backgroundColor: theme === 'dark' ? 'rgba(255, 10, 70, 0.1)' : '#fee2e2',
+                                            padding: '2px 8px',
+                                            borderRadius: '4px',
+                                            color: theme === 'dark' ? '#ff0a46' : '#ef4444',
+                                            border: theme === 'dark' ? '1px solid rgba(255, 10, 70, 0.2)' : '1px solid #fecaca'
+                                        }}>
                                             YouTube
                                         </span>
                                     )}

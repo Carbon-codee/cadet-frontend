@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { FaFilePdf, FaVideo, FaBookOpen, FaChalkboardTeacher } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+import SEO from '../components/SEO';
 import './LearningPage.css';
 
 const LearningPage = () => {
@@ -99,6 +100,11 @@ const LearningPage = () => {
 
     return (
         <div className="learning-dashboard-layout">
+            <SEO
+                title="Öğrenme Materyalleri - Denizcilik Ders Notları ve Eğitimleri"
+                description="Kapsamlı denizcilik eğitimi arşivi. Videolar, ders notları, PDF dökümanlar ve daha fazlası."
+                keywords="denizcilik eğitimi, ders notları, stcw eğitimi, gmdss, deniz ulaştırma, gemi makineleri"
+            />
             {/* LEFT SIDEBAR */}
             <aside className="dashboard-sidebar">
                 {/* Categories */}
@@ -211,7 +217,7 @@ const LearningPage = () => {
                                         </div>
                                         <span className="author-name">{item.author?.name || 'Akademisyen'}</span>
                                     </div>
-                                    <Link to={`/learning/${item._id}`} className="view-btn-modern">
+                                    <Link to={`/learning/${item.slug || item._id}`} className="view-btn-modern">
                                         Görüntüle →
                                     </Link>
                                 </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
+import SEO from '../components/SEO';
 import './HomePage.css';
 const heroVideo = '/hero-video.mov';
 import {
@@ -27,194 +28,236 @@ const HomePage = () => {
         fetchStats();
     }, [userInfo]);
 
+    // JSON-LD Schema for Organization + SearchAction
+    const organizationSchema = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Organization",
+                "name": "Marine Cadet",
+                "description": "Denizcilik sektörünün digital platformu - Staj ilanları, eğitim içerikleri ve kariyer rehberliği",
+                "url": "https://marinecadet.com",
+                "logo": "https://marinecadet.com/logo.png-modified.png",
+                "contactPoint": {
+                    "@type": "ContactPoint",
+                    "email": "info@cadet.com",
+                    "contactType": "Customer Service",
+                    "availableLanguage": "Turkish"
+                },
+                "sameAs": [
+                    "https://www.linkedin.com/in/şaban-doğan-3b0a89210/"
+                ]
+            },
+            {
+                "@type": "WebSite",
+                "url": "https://marinecadet.com",
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": "https://marinecadet.com/internships?search={search_term_string}",
+                    "query-input": "required name=search_term_string"
+                }
+            }
+        ]
+    };
+
     return (
-        <div className="homepage-container">
+        <>
+            <SEO
+                title="Marine Cadet - Denizcilik Eğitimi ve Staj Platformu"
+                description="Türkiye'nin en kapsamlı denizcilik platformu. Staj ilanları, STCW sertifikalı eğitimler, kariyer rehberliği. Denizcilik öğrencileri ve şirketlerini buluşturan ilk platform."
+                keywords="denizcilik, staj, STCW, marine cadet, gemi, öğrenci, eğitim, maritime, internship, denizcilik stajı, deniz bilimleri"
+                ogType="website"
+                canonicalUrl="/"
+                jsonLd={organizationSchema}
+            />
+            <div className="homepage-container">
 
-            {/* --- VİDEO ARKAPLAN (HERKES İÇİN SABİT) --- */}
-            <div className="video-wrapper">
-                <video className="hero-video" autoPlay loop muted playsInline>
-                    <source src={heroVideo} type="video/mp4" />
-                </video>
-                <div className="video-overlay"></div>
+                {/* --- VİDEO ARKAPLAN (HERKES İÇİN SABİT) --- */}
+                <div className="video-wrapper">
+                    <video className="hero-video" autoPlay loop muted playsInline>
+                        <source src={heroVideo} type="video/mp4" />
+                    </video>
+                    <div className="video-overlay"></div>
+                </div>
+
+                {/* --- GİRİŞ YAPILMAMIŞSA (LANDING PAGE) --- */}
+                {!userInfo ? (
+                    <>
+                        <section className="hero-content-section">
+                            <div className="hero-text-box">
+                                <h1 className="hero-title">Geleceğin <span className="highlight">Denizcileri</span><br />Rotalarını Burada Çiziyor</h1>
+                                <p className="hero-subtitle">
+                                    Marine Cadet, denizcilik öğrencileri için en kapsamlı staj platformudur.
+                                    Türkiye'nin en prestijli denizcilik şirketleriyle stajyerleri ve akademisyenleri buluşturan ilk ve tek platform.
+                                </p>
+                                <div className="hero-buttons">
+                                    <Link to="/auth" className="btn-primary-glow">Kariyerine Yön Ver</Link>
+                                    <Link to="/auth" className="btn-secondary-glass">Şirket Hesabı Aç</Link>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* --- FEATURE SECTION (YENİ) --- */}
+                        <section className="features-section">
+                            <div className="section-container">
+                                <h2 className="section-title">Neden Marine Cadet?</h2>
+                                <div className="features-grid">
+                                    <div className="feature-card">
+                                        <div className="feature-icon"><FaSearch /></div>
+                                        <h3>Akıllı Staj Arama</h3>
+                                        <p>Siz kriterlerinizi belirleyin, yapay zeka en uygun ilanları size getirsin.</p>
+                                    </div>
+                                    <div className="feature-card">
+                                        <div className="feature-icon"><FaChartLine /></div>
+                                        <h3>Kişisel Gelişim Planı</h3>
+                                        <p>GPA ve dil seviyenize göre eksiklerinizi analiz edip size özel çalışma programı hazırlıyoruz.</p>
+                                    </div>
+                                    <div className="feature-card">
+                                        <div className="feature-icon"><FaUserGraduate /></div>
+                                        <h3>Kariyer Asistanı</h3>
+                                        <p>Staj süreciniz boyunca Kaptan AI, her türlü sorunuzda yanınızda.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* --- STATS SECTION (MEVCUT - STYLE UPDATE) --- */}
+                        <section className="stats-section">
+                            <div className="stats-grid">
+                                <div className="stat-card"><FaUserGraduate className="stat-icon" /><h3>{stats.students}</h3><p>Öğrenci Kayıtlı</p></div>
+                                <div className="stat-card"><FaHandshake className="stat-icon" /><h3>{stats.matches}</h3><p>Staj Eşleşmesi</p></div>
+                                <div className="stat-card"><FaBuilding className="stat-icon" /><h3>{stats.companies}</h3><p>Partner Şirket</p></div>
+                                <div className="stat-card"><FaChartLine className="stat-icon" /><h3>%{stats.rate}</h3><p>İşe Yerleşme Oranı</p></div>
+                            </div>
+                        </section>
+
+                        {/* --- AUDIENCE SECTION (YENİ) --- */}
+                        <section className="audience-section">
+                            <div className="audience-split">
+                                <div className="audience-card student">
+                                    <h3>Öğrenciler İçin</h3>
+                                    <ul>
+                                        <li><FaSearch /> Binlerce aktif staj ilanı</li>
+                                        <li><FaFileAlt /> Tek tıkla kolay başvuru</li>
+                                        <li><FaGraduationCap /> Sertifikalarını dijitalleştir</li>
+                                    </ul>
+                                    <Link to="/auth" className="btn-outline white">Hemen Başla</Link>
+                                </div>
+                                <div className="audience-card company">
+                                    <h3>Şirketler İçin</h3>
+                                    <ul>
+                                        <li><FaUsers /> En yetenekli aday havuzu</li>
+                                        <li><FaClipboardList /> KVKK onaylı süreçler</li>
+                                        <li><FaChartBar /> Detaylı performans analizi</li>
+                                    </ul>
+                                    <Link to="/auth" className="btn-outline white">Partner Ol</Link>
+                                </div>
+                            </div>
+                        </section>
+                    </>
+                ) : (
+                    /* --- GİRİŞ YAPILMIŞSA (DASHBOARD) --- */
+                    <div className="dashboard-wrapper">
+                        <div className="dashboard-container">
+                            <div className="welcome-banner">
+                                <h1>Tekrar Hoş Geldin, <br /><span className="highlight" style={{ color: 'white' }}>{userInfo.name}</span></h1>
+                                <p>Bugün rotanda neler var? İşte hızlı işlemlerin:</p>
+                            </div>
+
+                            <div className="home-grid">
+                                {/* AKADEMİSYEN */}
+                                {userInfo.role === 'lecturer' && (
+                                    <>
+                                        <Link to="/lecturer/dashboard" className="glass-card"><div className="icon-box blue"><FaChartLine /></div><h3>Akademik Panel</h3><p>İstatistikler.</p></Link>
+                                        <Link to="/lecturer/my-content" className="glass-card"><div className="icon-box green"><FaFileAlt /></div><h3>İçerik Yönetimi</h3><p>Duyurular.</p></Link>
+                                        <Link to="/lecturer/upload" className="glass-card"><div className="icon-box purple"><FaPlusCircle /></div><h3>Yeni Paylaşım</h3><p>Ekle.</p></Link>
+                                        <Link to="/lecturer/student-status" className="glass-card"><div className="icon-box orange"><FaUsers /></div><h3>Staj Durumu</h3><p>Takip.</p></Link>
+                                    </>
+                                )}
+                                {/* ŞİRKET */}
+                                {userInfo.role === 'company' && (
+                                    <>
+                                        <Link to="/company/create-internship" className="glass-card"><div className="icon-box blue"><FaPlusCircle /></div><h3>Yeni İlan</h3><p>İlan oluştur.</p></Link>
+                                        <Link to="/company/my-internships" className="glass-card"><div className="icon-box green"><FaClipboardList /></div><h3>İlanlarım</h3><p>Yönet.</p></Link>
+                                        <Link to="/company/applicants" className="glass-card"><div className="icon-box purple"><FaUsers /></div><h3>Adaylar</h3><p>Başvurular.</p></Link>
+                                        <Link to="/company/dashboard" className="glass-card"><div className="icon-box orange"><FaChartLine /></div><h3>Dashboard</h3><p>Analiz.</p></Link>
+                                    </>
+                                )}
+                                {/* ÖĞRENCİ */}
+                                {userInfo.role === 'student' && (
+                                    <>
+                                        <Link to="/internships" className="glass-card"><div className="icon-box blue"><FaSearch /></div><h3>Staj Ara</h3><p>İlanlara göz at.</p></Link>
+                                        <Link to="/my-applications" className="glass-card"><div className="icon-box green"><FaFileAlt /></div><h3>Başvurularım</h3><p>Durumunu takip et.</p></Link>
+                                        <Link to="/learning" className="glass-card"><div className="icon-box purple"><FaGraduationCap /></div><h3>Öğrenme</h3><p>Notlar ve belgeler.</p></Link>
+                                        <Link to="/saved-content" className="glass-card"><div className="icon-box orange"><FaBookmark /></div><h3>Kaydettiklerim</h3><p>Favoriler.</p></Link>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* FOOTER (HERKES İÇİN) */}
+                <footer className="main-footer">
+                    <div className="footer-content">
+                        <div className="footer-col">
+                            <h2>Marine Cadet</h2>
+                            <p>Denizcilik sektörünün dijitalleşen yüzü.</p>
+                        </div>
+                        <div className="footer-col">
+                            <h3>Hızlı Linkler</h3>
+                            <ul>
+                                <li><Link to="/">Ana Sayfa</Link></li>
+                                {!userInfo && <li><Link to="/auth">Giriş Yap / Kayıt Ol</Link></li>}
+
+                                {/* ÖĞRENCİ LİNKLERİ */}
+                                {userInfo?.role === 'student' && (
+                                    <>
+                                        <li><Link to="/internships">Staj İlanları</Link></li>
+                                        <li><Link to="/my-applications">Başvurularım</Link></li>
+                                        <li><Link to="/profile">Profilim</Link></li>
+                                    </>
+                                )}
+
+                                {/* ŞİRKET LİNKLERİ */}
+                                {userInfo?.role === 'company' && (
+                                    <>
+                                        <li><Link to="/company/dashboard">Panel</Link></li>
+                                        <li><Link to="/company/my-internships">İlanlarım</Link></li>
+                                        <li><Link to="/company/applicants">Adaylar</Link></li>
+                                    </>
+                                )}
+
+                                {/* AKADEMİSYEN LİNKLERİ */}
+                                {userInfo?.role === 'lecturer' && (
+                                    <>
+                                        <li><Link to="/lecturer/dashboard">Akademik Panel</Link></li>
+                                        <li><Link to="/lecturer/my-content">Ders İçerikleri</Link></li>
+                                    </>
+                                )}
+
+                                {/* KVKK LİNKİ */}
+                                <li><Link to="/kvkk">KVKK Aydınlatma Metni</Link></li>
+                            </ul>
+                        </div>
+                        <div className="footer-col">
+                            <h3>İletişim</h3>
+                            <ul>
+                                <li><FaMapMarkerAlt /> Tuzla, İstanbul</li>
+                                <li><FaEnvelope /> info@cadet.com</li>
+                            </ul>
+                        </div>
+                        <div className="footer-col">
+                            <h3>Takip Et</h3>
+                            <div className="social-icons">
+                                <a href="https://www.linkedin.com/in/%C5%9Faban-do%C4%9Fan-3b0a89210/" target="_blank" rel="noopener noreferrer"><FaLinkedin /></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="footer-bottom"><p>&copy; 2026 Cadet Platform.</p></div>
+                </footer>
             </div>
-
-            {/* --- GİRİŞ YAPILMAMIŞSA (LANDING PAGE) --- */}
-            {!userInfo ? (
-                <>
-                    <section className="hero-content-section">
-                        <div className="hero-text-box">
-                            <h1 className="hero-title">Geleceğin <span className="highlight">Denizcileri</span><br />Rotalarını Burada Çiziyor</h1>
-                            <p className="hero-subtitle">
-                                Marine Cadet, denizcilik öğrencileri için en kapsamlı staj platformudur.
-                                Türkiye'nin en prestijli denizcilik şirketleriyle stajyerleri ve akademisyenleri buluşturan ilk ve tek platform.
-                            </p>
-                            <div className="hero-buttons">
-                                <Link to="/auth" className="btn-primary-glow">Kariyerine Yön Ver</Link>
-                                <Link to="/auth" className="btn-secondary-glass">Şirket Hesabı Aç</Link>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* --- FEATURE SECTION (YENİ) --- */}
-                    <section className="features-section">
-                        <div className="section-container">
-                            <h2 className="section-title">Neden Marine Cadet?</h2>
-                            <div className="features-grid">
-                                <div className="feature-card">
-                                    <div className="feature-icon"><FaSearch /></div>
-                                    <h3>Akıllı Staj Arama</h3>
-                                    <p>Siz kriterlerinizi belirleyin, yapay zeka en uygun ilanları size getirsin.</p>
-                                </div>
-                                <div className="feature-card">
-                                    <div className="feature-icon"><FaChartLine /></div>
-                                    <h3>Kişisel Gelişim Planı</h3>
-                                    <p>GPA ve dil seviyenize göre eksiklerinizi analiz edip size özel çalışma programı hazırlıyoruz.</p>
-                                </div>
-                                <div className="feature-card">
-                                    <div className="feature-icon"><FaUserGraduate /></div>
-                                    <h3>Kariyer Asistanı</h3>
-                                    <p>Staj süreciniz boyunca Kaptan AI, her türlü sorunuzda yanınızda.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* --- STATS SECTION (MEVCUT - STYLE UPDATE) --- */}
-                    <section className="stats-section">
-                        <div className="stats-grid">
-                            <div className="stat-card"><FaUserGraduate className="stat-icon" /><h3>{stats.students}</h3><p>Öğrenci Kayıtlı</p></div>
-                            <div className="stat-card"><FaHandshake className="stat-icon" /><h3>{stats.matches}</h3><p>Staj Eşleşmesi</p></div>
-                            <div className="stat-card"><FaBuilding className="stat-icon" /><h3>{stats.companies}</h3><p>Partner Şirket</p></div>
-                            <div className="stat-card"><FaChartLine className="stat-icon" /><h3>%{stats.rate}</h3><p>İşe Yerleşme Oranı</p></div>
-                        </div>
-                    </section>
-
-                    {/* --- AUDIENCE SECTION (YENİ) --- */}
-                    <section className="audience-section">
-                        <div className="audience-split">
-                            <div className="audience-card student">
-                                <h3>Öğrenciler İçin</h3>
-                                <ul>
-                                    <li><FaSearch /> Binlerce aktif staj ilanı</li>
-                                    <li><FaFileAlt /> Tek tıkla kolay başvuru</li>
-                                    <li><FaGraduationCap /> Sertifikalarını dijitalleştir</li>
-                                </ul>
-                                <Link to="/auth" className="btn-outline white">Hemen Başla</Link>
-                            </div>
-                            <div className="audience-card company">
-                                <h3>Şirketler İçin</h3>
-                                <ul>
-                                    <li><FaUsers /> En yetenekli aday havuzu</li>
-                                    <li><FaClipboardList /> KVKK onaylı süreçler</li>
-                                    <li><FaChartBar /> Detaylı performans analizi</li>
-                                </ul>
-                                <Link to="/auth" className="btn-outline white">Partner Ol</Link>
-                            </div>
-                        </div>
-                    </section>
-                </>
-            ) : (
-                /* --- GİRİŞ YAPILMIŞSA (DASHBOARD) --- */
-                <div className="dashboard-wrapper">
-                    <div className="dashboard-container">
-                        <div className="welcome-banner">
-                            <h1>Tekrar Hoş Geldin, <br /><span className="highlight" style={{ color: 'white' }}>{userInfo.name}</span></h1>
-                            <p>Bugün rotanda neler var? İşte hızlı işlemlerin:</p>
-                        </div>
-
-                        <div className="home-grid">
-                            {/* AKADEMİSYEN */}
-                            {userInfo.role === 'lecturer' && (
-                                <>
-                                    <Link to="/lecturer/dashboard" className="glass-card"><div className="icon-box blue"><FaChartLine /></div><h3>Akademik Panel</h3><p>İstatistikler.</p></Link>
-                                    <Link to="/lecturer/my-content" className="glass-card"><div className="icon-box green"><FaFileAlt /></div><h3>İçerik Yönetimi</h3><p>Duyurular.</p></Link>
-                                    <Link to="/lecturer/upload" className="glass-card"><div className="icon-box purple"><FaPlusCircle /></div><h3>Yeni Paylaşım</h3><p>Ekle.</p></Link>
-                                    <Link to="/lecturer/student-status" className="glass-card"><div className="icon-box orange"><FaUsers /></div><h3>Staj Durumu</h3><p>Takip.</p></Link>
-                                </>
-                            )}
-                            {/* ŞİRKET */}
-                            {userInfo.role === 'company' && (
-                                <>
-                                    <Link to="/company/create-internship" className="glass-card"><div className="icon-box blue"><FaPlusCircle /></div><h3>Yeni İlan</h3><p>İlan oluştur.</p></Link>
-                                    <Link to="/company/my-internships" className="glass-card"><div className="icon-box green"><FaClipboardList /></div><h3>İlanlarım</h3><p>Yönet.</p></Link>
-                                    <Link to="/company/applicants" className="glass-card"><div className="icon-box purple"><FaUsers /></div><h3>Adaylar</h3><p>Başvurular.</p></Link>
-                                    <Link to="/company/dashboard" className="glass-card"><div className="icon-box orange"><FaChartLine /></div><h3>Dashboard</h3><p>Analiz.</p></Link>
-                                </>
-                            )}
-                            {/* ÖĞRENCİ */}
-                            {userInfo.role === 'student' && (
-                                <>
-                                    <Link to="/internships" className="glass-card"><div className="icon-box blue"><FaSearch /></div><h3>Staj Ara</h3><p>İlanlara göz at.</p></Link>
-                                    <Link to="/my-applications" className="glass-card"><div className="icon-box green"><FaFileAlt /></div><h3>Başvurularım</h3><p>Durumunu takip et.</p></Link>
-                                    <Link to="/learning" className="glass-card"><div className="icon-box purple"><FaGraduationCap /></div><h3>Öğrenme</h3><p>Notlar ve belgeler.</p></Link>
-                                    <Link to="/saved-content" className="glass-card"><div className="icon-box orange"><FaBookmark /></div><h3>Kaydettiklerim</h3><p>Favoriler.</p></Link>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* FOOTER (HERKES İÇİN) */}
-            <footer className="main-footer">
-                <div className="footer-content">
-                    <div className="footer-col">
-                        <h2>Marine Cadet</h2>
-                        <p>Denizcilik sektörünün dijitalleşen yüzü.</p>
-                    </div>
-                    <div className="footer-col">
-                        <h3>Hızlı Linkler</h3>
-                        <ul>
-                            <li><Link to="/">Ana Sayfa</Link></li>
-                            {!userInfo && <li><Link to="/auth">Giriş Yap / Kayıt Ol</Link></li>}
-
-                            {/* ÖĞRENCİ LİNKLERİ */}
-                            {userInfo?.role === 'student' && (
-                                <>
-                                    <li><Link to="/internships">Staj İlanları</Link></li>
-                                    <li><Link to="/my-applications">Başvurularım</Link></li>
-                                    <li><Link to="/profile">Profilim</Link></li>
-                                </>
-                            )}
-
-                            {/* ŞİRKET LİNKLERİ */}
-                            {userInfo?.role === 'company' && (
-                                <>
-                                    <li><Link to="/company/dashboard">Panel</Link></li>
-                                    <li><Link to="/company/my-internships">İlanlarım</Link></li>
-                                    <li><Link to="/company/applicants">Adaylar</Link></li>
-                                </>
-                            )}
-
-                            {/* AKADEMİSYEN LİNKLERİ */}
-                            {userInfo?.role === 'lecturer' && (
-                                <>
-                                    <li><Link to="/lecturer/dashboard">Akademik Panel</Link></li>
-                                    <li><Link to="/lecturer/my-content">Ders İçerikleri</Link></li>
-                                </>
-                            )}
-
-                            {/* KVKK LİNKİ */}
-                            <li><Link to="/kvkk">KVKK Aydınlatma Metni</Link></li>
-                        </ul>
-                    </div>
-                    <div className="footer-col">
-                        <h3>İletişim</h3>
-                        <ul>
-                            <li><FaMapMarkerAlt /> Tuzla, İstanbul</li>
-                            <li><FaEnvelope /> info@cadet.com</li>
-                        </ul>
-                    </div>
-                    <div className="footer-col">
-                        <h3>Takip Et</h3>
-                        <div className="social-icons">
-                            <a href="https://www.linkedin.com/in/%C5%9Faban-do%C4%9Fan-3b0a89210/" target="_blank" rel="noopener noreferrer"><FaLinkedin /></a>
-                        </div>
-                    </div>
-                </div>
-                <div className="footer-bottom"><p>&copy; 2026 Cadet Platform.</p></div>
-            </footer>
-        </div>
+        </>
     );
 };
 

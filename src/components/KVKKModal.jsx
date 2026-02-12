@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 
 const KVKKModal = () => {
@@ -15,14 +15,7 @@ const KVKKModal = () => {
         setError(null);
         try {
             // Backend'e onay isteği at
-            const token = userInfo.token;
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            };
-
-            await axios.post('http://localhost:5000/api/users/approve-kvkk', { version: "1.0.0" }, config);
+            await API.post('/users/approve-kvkk', { version: "1.0.0" });
 
             // Frontend state'ini güncelle (Modal kapanır)
             updateUser({ kvkkApproved: true });

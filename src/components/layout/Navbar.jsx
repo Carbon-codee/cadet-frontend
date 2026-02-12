@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import './Navbar.css';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaUserCircle, FaSun, FaMoon } from 'react-icons/fa';
 import ProfileSidebar from './ProfileSidebar';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 
 const RoleBasedNavLinks = ({ role }) => {
   if (role === 'student') {
@@ -52,6 +53,7 @@ const RoleBasedNavLinks = ({ role }) => {
 
 const Navbar = () => {
   const { userInfo } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [isProfileSidebarOpen, setProfileSidebarOpen] = useState(false);
 
   const toggleProfileSidebar = () => {
@@ -75,6 +77,9 @@ const Navbar = () => {
         )}
 
         <div className="nav-right-section">
+          <button className="theme-toggle-btn" onClick={toggleTheme} aria-label="Temayı Değiştir">
+            {theme === 'light' ? <FaMoon /> : <FaSun />}
+          </button>
 
           {userInfo ? (
             <div onClick={toggleProfileSidebar} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>

@@ -1,30 +1,34 @@
-/* === LEARNING PAGE - DASHBOARD LAYOUT === */
+/* Updated: 2026-02-12 22:36 - Premium Glassmorphism Design */
 .learning-dashboard-layout {
     display: flex;
     min-height: 100vh;
-    background-color: #f8fafc;
+    background-color: var(--bg-color);
     font-family: 'Montserrat', sans-serif;
-    color: #334155;
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* === SIDEBARS === */
 .dashboard-sidebar {
     width: 280px;
-    background: white;
+    background: transparent;
     padding: 2rem 1.5rem;
-    border-right: 1px solid #e2e8f0;
+    border-right: none;
     position: fixed;
     top: 80px;
     bottom: 0;
     overflow-y: auto;
     z-index: 10;
+    box-shadow: none;
+    backdrop-filter: none;
 }
 
 .dashboard-sidebar.right-sidebar {
     right: 0;
     left: auto;
     border-right: none;
-    border-left: 1px solid #e2e8f0;
+    border-left: none;
+    box-shadow: none;
 }
 
 /* Sidebar Sections */
@@ -45,6 +49,10 @@
     margin-bottom: 1rem;
 }
 
+.dark .section-title {
+    color: #cbd5e1 !important;
+}
+
 .module-list-scroll {
     flex: 1;
     overflow-y: auto;
@@ -59,15 +67,16 @@
     border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.2s;
-    background: white;
+    background: rgba(255, 255, 255, 0.5);
     border: 1px solid transparent;
     text-decoration: none;
     color: inherit;
 }
 
 .sidebar-module-item:hover {
-    background: #f8fafc;
-    border-color: #cbd5e1;
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(226, 232, 240, 0.8);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .sidebar-module-item.active {
@@ -75,6 +84,12 @@
     border-color: #3b82f6;
     color: #1e40af;
     font-weight: 600;
+}
+
+.dark .sidebar-module-item.active {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.15) 100%) !important;
+    border-color: #60a5fa !important;
+    color: #93c5fd !important;
 }
 
 .module-info {
@@ -91,13 +106,21 @@
     text-transform: uppercase;
 }
 
+.dark .day-number {
+    color: #94a3b8 !important;
+}
+
 .module-topic-truncate {
     font-size: 0.9rem;
     font-weight: 600;
-    color: #334155;
+    color: var(--text-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.dark .module-topic-truncate {
+    color: #e2e8f0 !important;
 }
 
 /* Instructor Items */
@@ -137,7 +160,7 @@
 
 .sidebar-divider {
     height: 1px;
-    background: #e2e8f0;
+    background: var(--border-color);
     margin: 1.5rem 0;
 }
 
@@ -146,6 +169,10 @@
     color: #94a3b8;
     font-size: 0.9rem;
     margin-top: 1rem;
+}
+
+.dark .no-plan-text {
+    color: #cbd5e1 !important;
 }
 
 /* === MAIN CONTENT === */
@@ -167,8 +194,9 @@
 .welcome-title {
     font-size: 2rem;
     font-weight: 800;
-    color: #1e293b;
+    color: var(--text-color);
     margin-bottom: 0.25rem;
+    opacity: 1;
 }
 
 .welcome-subtitle {
@@ -180,24 +208,26 @@
 .content-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .learning-content-card {
-    background: white;
-    border-radius: 1rem;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    border: 1px solid #f1f5f9;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 1.5rem;
+    padding: 1.75rem;
+    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.08), 0 4px 8px -2px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(226, 232, 240, 0.8);
     transition: all 0.3s;
     display: flex;
     flex-direction: column;
+    backdrop-filter: blur(10px);
 }
 
 .learning-content-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    border-color: #cbd5e1;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-color: rgba(59, 130, 246, 0.5);
+    background: rgba(255, 255, 255, 0.9);
 }
 
 .card-header-row {
@@ -240,12 +270,16 @@
 }
 
 .content-type-badge {
-    background: #f1f5f9;
-    padding: 4px 10px;
-    border-radius: 6px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(37, 99, 235, 0.1));
+    padding: 5px 12px;
+    border-radius: 8px;
     font-size: 0.75rem;
-    font-weight: 600;
-    color: #475569;
+    font-weight: 800;
+    color: #2563eb;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
 }
 
 .content-date {
@@ -254,23 +288,26 @@
 }
 
 .card-title {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: #1e293b;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-color);
     margin: 0 0 0.75rem 0;
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
 .card-description {
-    font-size: 0.875rem;
-    color: #64748b;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    opacity: 0.9;
     margin: 0 0 1rem 0;
     line-height: 1.6;
     flex: 1;
+    font-weight: 500;
 }
 
 .card-footer {
@@ -278,7 +315,7 @@
     justify-content: space-between;
     align-items: center;
     padding-top: 1rem;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid var(--border-color);
 }
 
 .author-info {
@@ -313,7 +350,8 @@
 .author-name {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #475569;
+    color: var(--text-color);
+    opacity: 0.9;
 }
 
 .view-btn-modern {
@@ -402,4 +440,64 @@
     .content-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* === DARK MODE OVERRIDES === */
+.dark .welcome-title {
+    color: #f8fafc !important;
+    opacity: 1 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dark .welcome-subtitle {
+    color: #e2e8f0 !important;
+}
+
+.dark .card-title {
+    color: #f8fafc !important;
+    opacity: 1 !important;
+}
+
+.dark .card-description {
+    color: #f1f5f9 !important;
+    opacity: 1 !important;
+}
+
+.dark .content-type-badge {
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.4), rgba(59, 130, 246, 0.3)) !important;
+    color: #93c5fd !important;
+    border: 1px solid rgba(96, 165, 250, 0.6) !important;
+    font-weight: 900 !important;
+}
+
+.dark .author-name {
+    color: #e2e8f0 !important;
+    opacity: 1 !important;
+}
+
+.dark .content-date {
+    color: #cbd5e1 !important;
+}
+
+.dark .learning-content-card {
+    background: rgba(30, 41, 59, 0.6) !important;
+    border-color: rgba(51, 65, 85, 0.8) !important;
+    backdrop-filter: blur(10px);
+}
+
+.dark .learning-content-card:hover {
+    border-color: #60a5fa !important;
+    background: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Sidebar specific dark mode fixes */
+.dark .dashboard-sidebar {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.dark .curriculum-section h4 {
+    color: #f1f5f9 !important;
 }

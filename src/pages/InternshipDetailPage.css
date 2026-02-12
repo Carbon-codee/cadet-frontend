@@ -2,9 +2,11 @@
 .internship-detail-page {
     padding: 2rem 3rem;
     padding-top: 100px;
-    background-color: #f8fafc;
+    background-color: var(--bg-color);
     min-height: 100vh;
     font-family: 'Montserrat', sans-serif;
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Three Column Layout */
@@ -42,10 +44,10 @@
 
 /* Main Detail Container */
 .detail-container {
-    background: white;
+    background: var(--card-bg);
     border-radius: 1rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    border: 1px solid #f1f5f9;
+    border: 1px solid var(--border-color);
     overflow: hidden;
 }
 
@@ -129,21 +131,22 @@
 }
 
 .info-box {
-    background: #f8fafc;
+    background: var(--bg-color);
     padding: 1.25rem;
     border-radius: 0.75rem;
-    border: 2px solid #e2e8f0;
+    border: 2px solid var(--border-color);
     transition: all 0.2s;
 }
 
 .info-box:hover {
-    border-color: #cbd5e1;
-    background: white;
+    border-color: var(--border-color);
+    background: var(--card-bg);
 }
 
 .info-label {
     font-size: 0.75rem;
-    color: #64748b;
+    color: var(--text-color);
+    opacity: 0.7;
     text-transform: uppercase;
     font-weight: 700;
     letter-spacing: 0.05em;
@@ -153,14 +156,14 @@
 
 .info-value {
     font-size: 1.125rem;
-    color: #1e293b;
+    color: var(--text-color);
     font-weight: 700;
 }
 
 .description-text {
     font-size: 1rem;
     line-height: 1.7;
-    color: #475569;
+    color: var(--text-color);
     white-space: pre-wrap;
     margin-top: 1rem;
 }
@@ -168,8 +171,8 @@
 /* Detail Footer */
 .detail-footer {
     padding: 1.5rem 2.5rem;
-    background: #f8fafc;
-    border-top: 1px solid #e2e8f0;
+    background: var(--bg-color);
+    border-top: 1px solid var(--border-color);
     text-align: right;
     display: flex;
     justify-content: flex-end;
@@ -178,12 +181,12 @@
 
 /* Scout Cards (Candidate Cards) */
 .scout-card {
-    background: white;
+    background: var(--card-bg);
     border-radius: 1rem;
     padding: 1.5rem;
     margin-bottom: 1.25rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    border: 1px solid #f1f5f9;
+    border: 1px solid var(--border-color);
     transition: all 0.3s;
     position: relative;
     overflow: hidden;
@@ -227,7 +230,7 @@
 .scout-name {
     font-size: 1rem;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--text-color);
     margin: 0;
     line-height: 1.3;
 }
@@ -390,12 +393,12 @@
 
 /* === COMPANY SIDEBAR (FOR STUDENTS) === */
 .company-sidebar-card {
-    background: white;
+    background: var(--card-bg);
     border-radius: 1rem;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    border: 1px solid #f1f5f9;
+    border: 1px solid var(--border-color);
     text-align: center;
 }
 
@@ -429,7 +432,7 @@
 .company-sidebar-name {
     font-size: 1.125rem;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--text-color);
     margin: 0 0 1rem 0;
 }
 
@@ -464,7 +467,8 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #64748b;
+    color: var(--text-color);
+    opacity: 0.7;
     margin: 0 0 1rem 0;
 }
 
@@ -475,8 +479,8 @@
 }
 
 .company-job-item {
-    background: white;
-    border: 1px solid #e2e8f0;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     padding: 1rem;
     text-decoration: none;
@@ -486,7 +490,7 @@
 
 .company-job-item:hover {
     border-color: #3b82f6;
-    background: #f8fafc;
+    background: var(--bg-color);
     transform: translateX(4px);
 }
 
@@ -501,7 +505,7 @@
 .job-item-title {
     font-size: 0.9rem;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--text-color);
     line-height: 1.3;
     flex: 1;
 }

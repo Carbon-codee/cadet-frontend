@@ -24,10 +24,11 @@
     right: 0;
     height: 100%;
     width: 300px;
-    background-color: #fff;
+    background-color: var(--sidebar-bg);
+    color: var(--text-color);
     box-shadow: -10px 0 25px rgba(0, 0, 0, 0.1);
     transform: translateX(100%);
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease;
     z-index: 1600;
     display: flex;
     flex-direction: column;
@@ -42,12 +43,12 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .sidebar-header h3 {
     margin: 0;
-    color: #002B5B;
+    color: var(--text-color);
 }
 
 .close-btn {
@@ -75,13 +76,13 @@
     gap: 1rem;
     padding: 1rem;
     text-decoration: none;
-    color: #333;
+    color: var(--text-color);
     border-radius: 8px;
     transition: background-color 0.2s;
 }
 
 .sidebar-link:hover {
-    background-color: #f6f5f7;
+    background-color: var(--bg-color);
 }
 
 .logout-btn {
@@ -108,7 +109,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .sidebar-avatar {
@@ -123,22 +124,23 @@
 .user-details h4 {
     margin: 0 0 0.25rem 0;
     text-align: center;
-    color: #333;
+    color: var(--text-color);
 }
 
 .user-sub-info {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--text-color);
+    opacity: 0.7;
     text-align: center;
 }
 
 .user-sub-info .score {
     font-weight: bold;
-    color: #002B5B;
+    color: var(--primary-teal);
 }
 
 .divider {
     height: 1px;
-    background-color: #eee;
+    background-color: var(--border-color);
     margin: 1rem 0;
 }

@@ -9,11 +9,12 @@ import remarkGfm from 'remark-gfm'; // Tables and GFM support
 import mermaid from 'mermaid'; // Diagram support
 import API from '../api/axiosConfig';
 import './StudySessionPage.css';
+import SEO from '../components/SEO';
 
 import { useAuth } from '../context/AuthContext'; // Import useAuth
 
 const StudySessionPage = () => {
-    const { planId, dayNumber } = useParams();
+    const { planSlug, lessonSlug } = useParams();
     const navigate = useNavigate();
     const { updateUser } = useAuth(); // Get updateUser
 
@@ -30,12 +31,12 @@ const StudySessionPage = () => {
 
     useEffect(() => {
         fetchContent();
-    }, [planId, dayNumber]);
+    }, [planSlug, lessonSlug]);
 
     const fetchContent = async () => {
         try {
             setLoading(true);
-            const res = await API.get(`/study-plan/${planId}/day/${dayNumber}`);
+            const res = await API.get(`/study-plan/${planSlug}/${lessonSlug}`);
 
             // Check if module is locked
             if (res.data.isLocked && res.data.unlockDate) {
@@ -112,8 +113,8 @@ const StudySessionPage = () => {
         // Save to backend
         try {
             const res = await API.post('/study-plan/submit', {
-                planId,
-                dayNumber: parseInt(dayNumber),
+                planId: planSlug,
+                dayNumber: moduleData.dayNumber,
                 correctCount: correct,
                 correctQuestionIds: correctIds // Send Detailed Results for Dynamic XP
             });
@@ -221,12 +222,17 @@ const StudySessionPage = () => {
 
     return (
         <div className="study-session-page">
+            <SEO
+                noindex={true}
+                title={`Gün ${moduleData.dayNumber}: ${moduleData.topic}`}
+                description={`${moduleData.topic} konulu denizcilik eğitimi.`}
+            />
             <nav className="session-nav">
                 <button onClick={() => navigate('/study-plan')} className="back-btn">
                     <FaArrowLeft /> Dashboard'a Dön
                 </button>
                 <div className="session-title">
-                    Gün {dayNumber}: {moduleData.topic}
+                    Gün {moduleData.dayNumber}: {moduleData.topic}
                 </div>
                 <div className="session-progress">
                     {mode === 'quiz' ? `Soru ${currentQuestionIndex + 1} / ${moduleData.questions.length}` : 'Konu Anlatımı'}

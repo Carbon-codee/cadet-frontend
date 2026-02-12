@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import './ProfileUpdatePage.css';
@@ -127,13 +127,22 @@ const StudentUpdateForm = ({ formData, onFormChange, availableCompanies, uploadD
                 {formData.transcript && formData.transcript.length > 0 ? (
                     <ul style={{ listStyle: 'none', padding: 0 }}>
                         {formData.transcript.map((t, i) => (
-                            <li key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 10px', background: '#f8fafc', marginBottom: '5px', borderRadius: '6px', border: '1px solid #f1f5f9' }}>
+                            <li key={i} style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                padding: '8px 10px',
+                                background: 'var(--bg-color)',
+                                marginBottom: '5px',
+                                borderRadius: '6px',
+                                border: '1px solid var(--border-color)',
+                                color: 'var(--text-color)'
+                            }}>
                                 <span>{t.courseName} - <strong>{t.grade}</strong></span>
                                 <button type="button" onClick={() => handleTranscriptDelete(i)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem' }}>Sil 🗑️</button>
                             </li>
                         ))}
                     </ul>
-                ) : <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Henüz ders eklenmemiş.</p>}
+                ) : <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Henüz ders eklenmemiş.</p>}
             </div>
 
             <div className="form-card">
@@ -197,7 +206,16 @@ const StudentUpdateForm = ({ formData, onFormChange, availableCompanies, uploadD
                     <label style={{ marginBottom: '10px', display: 'block', marginTop: '20px' }}>Hedef Şirketler</label>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '10px' }}>
                         {availableCompanies.map(comp => (
-                            <div key={comp._id} onClick={() => handleCompanyToggle(comp._id)} style={{ padding: '10px', border: formData.preferences?.targetCompanies?.includes(comp._id) ? '2px solid #27ae60' : '1px solid #ddd', borderRadius: '8px', background: formData.preferences?.targetCompanies?.includes(comp._id) ? '#e8f5e9' : '#fff', cursor: 'pointer', textAlign: 'center', fontSize: '0.9rem' }}>
+                            <div key={comp._id} onClick={() => handleCompanyToggle(comp._id)} style={{
+                                padding: '10px',
+                                border: formData.preferences?.targetCompanies?.includes(comp._id) ? '2px solid var(--accent-color)' : '1px solid var(--border-color)',
+                                borderRadius: '8px',
+                                background: formData.preferences?.targetCompanies?.includes(comp._id) ? 'var(--bg-color)' : 'var(--card-bg)',
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                                fontSize: '0.9rem',
+                                color: 'var(--text-color)'
+                            }}>
                                 {formData.preferences?.targetCompanies?.includes(comp._id) && "✅ "} {comp.name}
                             </div>
                         ))}
@@ -242,9 +260,12 @@ const LecturerUpdateForm = ({ formData, onFormChange }) => (
 // --- ANA COMPONENT ---
 const ProfileUpdatePage = () => {
     const { userInfo } = useAuth();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState(null);
     const [companies, setCompanies] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         const loadData = async () => {
@@ -342,6 +363,7 @@ const ProfileUpdatePage = () => {
         }
 
         try {
+            setUploading(true);
             const { data } = await API.post(endpoint, uploadFormData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
@@ -363,11 +385,14 @@ const ProfileUpdatePage = () => {
         } catch (error) {
             console.error("Upload Error:", error);
             alert("Yükleme sırasında hata oluştu.");
+        } finally {
+            setUploading(false);
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSaving(true);
         let dataToSubmit = { ...formData };
 
         if (userInfo.role === 'student') {
@@ -406,23 +431,29 @@ const ProfileUpdatePage = () => {
             localStorage.setItem('userInfo', JSON.stringify(updatedUser));
 
             alert('Profil başarıyla güncellendi!');
-            window.location.href = '/profile';
+            navigate('/profile');
         } catch (error) {
             console.error(error);
             alert('Güncelleme sırasında hata oluştu.');
+        } finally {
+            setSaving(false);
         }
     };
 
-    if (loading || !formData) return <div style={{ padding: 40 }}>Yükleniyor...</div>;
+    if (loading || !formData) return <div style={{ padding: 40, color: 'var(--text-color)' }}>Yükleniyor...</div>;
 
     return (
         <div className="profile-update-page">
-            <div className="page-header"><h1>Profili Düzenle</h1></div>
+            <div className="page-header"><h1 style={{ color: 'var(--text-color)', textAlign: 'center', marginBottom: '30px' }}>Profili Düzenle</h1></div>
             <form className="update-form" onSubmit={handleSubmit}>
                 {userInfo.role === 'student' && <StudentUpdateForm formData={formData} onFormChange={handleChange} availableCompanies={companies} uploadDoc={uploadDoc} />}
                 {userInfo.role === 'company' && <CompanyUpdateForm formData={formData} onFormChange={handleChange} />}
                 {userInfo.role === 'lecturer' && <LecturerUpdateForm formData={formData} onFormChange={handleChange} />}
-                <div className="save-button-container"><button type="submit" className="save-button">Değişiklikleri Kaydet</button></div>
+                <div className="save-button-container">
+                    <button type="submit" className="save-button" disabled={saving || uploading}>
+                        {saving ? 'Kaydediliyor...' : uploading ? 'Dosya Yükleniyor...' : 'Değişiklikleri Kaydet'}
+                    </button>
+                </div>
             </form>
         </div>
     );

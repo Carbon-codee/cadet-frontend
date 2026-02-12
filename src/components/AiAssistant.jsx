@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FaPaperPlane, FaTimes } from 'react-icons/fa';
 import { GiShipWheel } from 'react-icons/gi';
 import { useNavigate } from 'react-router-dom';
 import API from '../api/axiosConfig';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import './AiAssistant.css';
 
 const AiAssistant = () => {
@@ -19,9 +21,22 @@ const AiAssistant = () => {
 
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
+    const messagesEndRef = useRef(null);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    // Scroll to bottom when messages change or chat opens
+    useEffect(() => {
+        if (isOpen) {
+            // Small timeout to ensure DOM is ready especially after opening
+            setTimeout(scrollToBottom, 100);
+        }
+    }, [messages, isOpen, loading]);
 
     // Persist messages
-    React.useEffect(() => {
+    useEffect(() => {
         localStorage.setItem('ai_chat_history', JSON.stringify(messages));
     }, [messages]);
 
@@ -88,36 +103,36 @@ const AiAssistant = () => {
                     <div className="chat-messages">
                         {messages.map((msg, i) => (
                             <div key={i} className={`message ${msg.role}`}>
-                                {msg.text.split(/(\[.*?\]\(.*?\))/g).map((part, idx) => {
-                                    // Match [Text](Link)
-                                    const match = part.match(/\[(.*?)\]\((.*?)\)/);
-                                    if (match) {
-                                        return (
-                                            <button
-                                                key={idx}
-                                                className="chat-action-btn"
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    const url = match[2].trim();
-                                                    console.log("Navigating to:", url);
-                                                    if (url.startsWith('/')) {
-                                                        navigate(url);
-                                                    } else {
-                                                        window.open(url, '_blank');
-                                                    }
-                                                }}
-                                            >
-                                                {match[1]}
-                                            </button>
-                                        );
-                                    }
-                                    return part;
-                                })}
+                                <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    components={{
+                                        a: ({ href, children }) => {
+                                            const isInternal = href.startsWith('/');
+                                            return (
+                                                <button
+                                                    className="chat-action-link"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        console.log("Navigating to:", href);
+                                                        if (isInternal) {
+                                                            navigate(href);
+                                                        } else {
+                                                            window.open(href, '_blank');
+                                                        }
+                                                    }}
+                                                >
+                                                    {children}
+                                                </button>
+                                            );
+                                        }
+                                    }}
+                                >
+                                    {msg.text}
+                                </ReactMarkdown>
                             </div>
                         ))}
                         {loading && <div className="message assistant">Yazıyor...</div>}
+                        <div ref={messagesEndRef} />
                     </div>
                     <form className="chat-input-area" onSubmit={handleSend}>
                         <input

@@ -1,40 +1,52 @@
 .profile-page {
-    background-color: #f6f8fa;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     padding: 2rem;
     min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .profile-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+    /* Boşluk artırıldı */
     max-width: 1200px;
     margin: 0 auto;
+    align-items: start;
+    /* Kart yüksekliklerini içeriklerine göre ayarla */
 }
 
 /* --- Genel Kart Stili --- */
 .profile-card {
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-    height: 100%;
-    /* Kartların boyunu eşitlemek için */
+    background-color: var(--card-bg);
+    padding: 2.5rem;
+    /* İç boşluk artırıldı */
+    border-radius: 16px;
+    /* Daha yumuşak köşeler */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    /* Daha belirgin gölge */
+    border: 1px solid var(--border-color);
+    /* Sınır eklendi */
+    /* height: 100%; KALDIRILDI - İçeriğe göre uzasın */
 }
 
 /* --- Header Kartı (En Üstteki Büyük Kart) --- */
 .profile-header-card {
     grid-column: 1 / -1;
-    /* İki sütunu da kapla */
     display: flex;
-    align-items: center;
-    gap: 2rem;
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    align-items: flex-start;
+    /* İçerik yukarıdan başlasın */
+    gap: 3rem;
+    background: var(--card-bg);
+    padding: 3rem;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    /* Header daha "havada" dursun */
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+    /* Hidden kaldırıldı, taşma varsa görünsün */
+    color: var(--text-color);
 }
 
 /* Arka plan süslemesi (Opsiyonel) */
@@ -45,7 +57,8 @@
     right: 0;
     width: 150px;
     height: 100%;
-    background: linear-gradient(90deg, transparent, #f0f4f8);
+    background: linear-gradient(90deg, transparent, var(--border-color));
+    opacity: 0.1;
     transform: skewX(-20deg);
     z-index: 0;
 }
@@ -60,14 +73,14 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background-color: #002B5B;
+    background-color: var(--primary-navy);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 3rem;
     font-weight: bold;
-    border: 5px solid #e3f2fd;
+    border: 5px solid var(--border-color);
 }
 
 .header-info {
@@ -78,13 +91,13 @@
 .header-info h1 {
     margin: 0;
     font-size: 2.2rem;
-    color: #002B5B;
+    color: var(--text-color);
 }
 
 .header-info .role-badge {
     display: inline-block;
-    background: #e3f2fd;
-    color: #005A9C;
+    background: var(--accent-color);
+    color: white;
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 0.9rem;
@@ -95,7 +108,8 @@
 .header-info p {
     margin: 0.5rem 0 1rem 0;
     font-size: 1.1rem;
-    color: #555;
+    color: var(--text-color);
+    opacity: 0.8;
     max-width: 600px;
 }
 
@@ -109,21 +123,21 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
-    color: #666;
+    color: var(--text-muted);
     margin-bottom: 5px;
     font-weight: 600;
 }
 
 .score-bar-container {
     width: 100%;
-    background-color: #e0e0e0;
+    background-color: var(--border-color);
     border-radius: 10px;
     height: 20px;
     overflow: hidden;
 }
 
 .score-bar {
-    background: linear-gradient(90deg, #3b82f6, #005A9C);
+    background: linear-gradient(90deg, var(--accent-color), var(--primary-navy));
     height: 100%;
     color: white;
     display: flex;
@@ -139,8 +153,8 @@
 .profile-card h3 {
     margin-top: 0;
     margin-bottom: 1.5rem;
-    color: #002B5B;
-    border-bottom: 2px solid #f0f0f0;
+    color: var(--text-color);
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 0.75rem;
     display: flex;
     align-items: center;
@@ -151,7 +165,7 @@
     display: flex;
     justify-content: space-between;
     padding: 0.75rem 0;
-    border-bottom: 1px solid #f9f9f9;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .info-row:last-child {
@@ -160,11 +174,12 @@
 
 .info-row span:first-child {
     font-weight: 600;
-    color: #444;
+    color: var(--text-color);
 }
 
 .info-row span:last-child {
-    color: #666;
+    color: var(--text-color);
+    opacity: 0.7;
 }
 
 /* --- Liste Grubu (Sertifikalar vs.) --- */
@@ -179,7 +194,7 @@
     align-items: center;
     gap: 1rem;
     padding: 0.8rem 0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--border-color);
     transition: transform 0.2s;
 }
 
@@ -194,8 +209,8 @@
 .list-item-icon {
     width: 35px;
     height: 35px;
-    background: #f0f8ff;
-    color: #005A9C;
+    background: var(--bg-color);
+    color: var(--primary-teal);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -204,12 +219,13 @@
 
 .list-text strong {
     display: block;
-    color: #333;
+    color: var(--text-color);
     font-size: 0.95rem;
 }
 
 .list-text small {
-    color: #888;
+    color: var(--text-color);
+    opacity: 0.6;
     font-size: 0.8rem;
 }
 
@@ -224,6 +240,11 @@
     .profile-header-card {
         flex-direction: column;
         text-align: center;
+        align-items: center;
+        /* Mobilde ortala */
+        padding: 2rem;
+        /* Mobilde padding azalt */
+        gap: 2rem;
     }
 
     .header-info {
@@ -231,6 +252,6 @@
     }
 
     .score-section {
-        margin: 15px auto;
+        margin: 20px auto;
     }
 }

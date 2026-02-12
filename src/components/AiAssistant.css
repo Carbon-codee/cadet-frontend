@@ -7,7 +7,7 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-/* Floating Launcher Button with Pulse */
+/* Floating Launcher Button */
 .ai-launcher {
     width: 65px;
     height: 65px;
@@ -72,21 +72,19 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Chat Window - Glassmorphism Feel */
+/* Chat Window - Glassmorphism */
 .chat-window {
-    width: 380px;
-    /* Slightly wider */
-    height: 600px;
-    /* Taller */
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    width: 400px;
+    height: 650px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
     border-radius: 1.5rem;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 @keyframes slideUp {
@@ -103,23 +101,16 @@
 
 /* Header */
 .chat-header {
-    background: linear-gradient(135deg, #1e293b, #334155);
+    background: linear-gradient(135deg, #0f172a, #1e293b);
     color: white;
-    padding: 1.25rem;
+    padding: 1.25rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-weight: 600;
     letter-spacing: 0.5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.chat-header h3 {
-    margin: 0;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10;
 }
 
 /* Messages Area */
@@ -127,41 +118,24 @@
     flex: 1;
     padding: 1.5rem;
     overflow-y: auto;
-    background: #f1f5f9;
-    /* Slate-100 */
+    background: #f8fafc;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     scroll-behavior: smooth;
-}
-
-/* Scrollbar Customization */
-.chat-messages::-webkit-scrollbar {
-    width: 6px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-    background-color: #cbd5e1;
-    border-radius: 10px;
 }
 
 /* Message Bubbles */
 .message {
-    max-width: 85%;
-    padding: 12px 16px;
+    max-width: 88%;
+    padding: 14px 18px;
     border-radius: 18px;
-    font-size: 0.92rem;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    line-height: 1.6;
     position: relative;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     animation: popIn 0.3s ease-out forwards;
-
-    /* Prevent overflow */
     word-wrap: break-word;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    white-space: pre-wrap;
-    /* Ensure newlines are respected */
 }
 
 @keyframes popIn {
@@ -176,57 +150,116 @@
     }
 }
 
+/* Assistant Message */
 .message.assistant {
     align-self: flex-start;
     background: white;
-    color: #1e293b;
+    color: #334155;
     border-bottom-left-radius: 4px;
     border: 1px solid #e2e8f0;
 }
 
-.message.assistant::before {
-    /* Optional: Avatar decoration next to msg if desired, 
-       but for now simple bubbles are clean */
-}
-
+/* User Message */
 .message.user {
     align-self: flex-end;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: white;
     border-bottom-right-radius: 4px;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
-/* Inline Action Buttons */
-.chat-action-btn {
+/* Markdown Content Styling */
+.message p {
+    margin: 0 0 8px 0;
+}
+
+.message p:last-child {
+    margin-bottom: 0;
+}
+
+.message strong {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.message.user strong {
+    color: #fff;
+}
+
+.message ul,
+.message ol {
+    margin: 8px 0;
+    padding-left: 20px;
+}
+
+.message li {
+    margin-bottom: 4px;
+}
+
+/* --- TABLE STYLING FOR MARKDOWN --- */
+.message table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 10px 0;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.message th,
+.message td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.message th {
+    background-color: #f1f5f9;
+    font-weight: 600;
+    color: #334155;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.message tr:last-child td {
+    border-bottom: none;
+}
+
+.message tr:nth-child(even) td {
+    background-color: #f8fafc;
+}
+
+.message td {
+    color: #475569;
+}
+
+/* Chat Action Links (Chips) */
+.chat-action-link {
     display: inline-flex;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    color: inherit;
+    padding: 8px 16px;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    border-radius: 20px;
     text-decoration: none;
-    padding: 6px 12px;
-    border-radius: 12px;
-    margin-left: 6px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    transition: all 0.2s;
-    backdrop-filter: blur(4px);
-    vertical-align: middle;
+    margin: 6px 4px 6px 0;
     cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
     font-family: inherit;
 }
 
-/* Button specific for assistant messages (blue on white) */
-.message.assistant .chat-action-btn {
-    background-color: #eff6ff;
-    color: #2563eb !important;
-    border: 1px solid #bfdbfe;
-}
-
-.message.assistant .chat-action-btn:hover {
-    background-color: #dbeafe;
-    transform: translateY(-1px);
+.chat-action-link:hover {
+    background: #dbeafe;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+    border-color: #3b82f6;
 }
 
 /* Input Area */
@@ -241,45 +274,34 @@
 
 .chat-input-area input {
     flex: 1;
-    padding: 12px 18px;
+    padding: 14px 20px;
     border: 2px solid #e2e8f0;
-    border-radius: 25px;
+    border-radius: 30px;
     outline: none;
     font-size: 0.95rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: all 0.2s;
 }
 
 .chat-input-area input:focus {
     border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
 
 .chat-input-area button {
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white;
     border: none;
-    width: 45px;
-    height: 45px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s;
 }
 
 .chat-input-area button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-}
-
-.chat-input-area button:active {
-    transform: scale(0.95);
-}
-
-.chat-input-area button:disabled {
-    background: #cbd5e1;
-    cursor: not-allowed;
-    box-shadow: none;
+    transform: scale(1.08);
 }

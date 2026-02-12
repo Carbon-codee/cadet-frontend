@@ -109,7 +109,7 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
                                         <FaFileAlt /> Başvurularım
                                     </Link>
                                     <Link to="/study-plan" className="sidebar-link" onClick={onClose}>
-                                        <FaBrain /> Akıllı Asistan
+                                        <FaBrain /> Kişisel Gelişim Asistanı
                                     </Link>
                                     <Link to="/saved-content" className="sidebar-link" onClick={onClose}>
                                         <FaBookmark /> Kaydettiklerim

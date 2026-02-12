@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
-import { useAuth } from '../context/AuthContext'; // <-- EKLENDİ
+import { useAuth } from '../context/AuthContext';
+import SEO from '../components/SEO';
 import { FaSearch, FaMapMarkerAlt, FaShip, FaMoneyBillWave, FaCalendarAlt, FaBuilding, FaFilter } from 'react-icons/fa';
 import { SHIP_TYPES } from '../constants';
 import './InternshipsPage.css';
@@ -78,6 +79,11 @@ const InternshipsPage = () => {
 
     return (
         <div className="internships-page">
+            <SEO
+                title="Staj Fırsatları - Güncel Denizcilik İlanları"
+                description="En güncel denizcilik staj ilanları. Güverte, makine ve diğer bölümler için şirketlerin açtığı staj pozisyonlarına hemen başvurun."
+                keywords="staj ilanları, denizcilik stajı, güverte stajı, makine stajı, gemi stajı"
+            />
             <div className="page-title-section">
                 <h1>Staj Fırsatları</h1>
                 <p>Kariyer rotanı belirleyecek en güncel ve aktif ilanları keşfet.</p>
@@ -140,16 +146,16 @@ const InternshipsPage = () => {
                             </div>
                             <div className="card-footer">
                                 <div className="salary-info"><FaMoneyBillWave /> {internship.salary}$</div>
-                                <Link to={`/internships/${internship._id}`} className="details-btn">İncele</Link>
+                                <Link to={`/internships/${internship.slug || internship._id}`} className="details-btn">İncele</Link>
                             </div>
                         </div>
                     ))}
                 </div>
             ) : (
-                <div style={{ textAlign: 'center', padding: '50px', background: 'white', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
-                    <FaFilter style={{ fontSize: '3rem', color: '#ddd', marginBottom: '15px' }} />
+                <div style={{ textAlign: 'center', padding: '50px', background: 'var(--card-bg)', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', color: 'var(--text-color)' }}>
+                    <FaFilter style={{ fontSize: '3rem', color: '#64748b', marginBottom: '15px' }} />
                     <h3>İlan Bulunamadı</h3>
-                    <p style={{ color: '#7f8c8d' }}>
+                    <p style={{ color: 'var(--text-color)', opacity: 0.7 }}>
                         {userInfo?.role === 'student'
                             ? "Bölümünüze ve kriterlerinize uygun aktif bir ilan bulunamadı."
                             : "Aradığınız kriterlere uygun aktif bir staj ilanı şu an mevcut değil."}

@@ -1,21 +1,97 @@
+/* === USER INFO PAGE - MODERN DARK THEME === */
 .user-info-page {
-    max-width: 800px;
-    margin: 0 auto;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
     padding: 2rem;
+    padding-top: 120px;
+    /* Navbar için boşluk */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
-.form-card {
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+.user-info-container {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+
+/* --- INFO CARD STYLES --- */
+.info-card {
+    background: var(--card-bg, #1e293b);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #06b6d4);
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.4);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.info-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text-color, #fff);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- FORM ELEMENTS --- */
+.current-info {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    padding: 1rem;
+    border-radius: 8px;
     margin-bottom: 2rem;
 }
 
-.form-card h3 {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    color: #002B5B;
+.current-info label {
+    display: block;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.static-email {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #60a5fa;
+    margin: 0;
 }
 
 .form-group {
@@ -24,36 +100,83 @@
 
 .form-group label {
     display: block;
+    font-size: 0.9rem;
     font-weight: 500;
-    color: #444;
-    margin-bottom: 0.5rem;
+    color: var(--text-color, #e2e8f0);
+    margin-bottom: 0.75rem;
 }
 
 .form-group input {
     width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    border: 2px solid var(--border-color, #334155);
+    background: var(--bg-color, #0f172a);
+    color: var(--text-color, #fff);
     font-size: 1rem;
+    transition: all 0.2s ease;
 }
 
-.form-group p.current-email {
-    font-size: 1rem;
-    color: #333;
+.form-group input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: #1e293b;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
 }
 
-.update-button {
-    background-color: #005A9C;
-    color: white;
+.form-group input::placeholder {
+    color: #64748b;
+}
+
+/* --- BUTTONS --- */
+.action-btn {
+    width: 100%;
+    padding: 1rem;
     border: none;
-    padding: 0.8rem 1.5rem;
-    font-size: 0.95rem;
-    font-weight: bold;
-    border-radius: 5px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
 
-.update-button:hover {
-    background-color: #004170;
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+}
+
+/* Danger Button Variation */
+.danger-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.danger-btn:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .user-info-page {
+        padding: 1rem;
+        padding-top: 100px;
+    }
+
+    .info-card {
+        padding: 1.5rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
 }

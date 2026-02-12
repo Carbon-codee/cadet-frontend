@@ -8,12 +8,9 @@ const PROD_URL = 'https://cadet-api.onrender.com/api';
 // Geliştirme ortamı için localhost adresi
 const DEV_URL = 'http://localhost:5000/api';
 
-// Projenin "production" modunda mı çalıştığını kontrol et
-// Vercel'de bu otomatik olarak 'production' olur.
-const isProduction = process.env.NODE_ENV === 'production';
+// Vite için production kontrolü
+const isProduction = import.meta.env.MODE === 'production';
 
-// API objesi oluşturmak yerine, doğrudan axios'u export ediyoruz
-// ve her istekte doğru adresi kullanmasını sağlıyoruz.
 const API = axios.create({
     baseURL: isProduction ? PROD_URL : DEV_URL,
 });

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
+import SEO from '../components/SEO';
 import {
     FaCheckCircle, FaUserGraduate, FaHeart, FaArrowLeft, FaBriefcase,
     FaEdit, FaPaperPlane, FaBuilding, FaClock, FaPowerOff, FaStar, FaLanguage, FaCalendarAlt
@@ -9,7 +10,7 @@ import {
 import './InternshipDetailPage.css';
 
 const InternshipDetailPage = () => {
-    const { id } = useParams();
+    const { slug } = useParams();
     const { userInfo } = useAuth();
 
     const [internship, setInternship] = useState(null);
@@ -22,7 +23,7 @@ const InternshipDetailPage = () => {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const { data } = await API.get(`/internships/${id}`);
+                const { data } = await API.get(`/internships/${slug}`);
                 setInternship(data);
 
                 if (userInfo?.role === 'student') {
@@ -37,7 +38,7 @@ const InternshipDetailPage = () => {
                         const allInternshipsRes = await API.get('/internships');
                         const companyJobs = allInternshipsRes.data
                             .filter(job =>
-                                job._id !== id &&
+                                job._id !== data._id &&
                                 (job.company._id === companyId || job.company === companyId) &&
                                 job.isActive
                             )
@@ -50,7 +51,7 @@ const InternshipDetailPage = () => {
                         const myApplicationsRes = await API.get('/users/my-applications');
                         console.log('Applied internships API response:', myApplicationsRes.data);
                         const recentApplied = myApplicationsRes.data
-                            .filter(job => job._id !== id)
+                            .filter(app => app.internship && app.internship._id !== data._id)
                             .slice(0, 5); // Get max 5 recent applications
                         setAppliedInternships(recentApplied);
                         console.log('Filtered applied internships:', recentApplied);
@@ -72,16 +73,18 @@ const InternshipDetailPage = () => {
             finally { setLoading(false); }
         };
         fetchDetails();
-    }, [id, userInfo]);
+    }, [slug, userInfo]);
 
     const handleApply = async () => {
-        try { await API.post(`/internships/${id}/apply`); setHasApplied(true); alert("Başvuru gönderildi!"); }
+        if (!internship) return;
+        try { await API.post(`/internships/${internship._id}/apply`); setHasApplied(true); alert("Başvuru gönderildi!"); }
         catch (error) { alert("Hata oluştu."); }
     };
 
     const toggleStatus = async () => {
+        if (!internship) return;
         if (!window.confirm("Durumu değiştirmek istediğinize emin misiniz?")) return;
-        try { await API.put(`/internships/${id}/status`); window.location.reload(); }
+        try { await API.put(`/internships/${internship._id}/status`); window.location.reload(); }
         catch (error) { alert("İşlem başarısız."); }
     };
 
@@ -127,160 +130,208 @@ const InternshipDetailPage = () => {
         </div>
     );
 
+    // JSON-LD for Google JobPosting
+    const jobPostingSchema = internship ? {
+        "@context": "https://schema.org",
+        "@type": "JobPosting",
+        "title": internship.title,
+        "description": internship.description,
+        "hiringOrganization": {
+            "@type": "Organization",
+            "name": internship.company?.name || "Marine Company",
+            "logo": internship.company?.profilePicture
+        },
+        "jobLocation": {
+            "@type": "Place",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": internship.location
+            }
+        },
+        "baseSalary": {
+            "@type": "MonetaryAmount",
+            "currency": "USD",
+            "value": {
+                "@type": "QuantitativeValue",
+                "value": internship.salary,
+                "unitText": "MONTH"
+            }
+        },
+        "employmentType": "INTERN",
+        "datePosted": internship.createdAt,
+        "validThrough": internship.startDate,
+        "industry": "Maritime",
+        "occupationalCategory": internship.department
+    } : null;
+
     return (
-        <div className="internship-detail-page">
-            <Link to={isOwner ? "/company/my-internships" : "/internships"} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', textDecoration: 'none', color: '#555', marginBottom: '20px', fontWeight: '600' }}>
-                <FaArrowLeft /> Listeye Dön
-            </Link>
+        <>
+            <SEO
+                title={internship?.title}
+                description={`${internship?.title} pozisyonu için staj ilanı. ${internship?.company?.name} - ${internship?.location}. Maaş: ${internship?.salary} USD`}
+                keywords={`${internship?.title}, ${internship?.shipType}, ${internship?.department}, denizcilik staj, maritime internship`}
+                ogType="article"
+                canonicalUrl={`/internships/${internship?.slug || slug}`}
+                jsonLd={jobPostingSchema}
+            />
+            <div className="internship-detail-page">
+                <Link to={isOwner ? "/company/my-internships" : "/internships"} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', textDecoration: 'none', color: 'var(--text-color)', marginBottom: '20px', fontWeight: '600', opacity: 0.8 }}>
+                    <FaArrowLeft /> Listeye Dön
+                </Link>
 
-            <div className="page-layout">
-                {/* SOL SÜTUN */}
-                <div className="side-column">
-                    {isOwner && (
-                        <>
-                            <span className="column-title title-left">🌟 HED EFLEYENLER</span>
-                            {scoutData?.favorited?.length > 0 ? scoutData.favorited.map(stu => <ScoutCard key={stu._id} student={stu} isFav={true} />) : <p style={{ textAlign: 'center', color: '#999' }}>Yok.</p>}
-                        </>
-                    )}
-
-                    {userInfo?.role === 'student' && internship && (
-                        <>
-                            <div className="company-sidebar-card">
-                                <div className="company-logo-section">
-                                    {internship.company?.profilePicture && !internship.company.profilePicture.includes('anonymous') ? (
-                                        <img src={internship.company.profilePicture} alt={internship.company.name} className="company-logo-img" />
-                                    ) : (
-                                        <div className="company-logo-placeholder">
-                                            <FaBuilding />
-                                        </div>
-                                    )}
-                                </div>
-                                <h3 className="company-sidebar-name">{internship.company?.name || 'Şirket'}</h3>
-                                <Link to={`/profile/${companyProfileId}`} className="view-company-profile-btn">
-                                    <FaBuilding /> Şirket Profilini Görüntüle
-                                </Link>
-                            </div>
-
-                            {companyInternships.length > 0 && (
-                                <>
-                                    <div className="sidebar-divider"></div>
-                                    <h4 className="sidebar-section-title">📋 Diğer İlanlar</h4>
-                                    <div className="company-jobs-list">
-                                        {companyInternships.map(job => (
-                                            <Link to={`/internships/${job._id}`} key={job._id} className="company-job-item">
-                                                <div className="job-item-header">
-                                                    <span className="job-item-title">{job.title}</span>
-                                                    <span className="job-item-badge">{job.shipType}</span>
-                                                </div>
-                                                <div className="job-item-meta">
-                                                    <span>{job.location}</span>
-                                                    <span className="job-item-salary">{job.salary}$</span>
-                                                </div>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </>
-                            )}
-                        </>
-                    )}
-                </div>
-
-                {/* ORTA SÜTUN: İLAN DETAYI */}
-                <div className="detail-container">
-                    <div className="detail-header">
-                        <h1>{internship.title}</h1>
-
-                        {/* --- DÜZELTME 1: ŞİRKET LİNKİ GERİ GELDİ --- */}
-                        <Link to={`/profile/${companyProfileId}`} className="company-profile-link">
-                            <FaBuilding style={{ marginRight: '8px' }} />
-                            {internship.company?.name || 'Şirket Profili'}
-                        </Link>
-                        {/* ------------------------------------------- */}
-
-                        {!internship.isActive && <div style={{ marginTop: '15px', background: '#c0392b', padding: '5px 15px', borderRadius: '20px', display: 'inline-block', fontSize: '0.9rem' }}>PASİF İLAN</div>}
-                    </div>
-
-                    <div className="detail-content">
-
-                        {/* --- DÜZELTME 2: TARİHLER GERİ GELDİ --- */}
-                        <div className="date-info-bar">
-                            <span><FaClock /> Yayınlanma: <strong>{new Date(internship.createdAt).toLocaleDateString('tr-TR')}</strong></span>
-                            <span><FaCalendarAlt /> Staj Başlangıç: <strong>{new Date(internship.startDate).toLocaleDateString('tr-TR')}</strong></span>
-                        </div>
-                        {/* -------------------------------------- */}
-
-                        <div className="info-grid">
-                            <div className="info-box"><span className="info-label">Pozisyon</span><span className="info-value">{internship.location}</span></div>
-                            <div className="info-box"><span className="info-label">Gemi Tipi</span><span className="info-value">{internship.shipType}</span></div>
-                            <div className="info-box"><span className="info-label">Maaş</span><span className="info-value">{internship.salary} USD</span></div>
-                            <div className="info-box"><span className="info-label">Süre</span><span className="info-value">{internship.duration}</span></div>
-                        </div>
-                        <hr style={{ border: '0', borderTop: '1px solid #eee', margin: '30px 0' }} />
-                        <h3>İlan Açıklaması</h3>
-                        <p className="description-text">{internship.description}</p>
-                    </div>
-
-                    <div className="detail-footer">
-                        {userInfo?.role === 'student' && !hasApplied && internship.isActive && (
-                            <button onClick={handleApply} style={{ background: '#3498db', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold', cursor: 'pointer' }}><FaPaperPlane style={{ marginRight: '8px' }} /> Hemen Başvur</button>
-                        )}
-                        {userInfo?.role === 'student' && hasApplied && (
-                            <button disabled style={{ background: '#27ae60', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold' }}><FaCheckCircle style={{ marginRight: '8px' }} /> Başvuruldu</button>
-                        )}
-
+                <div className="page-layout">
+                    {/* SOL SÜTUN */}
+                    <div className="side-column">
                         {isOwner && (
                             <>
-                                <button onClick={toggleStatus} style={{ background: internship.isActive ? '#e74c3c' : '#27ae60', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>
-                                    <FaPowerOff /> {internship.isActive ? 'Yayından Kaldır' : 'Yayına Al'}
-                                </button>
-                                <Link to={`/company/edit-internship/${internship._id}`} style={{ background: '#f39c12', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '8px', fontWeight: 'bold', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                    <FaEdit /> Düzenle
-                                </Link>
+                                <span className="column-title title-left">🌟 HED EFLEYENLER</span>
+                                {scoutData?.favorited?.length > 0 ? scoutData.favorited.map(stu => <ScoutCard key={stu._id} student={stu} isFav={true} />) : <p style={{ textAlign: 'center', color: '#999' }}>Yok.</p>}
+                            </>
+                        )}
+
+                        {userInfo?.role === 'student' && internship && (
+                            <>
+                                <div className="company-sidebar-card">
+                                    <div className="company-logo-section">
+                                        {internship.company?.profilePicture && !internship.company.profilePicture.includes('anonymous') ? (
+                                            <img src={internship.company.profilePicture} alt={internship.company.name} className="company-logo-img" />
+                                        ) : (
+                                            <div className="company-logo-placeholder">
+                                                <FaBuilding />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <h3 className="company-sidebar-name">{internship.company?.name || 'Şirket'}</h3>
+                                    <Link to={`/profile/${companyProfileId}`} className="view-company-profile-btn">
+                                        <FaBuilding /> Şirket Profilini Görüntüle
+                                    </Link>
+                                </div>
+
+                                {companyInternships.length > 0 && (
+                                    <>
+                                        <div className="sidebar-divider"></div>
+                                        <h4 className="sidebar-section-title">📋 Diğer İlanlar</h4>
+                                        <div className="company-jobs-list">
+                                            {companyInternships.map(job => (
+                                                <Link to={`/internships/${job._id}`} key={job._id} className="company-job-item">
+                                                    <div className="job-item-header">
+                                                        <span className="job-item-title">{job.title}</span>
+                                                        <span className="job-item-badge">{job.shipType}</span>
+                                                    </div>
+                                                    <div className="job-item-meta">
+                                                        <span>{job.location}</span>
+                                                        <span className="job-item-salary">{job.salary}$</span>
+                                                    </div>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </div>
+
+                    {/* ORTA SÜTUN: İLAN DETAYI */}
+                    <div className="detail-container">
+                        <div className="detail-header">
+                            <h1>{internship.title}</h1>
+
+                            {/* --- DÜZELTME 1: ŞİRKET LİNKİ GERİ GELDİ --- */}
+                            <Link to={`/profile/${companyProfileId}`} className="company-profile-link">
+                                <FaBuilding style={{ marginRight: '8px' }} />
+                                {internship.company?.name || 'Şirket Profili'}
+                            </Link>
+                            {/* ------------------------------------------- */}
+
+                            {!internship.isActive && <div style={{ marginTop: '15px', background: '#c0392b', padding: '5px 15px', borderRadius: '20px', display: 'inline-block', fontSize: '0.9rem' }}>PASİF İLAN</div>}
+                        </div>
+
+                        <div className="detail-content">
+
+                            {/* --- DÜZELTME 2: TARİHLER GERİ GELDİ --- */}
+                            <div className="date-info-bar">
+                                <span><FaClock /> Yayınlanma: <strong>{new Date(internship.createdAt).toLocaleDateString('tr-TR')}</strong></span>
+                                <span><FaCalendarAlt /> Staj Başlangıç: <strong>{new Date(internship.startDate).toLocaleDateString('tr-TR')}</strong></span>
+                            </div>
+                            {/* -------------------------------------- */}
+
+                            <div className="info-grid">
+                                <div className="info-box"><span className="info-label">Pozisyon</span><span className="info-value">{internship.location}</span></div>
+                                <div className="info-box"><span className="info-label">Gemi Tipi</span><span className="info-value">{internship.shipType}</span></div>
+                                <div className="info-box"><span className="info-label">Maaş</span><span className="info-value">{internship.salary} USD</span></div>
+                                <div className="info-box"><span className="info-label">Süre</span><span className="info-value">{internship.duration}</span></div>
+                            </div>
+                            <hr style={{ border: '0', borderTop: '1px solid #eee', margin: '30px 0' }} />
+                            <h3>İlan Açıklaması</h3>
+                            <p className="description-text">{internship.description}</p>
+                        </div>
+
+                        <div className="detail-footer">
+                            {userInfo?.role === 'student' && !hasApplied && internship.isActive && (
+                                <button onClick={handleApply} style={{ background: '#3498db', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold', cursor: 'pointer' }}><FaPaperPlane style={{ marginRight: '8px' }} /> Hemen Başvur</button>
+                            )}
+                            {userInfo?.role === 'student' && hasApplied && (
+                                <button disabled style={{ background: '#27ae60', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '30px', fontWeight: 'bold' }}><FaCheckCircle style={{ marginRight: '8px' }} /> Başvuruldu</button>
+                            )}
+
+                            {isOwner && (
+                                <>
+                                    <button onClick={toggleStatus} style={{ background: internship.isActive ? '#e74c3c' : '#27ae60', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>
+                                        <FaPowerOff /> {internship.isActive ? 'Yayından Kaldır' : 'Yayına Al'}
+                                    </button>
+                                    <Link to={`/company/edit-internship/${internship._id}`} style={{ background: '#f39c12', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '8px', fontWeight: 'bold', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                        <FaEdit /> Düzenle
+                                    </Link>
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* SAĞ SÜTUN */}
+                    <div className="side-column">
+                        {isOwner && (
+                            <>
+                                <span className="column-title title-right">📋 DİĞER ADAYLAR</span>
+                                {scoutData?.others?.length > 0 ? scoutData.others.map(stu => <ScoutCard key={stu._id} student={stu} isFav={false} />) : <p style={{ textAlign: 'center', color: '#999' }}>Yok.</p>}
+                            </>
+                        )}
+
+                        {userInfo?.role === 'student' && (
+                            <>
+                                <h4 className="sidebar-section-title">📌 Son Başvurularım</h4>
+                                {appliedInternships.length > 0 ? (
+                                    <div className="company-jobs-list">
+                                        {appliedInternships.map(app => {
+                                            const job = app.internship;
+                                            if (!job) return null;
+                                            return (
+                                                <Link to={`/internships/${job.slug || job._id}`} key={app._id} className="company-job-item applied-job-item">
+                                                    <div className="job-item-header">
+                                                        <span className="job-item-title">{job.title}</span>
+                                                        <span className="job-item-badge applied-badge">{job.shipType}</span>
+                                                    </div>
+                                                    <div className="job-item-meta">
+                                                        <span className="job-company-name">{job.company?.name || 'Şirket'}</span>
+                                                    </div>
+                                                    <div className="job-item-meta">
+                                                        <span>{job.location}</span>
+                                                        <span className="job-item-salary">{job.salary}$</span>
+                                                    </div>
+                                                </Link>
+                                            )
+                                        })}
+                                    </div>
+                                ) : (
+                                    <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'white', borderRadius: '1rem', border: '1px solid #f1f5f9' }}>
+                                        <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: 0 }}>Henüz başka ilanlara başvuru yapmadınız.</p>
+                                    </div>
+                                )}
                             </>
                         )}
                     </div>
                 </div>
-
-                {/* SAĞ SÜTUN */}
-                <div className="side-column">
-                    {isOwner && (
-                        <>
-                            <span className="column-title title-right">📋 DİĞER ADAYLAR</span>
-                            {scoutData?.others?.length > 0 ? scoutData.others.map(stu => <ScoutCard key={stu._id} student={stu} isFav={false} />) : <p style={{ textAlign: 'center', color: '#999' }}>Yok.</p>}
-                        </>
-                    )}
-
-                    {userInfo?.role === 'student' && (
-                        <>
-                            <h4 className="sidebar-section-title">📌 Son Başvurularım</h4>
-                            {appliedInternships.length > 0 ? (
-                                <div className="company-jobs-list">
-                                    {appliedInternships.map(job => (
-                                        <Link to={`/internships/${job._id}`} key={job._id} className="company-job-item applied-job-item">
-                                            <div className="job-item-header">
-                                                <span className="job-item-title">{job.title}</span>
-                                                <span className="job-item-badge applied-badge">{job.shipType}</span>
-                                            </div>
-                                            <div className="job-item-meta">
-                                                <span className="job-company-name">{job.company?.name || 'Şirket'}</span>
-                                            </div>
-                                            <div className="job-item-meta">
-                                                <span>{job.location}</span>
-                                                <span className="job-item-salary">{job.salary}$</span>
-                                            </div>
-                                        </Link>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'white', borderRadius: '1rem', border: '1px solid #f1f5f9' }}>
-                                    <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: 0 }}>Henüz başka ilanlara başvuru yapmadınız.</p>
-                                </div>
-                            )}
-                        </>
-                    )}
-                </div>
             </div>
-        </div>
+        </>
     );
 };
 
