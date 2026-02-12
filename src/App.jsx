@@ -84,7 +84,7 @@ function App() {
         <Route path="/learning" element={<ProtectedRoute><MainLayout><LearningPage /></MainLayout></ProtectedRoute>} />
         <Route path="/learning/:slug" element={<ProtectedRoute><MainLayout><LearningDetailPage /></MainLayout></ProtectedRoute>} />
         <Route path="/saved-content" element={<ProtectedRoute><MainLayout><SavedContentPage /></MainLayout></ProtectedRoute>} />
-        <Route path="/gasm" element={<ProtectedRoute><MainLayout><GasmPage /></MainLayout></ProtectedRoute>} />
+
         <Route path="/study-plan" element={<ProtectedRoute><MainLayout><StudyDashboard /></MainLayout></ProtectedRoute>} />
         <Route path="/study-plan/:planSlug" element={<ProtectedRoute><MainLayout><StudyDashboard /></MainLayout></ProtectedRoute>} />
         <Route path="/study-plan/:planSlug/:lessonSlug" element={<ProtectedRoute><MainLayout><StudySessionPage /></MainLayout></ProtectedRoute>} />
