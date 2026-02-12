@@ -64,7 +64,7 @@ const Navbar = () => {
     <>
       <nav className="navbar-container">
         <Link to="/" className="navbar-logo">
-          <img src="/logo.png-modified.png" alt="Marine Cadet Logo" className="logo-img" />
+          <img src="/logo.png" alt="Marine Cadet Logo" className="logo-img" />
         </Link>
 
         {userInfo && userInfo.role && (

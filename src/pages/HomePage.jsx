@@ -37,7 +37,7 @@ const HomePage = () => {
                 "name": "Marine Cadet",
                 "description": "Denizcilik sektörünün digital platformu - Staj ilanları, eğitim içerikleri ve kariyer rehberliği",
                 "url": "https://marinecadet.com",
-                "logo": "https://marinecadet.com/logo.png-modified.png",
+                "logo": "https://marinecadet.com/logo.png",
                 "contactPoint": {
                     "@type": "ContactPoint",
                     "email": "info@cadet.com",

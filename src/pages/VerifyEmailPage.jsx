@@ -66,7 +66,7 @@ const VerifyEmailPage = () => {
         <div className="verify-page">
             <div className="verify-card">
                 <div className="verify-logo">
-                    <img src="/logo.png-modified.png" alt="Marine Cadet Logo" />
+                    <img src="/logo.png" alt="Marine Cadet Logo" />
                 </div>
                 {renderContent()}
             </div>

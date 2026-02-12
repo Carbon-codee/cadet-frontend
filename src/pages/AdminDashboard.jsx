@@ -303,7 +303,7 @@ const AdminDashboard = () => {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '40px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                     <div style={{ background: theme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : '#fff', padding: '10px', borderRadius: '50%', border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #e2e8f0' }}>
-                        <img src="/logo.png-modified.png" alt="Marine Cadet Logo" style={{ height: '50px', width: 'auto' }} />
+                        <img src="/logo.png" alt="Marine Cadet Logo" style={{ height: '50px', width: 'auto' }} />
                     </div>
                     <div>
                         <h1 style={{ color: theme === 'dark' ? '#fff' : '#1e293b', margin: 0, fontWeight: '900', fontSize: '2rem', letterSpacing: '-0.5px' }}>Admin Kontrol Paneli</h1>
