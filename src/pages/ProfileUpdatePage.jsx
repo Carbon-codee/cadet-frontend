@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
@@ -75,7 +76,7 @@ const StudentUpdateForm = ({ formData, onFormChange, availableCompanies, uploadD
                             name="department"
                             value={formData.department || ''}
                             onChange={onFormChange}
-                            style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '8px', background: '#fcfcfc' }}
+                            className="department-select"
                         >
                             <option value="">Seçiniz</option>
                             <option value="Deniz Ulaştırma İşletme Mühendisliği">Deniz Ulaştırma İşletme Mühendisliği (Güverte)</option>

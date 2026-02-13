@@ -4,6 +4,32 @@
     min-height: 100vh;
 }
 
+/* Department Select Fix */
+.department-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: all 0.3s;
+    appearance: none;
+    /* Remove default arrow to style it if needed, or keep it */
+    cursor: pointer;
+}
+
+.department-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    outline: none;
+}
+
+.department-select option {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
 .update-header {
     text-align: left;
     margin-bottom: 30px;
