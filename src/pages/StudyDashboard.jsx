@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
-import { FaPlus, FaRocket, FaLock, FaCheck, FaArchive, FaBuilding, FaUserGraduate, FaInfoCircle, FaEye, FaTimes, FaAnchor, FaCalendarAlt, FaPlusCircle } from 'react-icons/fa';
+import { FaPlus, FaArchive, FaBuilding, FaUserGraduate, FaInfoCircle, FaEye, FaTimes, FaAnchor, FaCalendarAlt, FaPlusCircle, FaCheck, FaLock, FaRocket } from 'react-icons/fa';
+import LessonCard from '../components/LessonCard';
 import './StudyDashboard.css';
 
 const StudyDashboard = () => {
@@ -273,26 +274,18 @@ const StudyDashboard = () => {
                                     const logoUrl = plan.targetCompany?.logo || '';
 
                                     return (
-                                        <div
+                                        <LessonCard
                                             key={module._id}
-                                            className={`lesson-card ${isLocked ? 'locked' : ''} ${isCompleted ? 'completed' : ''}`}
+                                            plan={plan}
+                                            module={module}
+                                            isLocked={isLocked}
+                                            isCompleted={isCompleted}
                                             onClick={() => handleLessonNavigation(plan, module)}
-                                            style={{ '--bg-logo': `url(${logoUrl})` }}
-                                        >
-                                            <div className="card-top">
-                                                <span className="plan-badge">
-                                                    {plan.targetCompany?.name?.substring(0, 10) || 'GENEL'}
-                                                </span>
-                                                {isCompleted ? <FaCheck className="status-icon check" /> :
-                                                    isLocked ? <FaLock className="status-icon lock" /> : <FaRocket style={{ color: 'var(--neon-cyan)' }} />}
-                                            </div>
-
-                                            <div className="card-title">
-                                                {module.topic}
-                                            </div>
-
-                                            {isCompleted && <div className="completion-watermark">TAMAMLANDI</div>}
-                                        </div>
+                                            onUnlock={() => {
+                                                console.log(`Lesson ${module.topic} auto-unlocked! Refreshing...`);
+                                                fetchPlans();
+                                            }}
+                                        />
                                     );
                                 })}
                             </div>

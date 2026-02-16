@@ -98,6 +98,7 @@ const StudySessionPage = () => {
         // Calculate score
         let correct = 0;
         let correctIds = [];
+        let correctDifficulties = [];
 
         moduleData.questions.forEach((q, idx) => {
             const userAns = answers[idx]?.trim();
@@ -105,6 +106,8 @@ const StudySessionPage = () => {
             if (userAns && correctAns && userAns === correctAns) {
                 correct++;
                 if (q._id) correctIds.push(q._id);
+                // Difficulty tracking for Dynamic XP
+                correctDifficulties.push(q.difficulty);
             }
         });
         setScore(correct);
@@ -116,7 +119,8 @@ const StudySessionPage = () => {
                 planId: planSlug,
                 dayNumber: moduleData.dayNumber,
                 correctCount: correct,
-                correctQuestionIds: correctIds // Send Detailed Results for Dynamic XP
+                correctQuestionIds: correctIds,
+                correctDifficulties: correctDifficulties // Send difficulties for weighted XP
             });
 
             // Update local state for display if needed
@@ -181,6 +185,10 @@ const StudySessionPage = () => {
     const renderLectureContent = () => {
         if (!moduleData?.lectureContent) return <p>İçerik yükleniyor...</p>;
 
+        // SPOILER PREVENTION: Filter out accidental "Questions" or "Quiz" sections from AI
+        // Splits content if "Sınav Soruları", "Test", "Questions" header is found at the end
+        const cleanContent = moduleData.lectureContent.split(/(#+\s*(Sınav Soruları|Test|Questions|Quiz|Değerlendirme)|(?<=\n)\s*\d+\.\s*Soru)/i)[0];
+
         return (
             <motion.div
                 initial={{ opacity: 0 }}
@@ -209,7 +217,7 @@ const StudySessionPage = () => {
                         }
                     }}
                 >
-                    {moduleData.lectureContent}
+                    {cleanContent}
                 </ReactMarkdown>
             </motion.div>
         );
@@ -351,7 +359,7 @@ const StudySessionPage = () => {
                                     <span className="score-total">/ {moduleData.questions.length}</span>
                                 </div>
 
-                                <p className="xp-gain">+{score * 5} XP Kazandınız</p>
+                                <p className="xp-gain">+{earnedXp > 0 ? earnedXp : score * 5} XP Kazandınız</p>
 
                                 <button onClick={() => navigate('/study-plan')} className="finish-btn">
                                     Çalışma Programına Dön

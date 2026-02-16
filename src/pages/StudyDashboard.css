@@ -348,9 +348,11 @@
     border-radius: 8px;
     /* Slightly rounded */
     height: 200px;
-    padding: 1.5rem;
+    padding: 0;
+    /* Padding moved to inner */
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+    /* Fix for Tooltip */
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
@@ -358,8 +360,21 @@
     justify-content: space-between;
 }
 
+.lesson-card .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 /* Background Logo Mask */
-.lesson-card::after {
+/* Background Logo Mask */
+.lesson-card .card-inner::after {
     content: '';
     position: absolute;
     bottom: -20px;
@@ -437,12 +452,22 @@
 }
 
 /* Status: Locked */
+/* Status: Locked */
 .lesson-card.locked {
-    filter: grayscale(100%);
-    opacity: 0.5;
     background: #050814;
     border: 1px solid #333;
     cursor: not-allowed;
+    z-index: 10;
+}
+
+.lesson-card.locked .card-inner {
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
+
+.lesson-card.locked .card-inner {
+    filter: grayscale(100%);
+    opacity: 0.5;
 }
 
 .lesson-card.locked:hover {
@@ -543,4 +568,83 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* TOOLTIP STYLES */
+.lesson-card .locked-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    width: 280px;
+    background: #1e293b;
+    /* Dark background as requested */
+    border: 1px solid #ff4d4d;
+    /* Neon red/orange border */
+    box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
+    padding: 1rem;
+    border-radius: 8px;
+    z-index: 1000;
+    /* Increased z-index */
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    pointer-events: none;
+    color: white;
+    font-size: 0.9rem;
+    text-align: center;
+    backdrop-filter: blur(5px);
+}
+
+/* Arrow for Tooltip */
+.lesson-card .locked-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -8px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: #ff4d4d transparent transparent transparent;
+    /* Match border color */
+}
+
+.lesson-card.locked:hover .locked-tooltip {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(-10px);
+}
+
+.tooltip-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tooltip-content .lock-icon {
+    font-size: 1.5rem;
+    color: var(--neon-cyan);
+    margin-bottom: 0.2rem;
+}
+
+.tooltip-content strong {
+    color: var(--neon-cyan);
+    font-family: var(--font-tech);
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+.tooltip-content p {
+    margin: 0;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.tooltip-content small {
+    display: block;
+    margin-top: 0.5rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
 }
