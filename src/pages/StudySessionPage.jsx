@@ -141,9 +141,11 @@ const StudySessionPage = () => {
 
     const getOptionClass = (option) => {
         if (!isAnswered) return '';
-        const currentQ = moduleData.questions[currentQuestionIndex];
+        const currentQ = moduleData?.questions?.[currentQuestionIndex];
+        if (!currentQ) return '';
+
         const safeOption = option.trim();
-        const safeCorrect = currentQ.correctAnswer.trim();
+        const safeCorrect = currentQ.correctAnswer?.trim();
         const safeAnswer = answers[currentQuestionIndex]?.trim();
 
         if (safeOption === safeCorrect) return 'correct';
@@ -309,36 +311,109 @@ const StudySessionPage = () => {
                             exit={{ opacity: 0, x: -50 }}
                             className="quiz-wrapper"
                         >
-                            <div className="quiz-question-card">
-                                <h2>Soru {currentQuestionIndex + 1}</h2>
-                                <p className="question-text">{moduleData.questions[currentQuestionIndex].questionText}</p>
+                            {/* Defensive Check & Fallback UI */}
+                            {moduleData?.questions && moduleData.questions.length > 0 ? (
+                                moduleData.questions[currentQuestionIndex] ? (
+                                    <>
+                                        <div className="quiz-question-card">
+                                            <h2>Soru {currentQuestionIndex + 1}</h2>
+                                            <p className="question-text">
+                                                {moduleData.questions[currentQuestionIndex]?.questionText || "Soru metni yükleniyor..."}
+                                            </p>
 
-                                <div className="options-grid">
-                                    {moduleData.questions[currentQuestionIndex].options.map((opt, idx) => (
-                                        <button
-                                            key={idx}
-                                            onClick={() => handleAnswer(opt)}
-                                            className={`quiz-option ${getOptionClass(opt)} ${answers[currentQuestionIndex] === opt ? 'selected' : ''}`}
-                                            disabled={isAnswered}
-                                        >
-                                            <span className="opt-letter">{['A', 'B', 'C', 'D'][idx]}</span>
-                                            {opt}
-                                            {getOptionClass(opt) === 'correct' && <FaCheckCircle className="status-icon" />}
-                                            {getOptionClass(opt) === 'incorrect' && <FaTimesCircle className="status-icon" />}
+                                            <div className="options-grid">
+                                                {moduleData.questions[currentQuestionIndex]?.options?.map((opt, idx) => (
+                                                    <button
+                                                        key={idx}
+                                                        onClick={() => handleAnswer(opt)}
+                                                        className={`quiz-option ${getOptionClass(opt)} ${answers[currentQuestionIndex] === opt ? 'selected' : ''}`}
+                                                        disabled={isAnswered}
+                                                    >
+                                                        <span className="opt-letter">{['A', 'B', 'C', 'D'][idx]}</span>
+                                                        {opt}
+                                                        {getOptionClass(opt) === 'correct' && <FaCheckCircle className="status-icon" />}
+                                                        {getOptionClass(opt) === 'incorrect' && <FaTimesCircle className="status-icon" />}
+                                                    </button>
+                                                )) || <div className="error-msg">Şıklar yüklenemedi.</div>}
+                                            </div>
+                                        </div>
+
+                                        <div className="quiz-controls">
+                                            <button
+                                                onClick={handleNextQuestion}
+                                                className="next-q-btn"
+                                                disabled={!isAnswered}
+                                            >
+                                                {currentQuestionIndex < moduleData.questions.length - 1 ? 'Sonraki Soru' : 'Sonuçları Gör'}
+                                            </button>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="error-screen" style={{ padding: '2rem', textAlign: 'center' }}>
+                                        <FaTimesCircle size={48} color="#ef4444" style={{ marginBottom: '1rem' }} />
+                                        <h3>Hata: Soru Bulunamadı</h3>
+                                        <p>Soru indeksi veritabanı ile uyuşmuyor.</p>
+                                        <button onClick={() => setMode('lecture')} className="back-btn" style={{ marginTop: '1rem' }}>
+                                            Ders İçeriğine Dön
                                         </button>
-                                    ))}
+                                    </div>
+                                )
+                            ) : (
+                                <div className="no-questions-state" style={{
+                                    padding: '3rem',
+                                    textAlign: 'center',
+                                    background: 'white',
+                                    borderRadius: '16px',
+                                    boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+                                }}>
+                                    <FaBookOpen size={48} style={{ color: '#6366f1', marginBottom: '1.5rem' }} />
+                                    <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: '#1e293b' }}>
+                                        Test Soruları Hazırlanıyor
+                                    </h3>
+                                    <p style={{ color: '#64748b', marginBottom: '2rem' }}>
+                                        Bu dersin değerlendirme soruları henüz sisteme yüklenmemiştir. Lütfen daha sonra tekrar kontrol ediniz.
+                                    </p>
+                                    <button
+                                        onClick={() => setMode('lecture')}
+                                        className="back-btn"
+                                        style={{
+                                            padding: '0.75rem 1.5rem',
+                                            background: '#f1f5f9',
+                                            color: '#334155',
+                                            borderRadius: '8px',
+                                            fontWeight: '600',
+                                            fontSize: '0.95rem',
+                                            transition: 'all 0.2s'
+                                        }}
+                                    >
+                                        Konu Anlatımına Dön
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setLoading(true);
+                                            fetchContent();
+                                        }}
+                                        className="retry-btn"
+                                        style={{
+                                            padding: '0.75rem 1.5rem',
+                                            background: '#10b981',
+                                            color: 'white',
+                                            borderRadius: '8px',
+                                            fontWeight: '600',
+                                            fontSize: '0.95rem',
+                                            transition: 'all 0.2s',
+                                            marginLeft: '1rem',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            gap: '0.5rem'
+                                        }}
+                                    >
+                                        <FaLightbulb /> Soruları Şimdi Oluştur / Kontrol Et
+                                    </button>
                                 </div>
-                            </div>
-
-                            <div className="quiz-controls">
-                                <button
-                                    onClick={handleNextQuestion}
-                                    className="next-q-btn"
-                                    disabled={!isAnswered}
-                                >
-                                    {currentQuestionIndex < moduleData.questions.length - 1 ? 'Sonraki Soru' : 'Sonuçları Gör'}
-                                </button>
-                            </div>
+                            )}
                         </motion.div>
                     )}
 
